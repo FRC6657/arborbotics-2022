@@ -77,10 +77,18 @@ public class Robot extends TimedRobot {
 
   }
 
+  /**
+   * @param input Value to recieve a deadband
+   * @param threshold The deadband threshold
+   * 
+   * This is a linear scaled deadband
+   * 
+   */
   public double deadband(double input, double threshold){
     if(Math.abs(input)<threshold){
-      input = 0;
+      return 0;
+    } else{
+      return (input-(Math.abs(input)/input)*threshold ) / (1.0 - threshold);
     }
-    return input;
   }
 }
