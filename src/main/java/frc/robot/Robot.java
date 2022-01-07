@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.autonomous.Trajectories;
+import io.github.oblarg.oblog.Logger;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -19,10 +20,12 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     Trajectory mGenerate = Trajectories.GENERATE; //Generates all trajectories
     m_robotContainer = new RobotContainer();
+    Logger.configureLoggingAndConfig(m_robotContainer, false);
   }
 
   @Override
   public void robotPeriodic() {
+    Logger.updateEntries();
     CommandScheduler.getInstance().run();
   }
 

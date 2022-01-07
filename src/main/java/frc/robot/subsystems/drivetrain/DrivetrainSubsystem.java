@@ -15,8 +15,6 @@ import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.BasePigeonSimCollection;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
-import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -39,9 +37,10 @@ import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
-public class DrivetrainSubsystem extends SubsystemBase {
+public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   private static double kTrackWidth = Units.inchesToMeters(26); //TODO Measure
   private static double kEncoderCountToMeters = 1024 * 2 * Math.PI * Units.inchesToMeters(3);
@@ -59,6 +58,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private TalonFXSimCollection mFrontRightSim = mFrontRight.getSimCollection();
 
   //Gyro
+  //@Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro")
   private WPI_PigeonIMU mPigeonIMU = new WPI_PigeonIMU(5);
   
   //Simulated Gyro
@@ -73,7 +73,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final PIDController mRightPID = new PIDController(1, 0, 0);
 
   //Characterization
-  private final SimpleMotorFeedforward mFeedforward = new SimpleMotorFeedforward(0.25, 0); //TODO Run Sysid
+  private final SimpleMotorFeedforward mFeedforward = new SimpleMotorFeedforward(1, 3); //TODO Run Sysid
   
   //RemseteController
   private RamseteController mRamseteController = new RamseteController();
@@ -173,6 +173,41 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return rates;
   }
 
+  @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Left Distance")
+  public double getLeftMeters(){
+    return mFrontLeft.getSelectedSensorPosition()/kEncoderCountToMeters;
+  }
+
+  @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Right Distance")
+  public double getRightMeters(){
+    return mFrontRight.getSelectedSensorPosition()/kEncoderCountToMeters;
+  }
+  @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Left Velocity")
+  public double getLeftVelocity(){
+    return mFrontLeft.getSelectedSensorVelocity()/kEncoderCountToMeters;
+  }
+  @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity")
+  public double getRightVelocity(){
+    return mFrontLeft.getSelectedSensorVelocity()/kEncoderCountToMeters;
+  }
+
+  @Log.Dial(rowIndex = 0, columnIndex = 4, width = 2, height = 2, name = "FL Temp", max = 110, min = 20, showValue = false)
+  public double getFrontLeftTemp(){
+    return mFrontLeft.getTemperature();
+  }
+  @Log.Dial(rowIndex = 0, columnIndex = 6, width = 2, height = 2, name = "FR Temp", max = 110, min = 20, showValue = false)
+  public double getFrontRightTemp(){
+    return mFrontRight.getTemperature();
+  }
+  @Log.Dial(rowIndex = 2, columnIndex = 4, width = 2, height = 2, name = "BL Temp", max = 110, min = 20, showValue = false)
+  public double getBackLeftTemp(){
+    return mBackLeft.getTemperature();
+  }
+  @Log.Dial(rowIndex = 2, columnIndex = 6, width = 2, height = 2, name = "BR Temp", max = 110, min = 20, showValue = false)
+  public double getBackRightTemp(){
+    return mBackRight.getTemperature();
+  }
+
   private void stop(){
     mFrontLeft.set(0);
     mFrontRight.set(0);
@@ -257,8 +292,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     //Send Robot Pose to the Field Visualization
     mField.setRobotPose(mOdometry.getPoseMeters());
-
-    SmartDashboard.putNumber("Left m/s", mFrontLeft.getSelectedSensorVelocity()/10);
   }
 
   @Override
