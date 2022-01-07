@@ -59,10 +59,10 @@
       "open": true
     },
     "SmartDashboard": {
+      "Field": {
+        "open": true
+      },
       "open": true
     }
-  },
-  "NetworkTables View": {
-    "visible": false
   }
 }

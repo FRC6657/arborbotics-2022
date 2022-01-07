@@ -23,6 +23,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -147,10 +148,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
     mBackRight.setNeutralMode(NeutralMode.Brake);
 
     //Makes all positive signals move the robot forward
-    mFrontLeft.setInverted(TalonFXInvertType.Clockwise);
-    mBackLeft.setInverted(TalonFXInvertType.Clockwise);
-    mFrontRight.setInverted(TalonFXInvertType.CounterClockwise);
-    mBackRight.setInverted(TalonFXInvertType.CounterClockwise);
+    if(RobotBase.isReal()){  
+      mFrontLeft.setInverted(TalonFXInvertType.CounterClockwise);
+      mBackLeft.setInverted(TalonFXInvertType.FollowMaster);
+      mFrontRight.setInverted(TalonFXInvertType.Clockwise);
+      mBackRight.setInverted(TalonFXInvertType.FollowMaster);
+    }else{
+      mFrontLeft.setInverted(TalonFXInvertType.CounterClockwise);
+      mBackLeft.setInverted(TalonFXInvertType.FollowMaster);
+      mFrontRight.setInverted(TalonFXInvertType.CounterClockwise);
+      mBackRight.setInverted(TalonFXInvertType.FollowMaster);
+    }
 
     //Encoders 
     mFrontLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
