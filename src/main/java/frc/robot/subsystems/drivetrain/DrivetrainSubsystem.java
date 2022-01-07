@@ -37,15 +37,20 @@ import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.custom.SendablePigeonIMU;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
+  //Distance between wheels
   private static double kTrackWidth = Units.inchesToMeters(26); //TODO Measure
+
+  //Scale Factor to convert Encoder counts to Meters
   private static double kEncoderCountToMeters = 1024 * 2 * Math.PI * Units.inchesToMeters(3);
 
-  private static double kMaxSpeed = 3.5; //Meters/s
+  //Max Full Forward Velocity
+  private static double kMaxSpeed = 3.5; // meters/s
 
   //Drivetrain Falcons
   private WPI_TalonFX mFrontLeft = new WPI_TalonFX(1);
@@ -58,8 +63,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private TalonFXSimCollection mFrontRightSim = mFrontRight.getSimCollection();
 
   //Gyro
-  //@Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro")
-  private WPI_PigeonIMU mPigeonIMU = new WPI_PigeonIMU(5);
+  @Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro")
+  private SendablePigeonIMU mPigeonIMU = new SendablePigeonIMU(5);
   
   //Simulated Gyro
   private BasePigeonSimCollection mPigeonIMUSim = mPigeonIMU.getSimCollection();
@@ -97,9 +102,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   );
 
   public DrivetrainSubsystem(){
-    configureMotors();
-    resetOdometry();
-    SmartDashboard.putData(mField);
+    configureMotors(); //Configure Motors
+    resetOdometry(); //Reset Odometry
+    SmartDashboard.putData(mField); //Sends the Field to Shuffleboard
   }
 
 
@@ -168,46 +173,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mBackRight.setSelectedSensorPosition(0);
   }
 
-  public double[] getEncoderRate(){
-    double[] rates = {(mFrontLeft.getSelectedSensorVelocity()/(1024 * Math.PI * Units.inchesToMeters(6)))*10,(mFrontRight.getSelectedSensorVelocity()/(1024 * Math.PI * Units.inchesToMeters(6)))*10};
-    return rates;
-  }
-
-  @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Left Distance")
-  public double getLeftMeters(){
-    return mFrontLeft.getSelectedSensorPosition()/kEncoderCountToMeters;
-  }
-
-  @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Right Distance")
-  public double getRightMeters(){
-    return mFrontRight.getSelectedSensorPosition()/kEncoderCountToMeters;
-  }
-  @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Left Velocity")
-  public double getLeftVelocity(){
-    return mFrontLeft.getSelectedSensorVelocity()/kEncoderCountToMeters;
-  }
-  @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity")
-  public double getRightVelocity(){
-    return mFrontLeft.getSelectedSensorVelocity()/kEncoderCountToMeters;
-  }
-
-  @Log.Dial(rowIndex = 0, columnIndex = 4, width = 2, height = 2, name = "FL Temp", max = 110, min = 20, showValue = false)
-  public double getFrontLeftTemp(){
-    return mFrontLeft.getTemperature();
-  }
-  @Log.Dial(rowIndex = 0, columnIndex = 6, width = 2, height = 2, name = "FR Temp", max = 110, min = 20, showValue = false)
-  public double getFrontRightTemp(){
-    return mFrontRight.getTemperature();
-  }
-  @Log.Dial(rowIndex = 2, columnIndex = 4, width = 2, height = 2, name = "BL Temp", max = 110, min = 20, showValue = false)
-  public double getBackLeftTemp(){
-    return mBackLeft.getTemperature();
-  }
-  @Log.Dial(rowIndex = 2, columnIndex = 6, width = 2, height = 2, name = "BR Temp", max = 110, min = 20, showValue = false)
-  public double getBackRightTemp(){
-    return mBackRight.getTemperature();
-  }
-
   private void stop(){
     mFrontLeft.set(0);
     mFrontRight.set(0);
@@ -226,10 +191,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     mFrontLeft.setVoltage(leftOutput + leftFeedforward);
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
-  }
 
-  public WheelSpeeds convertSpeeds(DifferentialDriveWheelSpeeds diffSpeeds){
-    return new WheelSpeeds(diffSpeeds.leftMetersPerSecond,diffSpeeds.rightMetersPerSecond);
   }
 
   /**
@@ -280,6 +242,50 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   }
 
+  public double[] getEncoderRate(){
+    double[] rates = {getLeftVelocity(),getRightVelocity()};
+    return rates;
+  }
+
+  @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Left Distance")
+  public double getLeftMeters(){
+    return mFrontLeft.getSelectedSensorPosition()/kEncoderCountToMeters;
+  }
+
+  @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Right Distance")
+  public double getRightMeters(){
+    return mFrontRight.getSelectedSensorPosition()/kEncoderCountToMeters;
+  }
+  @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Left Velocity")
+  public double getLeftVelocity(){
+    return mFrontLeft.getSelectedSensorVelocity()/kEncoderCountToMeters;
+  }
+  @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity")
+  public double getRightVelocity(){
+    return mFrontLeft.getSelectedSensorVelocity()/kEncoderCountToMeters;
+  }
+
+  @Log.Dial(rowIndex = 0, columnIndex = 4, width = 2, height = 2, name = "FL Temp", max = 110, min = 20, showValue = false)
+  public double getFrontLeftTemp(){
+    return mFrontLeft.getTemperature();
+  }
+  @Log.Dial(rowIndex = 0, columnIndex = 6, width = 2, height = 2, name = "FR Temp", max = 110, min = 20, showValue = false)
+  public double getFrontRightTemp(){
+    return mFrontRight.getTemperature();
+  }
+  @Log.Dial(rowIndex = 2, columnIndex = 4, width = 2, height = 2, name = "BL Temp", max = 110, min = 20, showValue = false)
+  public double getBackLeftTemp(){
+    return mBackLeft.getTemperature();
+  }
+  @Log.Dial(rowIndex = 2, columnIndex = 6, width = 2, height = 2, name = "BR Temp", max = 110, min = 20, showValue = false)
+  public double getBackRightTemp(){
+    return mBackRight.getTemperature();
+  }
+
+  public WheelSpeeds convertSpeeds(DifferentialDriveWheelSpeeds diffSpeeds){
+    return new WheelSpeeds(diffSpeeds.leftMetersPerSecond,diffSpeeds.rightMetersPerSecond);
+  }
+
   @Override
   public void periodic() {
     
@@ -295,24 +301,27 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   }
 
   @Override
-    public void simulationPeriodic() {
+  public void simulationPeriodic() {
 
-        mDrivetrainSim.setInputs(
-          mFrontLeft.get() * RobotController.getInputVoltage(),
-          mFrontRight.get() * RobotController.getInputVoltage()
-        );
+    //Give the sim motor inputs
+    mDrivetrainSim.setInputs(
+        mFrontLeft.get() * RobotController.getInputVoltage(),
+        mFrontRight.get() * RobotController.getInputVoltage());
 
-        mDrivetrainSim.update(0.02);
-        
-        mFrontLeftSim.setIntegratedSensorRawPosition((int)(mDrivetrainSim.getLeftPositionMeters() * kEncoderCountToMeters));
-        mFrontRightSim.setIntegratedSensorRawPosition((int)(mDrivetrainSim.getRightPositionMeters() * kEncoderCountToMeters));
+    //Progress the sim by 1 frame
+    mDrivetrainSim.update(0.02);
 
-        mFrontLeftSim.setIntegratedSensorVelocity((int)((mDrivetrainSim.getLeftVelocityMetersPerSecond() * kEncoderCountToMeters)/10));
-        mFrontRightSim.setIntegratedSensorVelocity((int)((mDrivetrainSim.getRightVelocityMetersPerSecond() * kEncoderCountToMeters)/10));
+    //Set Simulated Encoder Positions
+    mFrontLeftSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getLeftPositionMeters() * kEncoderCountToMeters));
+    mFrontRightSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getRightPositionMeters() * kEncoderCountToMeters));
 
-        mPigeonIMUSim.setRawHeading(mDrivetrainSim.getHeading().getDegrees());
+    //Set Simulated Encoder Velocities
+    mFrontLeftSim.setIntegratedSensorVelocity((int) ((mDrivetrainSim.getLeftVelocityMetersPerSecond() * kEncoderCountToMeters) / 10));
+    mFrontRightSim.setIntegratedSensorVelocity((int) ((mDrivetrainSim.getRightVelocityMetersPerSecond() * kEncoderCountToMeters) / 10));
 
-    }
+    mPigeonIMUSim.setRawHeading(mDrivetrainSim.getHeading().getDegrees());
+
+  }
 
   /**
    * Commands
