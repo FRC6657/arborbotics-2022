@@ -15,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.BasePigeonSimCollection;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
+import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -26,6 +27,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,6 +38,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private static double kTrackWidth = Units.inchesToMeters(26); //TODO Measure
   private static double kEncoderCountToMeters = 1024 * 2 * Math.PI * Units.inchesToMeters(3);
+
+  private static double kMaxSpeed = 3.5; //Meters/s
 
   //Drivetrain Falcons
   private WPI_TalonFX mFrontLeft = new WPI_TalonFX(1);
@@ -52,9 +56,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   
   //Simulated Gyro
   private BasePigeonSimCollection mPigeonIMUSim = mPigeonIMU.getSimCollection();
-
-  //Drivetrain Class
-  private DifferentialDrive mDrivetrain = new DifferentialDrive(mFrontLeft, mFrontRight);
 
   //Drivetrain Kinematics/Odometry
   private DifferentialDriveKinematics mKinematics = new DifferentialDriveKinematics(kTrackWidth);
@@ -122,8 +123,29 @@ public class DrivetrainSubsystem extends SubsystemBase {
     mBackRight.setSelectedSensorPosition(0);
   }
 
+  public double[] getEncoderRate(){
+    double[] rates = {(mFrontLeft.getSelectedSensorVelocity()/(1024 * Math.PI * Units.inchesToMeters(6)))*10,(mFrontRight.getSelectedSensorVelocity()/(1024 * Math.PI * Units.inchesToMeters(6)))*10};
+    return rates;
+  }
+
   private void stop(){
-    mDrivetrain.stopMotor();
+    mFrontLeft.set(0);
+    mFrontRight.set(0);
+  }
+
+  public void setSpeeds(WheelSpeeds speeds) {
+
+    WheelSpeeds newSpeeds = new WheelSpeeds(speeds.left*kMaxSpeed, speeds.right*kMaxSpeed);
+
+    final double leftFeedforward = mFeedforward.calculate(newSpeeds.left);
+    final double rightFeedforward = mFeedforward.calculate(newSpeeds.right);
+    final double leftOutput =
+        mLeftPID.calculate(getEncoderRate()[0], newSpeeds.left);
+    final double rightOutput =
+        mRightPID.calculate(getEncoderRate()[1], newSpeeds.right);
+
+    mFrontLeft.setVoltage(leftOutput + leftFeedforward);
+    mFrontRight.setVoltage(rightOutput + rightFeedforward);
   }
 
   /**
@@ -192,6 +214,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     //Send Robot Pose to the Field Visualization
     mField.setRobotPose(mOdometry.getPoseMeters());
+
+    SmartDashboard.putNumber("Left m/s", mFrontLeft.getSelectedSensorVelocity()/10);
   }
 
   @Override
@@ -206,6 +230,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
         
         mFrontLeftSim.setIntegratedSensorRawPosition((int)(mDrivetrainSim.getLeftPositionMeters() * kEncoderCountToMeters));
         mFrontRightSim.setIntegratedSensorRawPosition((int)(mDrivetrainSim.getRightPositionMeters() * kEncoderCountToMeters));
+
+        mFrontLeftSim.setIntegratedSensorVelocity((int)((mDrivetrainSim.getLeftVelocityMetersPerSecond() * kEncoderCountToMeters)/10));
+        mFrontRightSim.setIntegratedSensorVelocity((int)((mDrivetrainSim.getRightVelocityMetersPerSecond() * kEncoderCountToMeters)/10));
 
         mPigeonIMUSim.setRawHeading(mDrivetrainSim.getHeading().getDegrees());
 
@@ -235,7 +262,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     @Override
     public void execute() {
-        mDrivetrain.curvatureDrive(xSpeed.getAsDouble(), zRotation.getAsDouble(), isQuickturn.getAsBoolean());
+      setSpeeds(DifferentialDrive.curvatureDriveIK(xSpeed.getAsDouble(), zRotation.getAsDouble(), isQuickturn.getAsBoolean()));
     }
 
     @Override
