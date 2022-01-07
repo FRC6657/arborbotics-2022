@@ -16,8 +16,8 @@ public class RobotContainer {
 
     mDrivetrainSubsystem.setDefaultCommand(
       mDrivetrainSubsystem.new DriveCommand(
-        () -> -mDriver.getLeftY(),
-        () -> mDriver.getRightX(),
+        () -> -deadband(mDriver.getLeftY(),0.1),
+        () -> deadband(mDriver.getRightX(),0.1),
         () -> mDriver.getRightBumper()
       )
     );
@@ -27,4 +27,13 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return null;
   }
+
+  public double deadband(double input, double threshold){
+    if(Math.abs(input)<threshold){
+      return 0;
+    } else{
+      return (input-(Math.abs(input)/input)*threshold ) / (1.0 - threshold);
+    }
+  }
+
 }
