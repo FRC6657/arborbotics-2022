@@ -17,6 +17,7 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   @Override
+  @SuppressWarnings("unused")
   public void robotInit() {
     Trajectory mGenerate = Trajectories.GENERATE; //Generates all trajectories
     m_robotContainer = new RobotContainer();
