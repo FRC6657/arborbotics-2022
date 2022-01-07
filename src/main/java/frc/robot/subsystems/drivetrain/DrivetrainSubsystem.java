@@ -18,21 +18,28 @@ import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
@@ -66,10 +73,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final PIDController mRightPID = new PIDController(1, 0, 0);
 
   //Characterization
-  private final SimpleMotorFeedforward mFeedforward = new SimpleMotorFeedforward(1,3); //TODO Run Sysid
+  private final SimpleMotorFeedforward mFeedforward = new SimpleMotorFeedforward(0.25, 0); //TODO Run Sysid
+  
+  //RemseteController
+  private RamseteController mRamseteController = new RamseteController();
 
   //Field to view Odometry
   private Field2d mField = new Field2d();
+
+  private FieldObject2d mTrajectoryPlot = mField.getObject("trajectory");
 
   /**
    * This sim is no where near perfectly accurate, should be kinda close though
@@ -101,10 +113,43 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * Resets the Odometry
    */
   private void resetOdometry() {
+    
+    if (RobotBase.isSimulation()) {
+      mDrivetrainSim = new DifferentialDrivetrainSim(
+          DCMotor.getFalcon500(2), // Motors Per Side
+          10.71, // Gearing 10.71:1
+          7.5, // MOI. This is not a real value
+          30, // Weight is kg. This is not a real value
+          Units.inchesToMeters(3), // Wheel Radius in Meters
+          kTrackWidth, // Distance between the sides
+          null // Measurement deviation
+      );
+    }
+
     resetGyro();
     resetEncoders();
     mOdometry.resetPosition(new Pose2d(), mPigeonIMU.getRotation2d());
   }
+
+  private void resetOdometry(Pose2d pose) {
+    
+    if (RobotBase.isSimulation()) {
+      mDrivetrainSim = new DifferentialDrivetrainSim(
+          DCMotor.getFalcon500(2), // Motors Per Side
+          10.71, // Gearing 10.71:1
+          7.5, // MOI. This is not a real value
+          30, // Weight is kg. This is not a real value
+          Units.inchesToMeters(3), // Wheel Radius in Meters
+          kTrackWidth, // Distance between the sides
+          null // Measurement deviation
+      );
+    }
+
+    resetGyro();
+    resetEncoders();
+    mOdometry.resetPosition(pose, mPigeonIMU.getRotation2d());
+  }
+
 
   /**
    * Resets the Gyro
@@ -148,6 +193,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
   }
 
+  public WheelSpeeds convertSpeeds(DifferentialDriveWheelSpeeds diffSpeeds){
+    return new WheelSpeeds(diffSpeeds.leftMetersPerSecond,diffSpeeds.rightMetersPerSecond);
+  }
+
   /**
    * Configures all of the Motors
    */
@@ -187,12 +236,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     mFrontRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     mBackLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     mBackRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-
-    //Reset Encoders
-    mFrontLeft.setSelectedSensorPosition(0);
-    mFrontRight.setSelectedSensorPosition(0);
-    mBackLeft.setSelectedSensorPosition(0);
-    mBackRight.setSelectedSensorPosition(0);
 
     //Limits the current to prevent breaker tripping
     mFrontLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 45, 0.5)); //| Enabled | 40a Limit | 45a Thresh | .5 sec Trigger Time
@@ -268,6 +311,64 @@ public class DrivetrainSubsystem extends SubsystemBase {
     @Override
     public void end(boolean interrupted) {
       stop();
+    }
+
+  }
+
+  public class TrajectoryFollowerCommand extends CommandBase {
+
+    private final Timer timer = new Timer();
+    private final Trajectory trajectory;
+    private boolean resetPose;
+
+    public TrajectoryFollowerCommand(Trajectory trajectory, boolean resetPose) {
+      this.trajectory = trajectory;
+      this.resetPose = resetPose;
+      addRequirements(DrivetrainSubsystem.this);
+    }
+
+    @Override
+    public void initialize() {
+      
+      mTrajectoryPlot.setTrajectory(trajectory);
+
+      if(resetPose){
+        resetOdometry(trajectory.getInitialPose());
+      }
+      timer.start();
+    }
+
+    @Override
+    public void execute() {
+      if (timer.get() < trajectory.getTotalTimeSeconds()) {
+
+        var desiredPose = trajectory.sample(timer.get());
+
+        var refChassisSpeeds = mRamseteController.calculate(mOdometry.getPoseMeters(), desiredPose);
+
+        setSpeeds(convertSpeeds(mKinematics.toWheelSpeeds(new ChassisSpeeds(refChassisSpeeds.vxMetersPerSecond, 0.0, refChassisSpeeds.omegaRadiansPerSecond))));
+
+      } else {
+        stop();
+      }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+      stop();
+    }
+
+  }
+
+  public class ResetPosition extends CommandBase{
+
+    public ResetPosition(){
+      addRequirements(DrivetrainSubsystem.this);
+    }
+
+    @Override
+    public void initialize() {
+      resetOdometry();
     }
 
   }

@@ -39,15 +39,29 @@
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
-      "/LiveWindow/Ungrouped/DifferentialDrive[1]": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Field": {
         "Robot": {
           "style": "Box/Image"
         },
+        "bottom": 514,
+        "height": 8.210550308227539,
+        "image": "D:\\FRC\\Fields\\2020-field.png",
+        "left": 96,
+        "right": 1040,
+        "top": 25,
+        "trajectory": {
+          "arrows": false,
+          "color": [
+            0.0,
+            1.0,
+            0.970587968826294,
+            255.0
+          ],
+          "selectable": false,
+          "style": "Line",
+          "weight": 1.5
+        },
+        "width": 15.982950210571289,
         "window": {
           "visible": true
         }
@@ -65,7 +79,33 @@
       "open": true
     },
     "SmartDashboard": {
+      "Left m": {
+        "open": true
+      },
       "open": true
+    }
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "height": 338,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "CANEncoder:Talon FX[1]/Integrated Sensor-position"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
     }
   }
 }
