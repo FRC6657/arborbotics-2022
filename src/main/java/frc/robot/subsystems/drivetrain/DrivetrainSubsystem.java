@@ -258,11 +258,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   }
   @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Left Velocity")
   public double getLeftVelocity(){
-    return mFrontLeft.getSelectedSensorVelocity()/kEncoderCountToMeters;
+    return mFrontLeft.getSelectedSensorVelocity()/kEncoderCountToMeters*10;
   }
   @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity")
   public double getRightVelocity(){
-    return mFrontLeft.getSelectedSensorVelocity()/kEncoderCountToMeters;
+    return mFrontLeft.getSelectedSensorVelocity()/kEncoderCountToMeters*10;
   }
 
   @Log.Dial(rowIndex = 0, columnIndex = 4, width = 2, height = 2, name = "FL Temp", max = 110, min = 20, showValue = false)
