@@ -25,6 +25,11 @@
         "header": {
           "open": true
         }
+      },
+      "Talon SRX[6]": {
+        "header": {
+          "open": true
+        }
       }
     }
   },
@@ -32,6 +37,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/DrivetrainSubsystem": "Subsystem",
+      "/LiveWindow/PickupSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
@@ -52,7 +58,6 @@
         },
         "bottom": 514,
         "height": 8.210550308227539,
-        "image": "D:\\FRC\\Fields\\2020-field.png",
         "left": 96,
         "right": 1040,
         "top": 25,

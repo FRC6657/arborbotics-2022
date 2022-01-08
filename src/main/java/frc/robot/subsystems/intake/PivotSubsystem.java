@@ -4,19 +4,14 @@
 
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
-public class IntakeSubsystem extends SubsystemBase {
-
-  private WPI_TalonSRX intakeMotor = new WPI_TalonSRX(Constants.kIntakeID);
-
-  public IntakeSubsystem() {}
+public class PivotSubsystem extends SubsystemBase {
+  /** Creates a new PivotSubsystem. */
+  public PivotSubsystem() {}
 
   @Override
   public void periodic() {
-    
+    // This method will be called once per scheduler run
   }
 }
