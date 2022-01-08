@@ -18,8 +18,8 @@ public final class Constants {
     public static final int kPigeonID = 5;
 
     //Characterization
-    public static final double kS = 0;
-    public static final double kV = 0;
+    public static final double kS = 1;
+    public static final double kV = 3;
 
     //Left PID
     public static final double leftKP = 1;
