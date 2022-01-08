@@ -16,6 +16,7 @@ public final class Constants {
     public static final int kBackLeftID = 3;
     public static final int kBackRightID = 4;
     public static final int kPigeonID = 5;
+    public static final int kIntakeID = 6;
 
     //Characterization
     public static final double kS = 1;
