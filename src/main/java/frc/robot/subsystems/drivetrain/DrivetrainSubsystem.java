@@ -227,10 +227,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mBackRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
     //Limits the current to prevent breaker tripping
-    mFrontLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 45, 0.5)); //| Enabled | 40a Limit | 45a Thresh | .5 sec Trigger Time
-    mFrontRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 45, 0.5)); //| Enabled | 40a Limit | 45a Thresh | .5 sec Trigger Time
-    mBackLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 45, 0.5)); //| Enabled | 40a Limit | 45a Thresh | .5 sec Trigger Time
-    mBackRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 45, 0.5)); //| Enabled | 40a Limit | 45a Thresh | .5 sec Trigger Time
+    mFrontLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); //| Enabled | 40a Limit | 45a Thresh | .5 sec Trigger Time
+    mFrontRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); //| Enabled | 40a Limit | 45a Thresh | .5 sec Trigger Time
+    mBackLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); //| Enabled | 40a Limit | 45a Thresh | .5 sec Trigger Time
+    mBackRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); //| Enabled | 40a Limit | 45a Thresh | .5 sec Trigger Time
 
   }
 
