@@ -24,7 +24,6 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
@@ -88,7 +87,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     Constants.kGearRatio, //Gearing 10.71:1
     7.5, //MOI. This is not a real value
     30, //Weight is kg. This is not a real value
-    Units.inchesToMeters(3), //Wheel Radius in Meters
+    Constants.kWheelRadius, //Wheel Radius in Meters
     Constants.kTrackWidth, //Distance between the sides
     null //Measurement deviation
   );
@@ -117,7 +116,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
           Constants.kGearRatio, // Gearing 10.71:1
           7.5, // MOI. This is not a real value
           30, // Weight is kg. This is not a real value
-          Units.inchesToMeters(3), // Wheel Radius in Meters
+          Constants.kWheelRadius, // Wheel Radius in Meters
           Constants.kTrackWidth, // Distance between the sides
           null // Measurement deviation
       );
@@ -136,7 +135,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
           Constants.kGearRatio, // Gearing 10.71:1
           7.5, // MOI. This is not a real value
           30, // Weight is kg. This is not a real value
-          Units.inchesToMeters(3), // Wheel Radius in Meters
+          Constants.kWheelRadius, // Wheel Radius in Meters
           Constants.kTrackWidth, // Distance between the sides
           null // Measurement deviation
       );
