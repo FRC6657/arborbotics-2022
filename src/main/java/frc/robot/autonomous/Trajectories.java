@@ -32,6 +32,17 @@ public class Trajectories {
         "Test"
     );
 
+    /**
+     * 
+     * Trajectory Generator Function
+     * 
+     * @param maxVel Max Velocity m/s
+     * @param maxAccel Max Accel m/s²
+     * @param waypoints Points to create a path to
+     * @param reversed Whether you drive forward or backward
+     * @param name Label for print purposes
+     * @return A Trajectory
+     */
     private static Trajectory generateTrajectory(double maxVel, double maxAccel, List<Pose2d> waypoints, boolean reversed, String name) {
         TrajectoryConfig config = new TrajectoryConfig(maxVel, maxAccel);
         config.setReversed(reversed);

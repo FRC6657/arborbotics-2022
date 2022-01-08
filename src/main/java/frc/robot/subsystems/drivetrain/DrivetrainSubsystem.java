@@ -36,14 +36,12 @@ import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.custom.SendablePigeonIMU;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
-
-  //Distance between wheels
-  private static double kTrackWidth = Units.inchesToMeters(26); //TODO Measure
 
   //Scale Factor to convert Encoder counts to Meters
   private static double kEncoderCountToMeters = 1024 * 2 * Math.PI * Units.inchesToMeters(3);
@@ -52,10 +50,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private static double kMaxSpeed = 3.5; // meters/s
 
   //Drivetrain Falcons
-  private WPI_TalonFX mFrontLeft = new WPI_TalonFX(1);
-  private WPI_TalonFX mFrontRight = new WPI_TalonFX(2);
-  private WPI_TalonFX mBackLeft = new WPI_TalonFX(3);
-  private WPI_TalonFX mBackRight = new WPI_TalonFX(4);
+  private WPI_TalonFX mFrontLeft = new WPI_TalonFX(Constants.kFrontLeftID);
+  private WPI_TalonFX mFrontRight = new WPI_TalonFX(Constants.kFrontRightID);
+  private WPI_TalonFX mBackLeft = new WPI_TalonFX(Constants.kBackLeftID);
+  private WPI_TalonFX mBackRight = new WPI_TalonFX(Constants.kBackRightID);
 
   //Simulated Talons
   private TalonFXSimCollection mFrontLeftSim = mFrontLeft.getSimCollection();
@@ -69,7 +67,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private BasePigeonSimCollection mPigeonIMUSim = mPigeonIMU.getSimCollection();
 
   //Drivetrain Kinematics/Odometry
-  private DifferentialDriveKinematics mKinematics = new DifferentialDriveKinematics(kTrackWidth);
+  private DifferentialDriveKinematics mKinematics = new DifferentialDriveKinematics(Constants.kTrackWidth);
   private DifferentialDriveOdometry mOdometry = new DifferentialDriveOdometry(mPigeonIMU.getRotation2d());
 
   //Drivetrain PID Controllers
@@ -77,7 +75,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private final PIDController mRightPID = new PIDController(1, 0, 0);
 
   //Characterization
-  private final SimpleMotorFeedforward mFeedforward = new SimpleMotorFeedforward(1, 3); //TODO Run Sysid
+  private final SimpleMotorFeedforward mFeedforward = new SimpleMotorFeedforward(Constants.kS, Constants.kV); //TODO Run Sysid
   
   //RemseteController
   private RamseteController mRamseteController = new RamseteController();
@@ -85,6 +83,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   //Field to view Odometry
   private Field2d mField = new Field2d();
 
+  //Creates an Object to set as a trajectory later
   private FieldObject2d mTrajectoryPlot = mField.getObject("trajectory");
 
   /**
@@ -92,11 +91,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   private DifferentialDrivetrainSim mDrivetrainSim = new DifferentialDrivetrainSim(
     DCMotor.getFalcon500(2), //Motors Per Side
-    10.71, //Gearing 10.71:1
+    Constants.kGearRatio, //Gearing 10.71:1
     7.5, //MOI. This is not a real value
     30, //Weight is kg. This is not a real value
     Units.inchesToMeters(3), //Wheel Radius in Meters
-    kTrackWidth, //Distance between the sides
+    Constants.kTrackWidth, //Distance between the sides
     null //Measurement deviation
   );
 
@@ -121,11 +120,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     if (RobotBase.isSimulation()) {
       mDrivetrainSim = new DifferentialDrivetrainSim(
           DCMotor.getFalcon500(2), // Motors Per Side
-          10.71, // Gearing 10.71:1
+          Constants.kGearRatio, // Gearing 10.71:1
           7.5, // MOI. This is not a real value
           30, // Weight is kg. This is not a real value
           Units.inchesToMeters(3), // Wheel Radius in Meters
-          kTrackWidth, // Distance between the sides
+          Constants.kTrackWidth, // Distance between the sides
           null // Measurement deviation
       );
     }
@@ -140,11 +139,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     if (RobotBase.isSimulation()) {
       mDrivetrainSim = new DifferentialDrivetrainSim(
           DCMotor.getFalcon500(2), // Motors Per Side
-          10.71, // Gearing 10.71:1
+          Constants.kGearRatio, // Gearing 10.71:1
           7.5, // MOI. This is not a real value
           30, // Weight is kg. This is not a real value
           Units.inchesToMeters(3), // Wheel Radius in Meters
-          kTrackWidth, // Distance between the sides
+          Constants.kTrackWidth, // Distance between the sides
           null // Measurement deviation
       );
     }
