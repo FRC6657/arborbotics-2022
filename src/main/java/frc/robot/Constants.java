@@ -33,7 +33,7 @@ public final class Constants {
 
     //Values
     public static final double kEncoderCPR = 2048; //Encoder Counts per Rotation
-    public static final double kTrackWidth = Units.inchesToMeters(26); // Distance Between Sides
+    public static final double kTrackWidth = Units.inchesToMeters(26); // Distance Between Sides TODO:Measure
     public static final double kGearRatio = 75.0/7.0; //Drive Gearbox Ratio
     public static final double kWheelRadius = Units.inchesToMeters(3); //Drive wheel Radius
     public static final double kEncoderCountToMeters =  (2 * Math.PI * kWheelRadius)/(kEncoderCPR*kGearRatio); //Conversion between Counts and Meters
