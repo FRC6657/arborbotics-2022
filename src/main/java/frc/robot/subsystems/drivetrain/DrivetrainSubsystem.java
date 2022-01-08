@@ -37,9 +37,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.custom.SendablePigeonIMU;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
+
+  private double kS = Constants.kS;
+  private double kV = Constants.kV;
 
   //Drivetrain Falcons
   private WPI_TalonFX mFrontLeft = new WPI_TalonFX(Constants.kFrontLeftID);
@@ -67,7 +71,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private final PIDController mRightPID = new PIDController(Constants.rightKP, Constants.rightKI, Constants.rightKD);
 
   //Characterization
-  private final SimpleMotorFeedforward mFeedforward = new SimpleMotorFeedforward(Constants.kS, Constants.kV); //TODO Run Sysid
+  private SimpleMotorFeedforward mFeedforward = new SimpleMotorFeedforward(kS, kV); //TODO Run Sysid
   
   //RemseteController
   private RamseteController mRamseteController = new RamseteController();
@@ -316,6 +320,26 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   @Log.Dial(rowIndex = 2, columnIndex = 6, width = 2, height = 2, name = "BR Temp", max = 110, min = 20, showValue = false)
   public double getBackRightTemp(){
     return mBackRight.getTemperature();
+  }
+
+  /**
+   * Change kV
+   * @param KV new kV
+   */
+  @Config(rowIndex = 2, columnIndex = 2, width = 2, height = 1, name = "kV", defaultValueNumeric = Constants.kV)
+  public void setKV(double KV){
+    kV = KV;
+    mFeedforward = new SimpleMotorFeedforward(kS, kV);
+  }
+
+  /**
+   * Change kS
+   * @param KS new kS
+   */
+  @Config(rowIndex = 3, columnIndex = 2, width = 2, height = 1, name = "kS", defaultValueNumeric = Constants.kS)
+  public void setKS(double KS){
+    kS = KS;
+    mFeedforward = new SimpleMotorFeedforward(kS, kV);
   }
 
   /**
