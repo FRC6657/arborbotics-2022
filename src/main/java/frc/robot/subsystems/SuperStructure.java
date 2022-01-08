@@ -6,14 +6,25 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem.VisionSupplier;
 
 public class SuperStructure extends SubsystemBase {
   
   public final DrivetrainSubsystem drivetrain;
+  public final VisionSupplier visionSupplier;
 
   public SuperStructure(
-    DrivetrainSubsystem drivetrain
+    DrivetrainSubsystem drivetrain,
+    VisionSupplier visionSupplier
   ) {
     this.drivetrain = drivetrain;
+    this.visionSupplier = visionSupplier;
   }
+
+  public void track(){
+     if(visionSupplier.hasTarget()){
+       
+     }
+  }
+
 }

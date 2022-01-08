@@ -39,4 +39,10 @@ public final class Constants {
     public static final double kEncoderCountToMeters =  (2 * Math.PI * kWheelRadius)/(kEncoderCPR*kGearRatio); //Conversion between Counts and Meters
     public static final double kMaxSpeed = 3.5; //3.5 Meters/s
 
+    // Vision //
+
+    public static final double cameraHeightMeters = 0;
+    public static final double targetHeightMeters = 0;
+    public static final double cameraPitchRadians = Units.degreesToRadians(0);
+
 }
