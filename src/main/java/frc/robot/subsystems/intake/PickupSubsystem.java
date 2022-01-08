@@ -16,23 +16,30 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
 
   private WPI_TalonSRX pickupMotor = new WPI_TalonSRX(Constants.kIntakeID);
 
-  public PickupSubsystem() {}
+  public PickupSubsystem() {
+    configMotor();
+  }
+
+  private void configMotor() {
+    pickupMotor.configFactoryDefault();
+    pickupMotor.setNeutralMode(neutralMode);
+  }
 
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = Constants.kPickupSpeed)
-  private void pickup(double percent){
+  private void pickup(double percent) {
     pickupMotor.set(percent);
   }
 
-  private void stop(){
+  private void stop() {
     pickupMotor.set(0);
   }
 
   @Override
   public void periodic() {
-    
+
   }
 
-  public class PickupCommand extends CommandBase{
+  public class PickupCommand extends CommandBase {
     @Override
     public void initialize() {
       pickup(Constants.kPickupSpeed);
