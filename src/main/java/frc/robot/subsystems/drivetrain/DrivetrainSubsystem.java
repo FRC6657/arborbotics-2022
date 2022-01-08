@@ -43,12 +43,6 @@ import io.github.oblarg.oblog.annotations.Log;
 
 public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
-  //Scale Factor to convert Encoder counts to Meters
-  private static double kEncoderCountToMeters = 1024 * 2 * Math.PI * Units.inchesToMeters(3);
-
-  //Max Full Forward Velocity
-  private static double kMaxSpeed = 3.5; // meters/s
-
   //Drivetrain Falcons
   private WPI_TalonFX mFrontLeft = new WPI_TalonFX(Constants.kFrontLeftID);
   private WPI_TalonFX mFrontRight = new WPI_TalonFX(Constants.kFrontRightID);
@@ -71,8 +65,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private DifferentialDriveOdometry mOdometry = new DifferentialDriveOdometry(mPigeonIMU.getRotation2d());
 
   //Drivetrain PID Controllers
-  private final PIDController mLeftPID = new PIDController(1, 0, 0);
-  private final PIDController mRightPID = new PIDController(1, 0, 0);
+  private final PIDController mLeftPID = new PIDController(Constants.leftKP, Constants.leftKI, Constants.leftKD);
+  private final PIDController mRightPID = new PIDController(Constants.rightKP, Constants.rightKI, Constants.rightKD);
 
   //Characterization
   private final SimpleMotorFeedforward mFeedforward = new SimpleMotorFeedforward(Constants.kS, Constants.kV); //TODO Run Sysid
@@ -178,7 +172,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   public void setSpeeds(WheelSpeeds speeds) {
 
-    WheelSpeeds newSpeeds = new WheelSpeeds(speeds.left*kMaxSpeed, speeds.right*kMaxSpeed);
+    WheelSpeeds newSpeeds = new WheelSpeeds(speeds.left * Constants.kMaxSpeed, speeds.right * Constants.kMaxSpeed);
 
     final double leftFeedforward = mFeedforward.calculate(newSpeeds.left);
     final double rightFeedforward = mFeedforward.calculate(newSpeeds.right);
@@ -247,20 +241,20 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Left Distance")
   public double getLeftMeters(){
-    return mFrontLeft.getSelectedSensorPosition()/kEncoderCountToMeters;
+    return mFrontLeft.getSelectedSensorPosition() * Constants.kEncoderCountToMeters;
   }
 
   @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Right Distance")
   public double getRightMeters(){
-    return mFrontRight.getSelectedSensorPosition()/kEncoderCountToMeters;
+    return mFrontRight.getSelectedSensorPosition() * Constants.kEncoderCountToMeters;
   }
   @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Left Velocity")
   public double getLeftVelocity(){
-    return mFrontLeft.getSelectedSensorVelocity()/kEncoderCountToMeters*10;
+    return mFrontLeft.getSelectedSensorVelocity() * Constants.kEncoderCountToMeters*10;
   }
   @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity")
   public double getRightVelocity(){
-    return mFrontLeft.getSelectedSensorVelocity()/kEncoderCountToMeters*10;
+    return mFrontLeft.getSelectedSensorVelocity() * Constants.kEncoderCountToMeters*10;
   }
 
   @Log.Dial(rowIndex = 0, columnIndex = 4, width = 2, height = 2, name = "FL Temp", max = 110, min = 20, showValue = false)
@@ -290,8 +284,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     //Update the Odometry
     mOdometry.update(
       mPigeonIMU.getRotation2d(),
-      mFrontLeft.getSelectedSensorPosition() / kEncoderCountToMeters,
-      mFrontRight.getSelectedSensorPosition() / kEncoderCountToMeters
+      mFrontLeft.getSelectedSensorPosition() * Constants.kEncoderCountToMeters,
+      mFrontRight.getSelectedSensorPosition() * Constants.kEncoderCountToMeters
     );
 
     //Send Robot Pose to the Field Visualization
@@ -310,12 +304,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mDrivetrainSim.update(0.02);
 
     //Set Simulated Encoder Positions
-    mFrontLeftSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getLeftPositionMeters() * kEncoderCountToMeters));
-    mFrontRightSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getRightPositionMeters() * kEncoderCountToMeters));
+    mFrontLeftSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getLeftPositionMeters() / Constants.kEncoderCountToMeters));
+    mFrontRightSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getRightPositionMeters() / Constants.kEncoderCountToMeters));
 
     //Set Simulated Encoder Velocities
-    mFrontLeftSim.setIntegratedSensorVelocity((int) ((mDrivetrainSim.getLeftVelocityMetersPerSecond() * kEncoderCountToMeters) / 10));
-    mFrontRightSim.setIntegratedSensorVelocity((int) ((mDrivetrainSim.getRightVelocityMetersPerSecond() * kEncoderCountToMeters) / 10));
+    mFrontLeftSim.setIntegratedSensorVelocity((int) ((mDrivetrainSim.getLeftVelocityMetersPerSecond() / Constants.kEncoderCountToMeters) / 10));
+    mFrontRightSim.setIntegratedSensorVelocity((int) ((mDrivetrainSim.getRightVelocityMetersPerSecond() / Constants.kEncoderCountToMeters) / 10));
 
     mPigeonIMUSim.setRawHeading(mDrivetrainSim.getHeading().getDegrees());
 

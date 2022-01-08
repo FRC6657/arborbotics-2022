@@ -21,11 +21,22 @@ public final class Constants {
     public static final double kS = 0;
     public static final double kV = 0;
 
-    //Measurements
-    public static final double kEncoderCPR = 2048;
-    public static final double kTrackWidth = Units.inchesToMeters(26);
-    public static final double kGearRatio = 75.0/7.0;
-    public static final double kWheelRadius = Units.inchesToMeters(3);
-    public static final double kEncoderCountToMeters =  (2 * Math.PI * kWheelRadius)/(kEncoderCPR*kGearRatio);
+    //Left PID
+    public static final double leftKP = 1;
+    public static final double leftKI = 0;
+    public static final double leftKD = 0;
+
+    //Right PID
+    public static final double rightKP = 1;
+    public static final double rightKI = 0;
+    public static final double rightKD = 0;
+
+    //Values
+    public static final double kEncoderCPR = 2048; //Encoder Counts per Rotation
+    public static final double kTrackWidth = Units.inchesToMeters(26); // Distance Between Sides
+    public static final double kGearRatio = 75.0/7.0; //Drive Gearbox Ratio
+    public static final double kWheelRadius = Units.inchesToMeters(3); //Drive wheel Radius
+    public static final double kEncoderCountToMeters =  (2 * Math.PI * kWheelRadius)/(kEncoderCPR*kGearRatio); //Conversion between Counts and Meters
+    public static final double kMaxSpeed = 3.5; //3.5 Meters/s
 
 }
