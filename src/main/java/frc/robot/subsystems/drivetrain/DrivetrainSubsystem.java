@@ -6,7 +6,6 @@ package frc.robot.subsystems.drivetrain;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
@@ -127,6 +126,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mOdometry.resetPosition(new Pose2d(), mPigeonIMU.getRotation2d());
   }
 
+  /**
+   * Resets the Odometry
+   */
   private void resetOdometry(Pose2d pose) {
     
     if (RobotBase.isSimulation()) {
@@ -164,21 +166,32 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mBackRight.setSelectedSensorPosition(0);
   }
 
+  /**
+   * Stops all Drivetrain Motors
+   */
   private void stop(){
     mFrontLeft.set(0);
     mFrontRight.set(0);
   }
 
+  /**
+   * Sets motor voltages based on input target velocities in meters/s
+   * 
+   * @param speeds Input speeds Meters/s
+   * 
+   */
   public void setSpeeds(WheelSpeeds speeds) {
 
-    WheelSpeeds newSpeeds = new WheelSpeeds(speeds.left * Constants.kMaxSpeed, speeds.right * Constants.kMaxSpeed);
+    //Scale input to a Max Speed
+    speeds.left *= Constants.kMaxSpeed;
+    speeds.right *= Constants.kMaxSpeed;
 
-    final double leftFeedforward = mFeedforward.calculate(newSpeeds.left);
-    final double rightFeedforward = mFeedforward.calculate(newSpeeds.right);
+    final double leftFeedforward = mFeedforward.calculate(speeds.left);
+    final double rightFeedforward = mFeedforward.calculate(speeds.right);
     final double leftOutput =
-        mLeftPID.calculate(getEncoderRate()[0], newSpeeds.left);
+        mLeftPID.calculate(getEncoderRate()[0], speeds.left);
     final double rightOutput =
-        mRightPID.calculate(getEncoderRate()[1], newSpeeds.right);
+        mRightPID.calculate(getEncoderRate()[1], speeds.right);
 
     mFrontLeft.setVoltage(leftOutput + leftFeedforward);
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
@@ -233,46 +246,83 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   }
 
+  /**
+   * Returns a double array with left and right in m/s²
+   */
   public double[] getEncoderRate(){
     double[] rates = {getLeftVelocity(),getRightVelocity()};
     return rates;
   }
 
+  /**
+   * Get left drivetrain encoder distance in meters
+   */
   @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Left Distance")
   public double getLeftMeters(){
     return mFrontLeft.getSelectedSensorPosition() * Constants.kEncoderCountToMeters;
   }
 
+  /**
+   * Get right drivetrain encoder distance in meters
+   */
   @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Right Distance")
   public double getRightMeters(){
     return mFrontRight.getSelectedSensorPosition() * Constants.kEncoderCountToMeters;
   }
+
+  /**
+   * Get left drivetrain motor velocity in m/s²
+   */
   @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Left Velocity")
   public double getLeftVelocity(){
-    return mFrontLeft.getSelectedSensorVelocity() * Constants.kEncoderCountToMeters*10;
-  }
-  @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity")
-  public double getRightVelocity(){
-    return mFrontLeft.getSelectedSensorVelocity() * Constants.kEncoderCountToMeters*10;
+    return mFrontLeft.getSelectedSensorVelocity() * Constants.kEncoderCountToMeters * 10;
   }
 
+  /**
+   * Get right drivetrain motor velocity in m/s²
+   */
+  @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity")
+  public double getRightVelocity(){
+    return mFrontLeft.getSelectedSensorVelocity() * Constants.kEncoderCountToMeters * 10;
+  }
+
+  /**
+   * Get temperature of the front left motor in celsius
+   */
   @Log.Dial(rowIndex = 0, columnIndex = 4, width = 2, height = 2, name = "FL Temp", max = 110, min = 20, showValue = false)
   public double getFrontLeftTemp(){
     return mFrontLeft.getTemperature();
   }
+
+  /**
+   * Get temperature of the front right motor in celsius
+   */
   @Log.Dial(rowIndex = 0, columnIndex = 6, width = 2, height = 2, name = "FR Temp", max = 110, min = 20, showValue = false)
   public double getFrontRightTemp(){
     return mFrontRight.getTemperature();
   }
+
+  /**
+   * Get temperature of the back left motor in celsius
+   */
   @Log.Dial(rowIndex = 2, columnIndex = 4, width = 2, height = 2, name = "BL Temp", max = 110, min = 20, showValue = false)
   public double getBackLeftTemp(){
     return mBackLeft.getTemperature();
   }
+
+  /**
+   * Get temperature of the back right motor in celsius
+   */
   @Log.Dial(rowIndex = 2, columnIndex = 6, width = 2, height = 2, name = "BR Temp", max = 110, min = 20, showValue = false)
   public double getBackRightTemp(){
     return mBackRight.getTemperature();
   }
 
+  /**
+   * Converts DifferentialDriveWheelSpeeds to DifferentialDrive.WheelSpeeds I have no idea why they are separated
+   * 
+   * @param diffSpeeds DifferentialDriveWheelSpeeds object
+   */
   public WheelSpeeds convertSpeeds(DifferentialDriveWheelSpeeds diffSpeeds){
     return new WheelSpeeds(diffSpeeds.leftMetersPerSecond,diffSpeeds.rightMetersPerSecond);
   }
@@ -318,6 +368,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * Commands
    */
 
+   /**
+    * Command for TeleOp Driving
+    */
   public class DriveCommand extends CommandBase{
     
     private DoubleSupplier xSpeed;
@@ -348,6 +401,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   }
 
+  /**
+   * Command to follow a pregenerated trajectory
+   */
   public class TrajectoryFollowerCommand extends CommandBase {
 
     private final Timer timer = new Timer();
@@ -393,6 +449,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   }
 
+  /**
+   * Command to reset Odometry
+   */
   public class ResetPosition extends CommandBase{
 
     public ResetPosition(){
