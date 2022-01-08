@@ -10,9 +10,9 @@ import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 
 public class RobotContainer {
   
-  private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
+  private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem(); //All Subsystems
 
-  private final XboxController mDriver = new XboxController(0);
+  private final XboxController mDriver = new XboxController(0); //Declare xBox Controller
 
   public RobotContainer() {
     configureButtonBindings();
