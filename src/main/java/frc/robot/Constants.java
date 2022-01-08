@@ -45,6 +45,10 @@ public final class Constants {
     public static final double kPivotSpeed = .5;
     public static final double kPickupSpeed = .95;
 
+    //Pivot Constants
+    public static final double kExtendedPos = 4096;
+    public static final double kRetractedPos = 0;
+
     //Pivot PID
     public static final double pivotKP = 1;
     public static final double pivotKI = 0;

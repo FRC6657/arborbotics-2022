@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -39,6 +40,14 @@ public class PivotSubsystem extends SubsystemBase {
 
   private void pivot(double percent){
     pivotMotor.set(percent);
+  }
+
+  private void extend(){
+    pivotMotor.set(ControlMode.MotionMagic, Constants.kExtendedPos);
+  }
+
+  private void retract(){
+    pivotMotor.set(ControlMode.MotionMagic, Constants.kRetractedPos);
   }
 
   @Override
