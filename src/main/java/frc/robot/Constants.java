@@ -41,6 +41,7 @@ public final class Constants {
     public static final double kMaxSpeed = 3.5; //3.5 Meters/s
 
     //Intake Constants
-    public static final double kPickupSpeed = .9;
+    public static final double kPivotSpeed = .5;
+    public static final double kPickupSpeed = .95;
 
 }
