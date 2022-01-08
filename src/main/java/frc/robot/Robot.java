@@ -14,7 +14,7 @@ import io.github.oblarg.oblog.Logger;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+  private RobotContainer m_robotContainer; //Declare Robot Container
 
   @Override
   @SuppressWarnings("unused")
