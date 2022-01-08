@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -14,7 +15,7 @@ import io.github.oblarg.oblog.annotations.Config;
 
 public class PickupSubsystem extends SubsystemBase implements Loggable {
 
-  private WPI_TalonSRX pickupMotor = new WPI_TalonSRX(Constants.kIntakeID);
+  private WPI_TalonSRX pickupMotor = new WPI_TalonSRX(Constants.kPickupID);
 
   public PickupSubsystem() {
     configMotor();
@@ -22,7 +23,7 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
 
   private void configMotor() {
     pickupMotor.configFactoryDefault();
-    pickupMotor.setNeutralMode(neutralMode);
+    pickupMotor.setNeutralMode(NeutralMode.Brake);
   }
 
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = Constants.kPickupSpeed)
