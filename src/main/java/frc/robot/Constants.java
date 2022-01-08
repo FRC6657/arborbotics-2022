@@ -45,4 +45,12 @@ public final class Constants {
     public static final double kPivotSpeed = .5;
     public static final double kPickupSpeed = .95;
 
+    //Pivot PID
+    public static final double pivotKP = 1;
+    public static final double pivotKI = 0;
+    public static final double pivotKD = 0;
+    public static final double pivotKF = 0;
+    public static final int pivotSlotIdx = 0;
+    public static final double pivotPIDLoopIdx = 0;
+
 }

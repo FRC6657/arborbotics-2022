@@ -19,8 +19,22 @@ public class PivotSubsystem extends SubsystemBase {
 
   private void configureMotor() {
     pivotMotor.configFactoryDefault();
-    pivotMotor.setNeutralMode(NeutralMode.Brake);
     pivotMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    pivotMotor.configNeutralDeadband(0.001);
+    //Set Output Behaviors
+    pivotMotor.configNominalOutputForward(0);
+    pivotMotor.configNominalOutputReverse(0);
+    pivotMotor.configPeakOutputForward(1);
+    pivotMotor.configPeakOutputReverse(-1);
+    //Motion Magic Config
+    pivotMotor.selectProfileSlot(Constants.pivotSlotIdx, Constants.pivotSlotIdx);
+    pivotMotor.config_kF(Constants.pivotSlotIdx, Constants.pivotKF);
+    pivotMotor.config_kP(Constants.pivotSlotIdx, Constants.pivotKP);
+    pivotMotor.config_kI(Constants.pivotSlotIdx, Constants.pivotKI);
+    pivotMotor.config_kD(Constants.pivotSlotIdx, Constants.pivotKD);
+    //Velocity Cruise
+    pivotMotor.configMotionCruiseVelocity(300);
+    pivotMotor.setSelectedSensorPosition(0, Constants.pivotSlotIdx, 0);
   }
 
   private void pivot(double percent){
@@ -29,6 +43,6 @@ public class PivotSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    double motorOutput = pivotMotor.getMotorOutputPercent();
   }
 }
