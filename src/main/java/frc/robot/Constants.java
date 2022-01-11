@@ -23,12 +23,12 @@ public final class Constants {
     public static final double kA = 0.73118;
 
     //Left PID
-    public static final double leftKP = 1;
+    public static final double leftKP = 2.4109;
     public static final double leftKI = 0;
     public static final double leftKD = 0;
 
     //Right PID
-    public static final double rightKP = 1;
+    public static final double rightKP = 2.4109;
     public static final double rightKI = 0;
     public static final double rightKD = 0;
 
