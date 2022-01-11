@@ -74,7 +74,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private final PIDController mRightPID = new PIDController(Constants.rightKP, Constants.rightKI, Constants.rightKD);
 
   //Characterization
-  private SimpleMotorFeedforward mFeedforward = new SimpleMotorFeedforward(kS, kV); //TODO Run Sysid
+  private SimpleMotorFeedforward mFeedforward = new SimpleMotorFeedforward(kS, kV);
   
   //RemseteController
   private RamseteController mRamseteController = new RamseteController();

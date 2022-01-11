@@ -2,6 +2,8 @@ package frc.robot.autonomous;
 
 import java.util.List;
 
+import com.pathplanner.lib.PathPlanner;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -33,6 +35,8 @@ public class Trajectories {
         false,
         "Test"
     );
+
+    public static Trajectory planner = PathPlanner.loadPath("Test Path", 4, 2);
 
     /**
      * 
