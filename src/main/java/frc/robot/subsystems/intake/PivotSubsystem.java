@@ -20,7 +20,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   private void configureMotor() {
     pivotMotor.configFactoryDefault();
-    pivotMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    pivotMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     pivotMotor.configNeutralDeadband(0.001);
     //Set Output Behaviors
     pivotMotor.configNominalOutputForward(0);
