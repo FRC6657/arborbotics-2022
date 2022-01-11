@@ -20,8 +20,8 @@ public final class Constants {
     public static final int kPivotID = 7;
 
     //Characterization
-    public static final double kS = 1;
-    public static final double kV = 3;
+    public static final double kS = 0.51623;
+    public static final double kV = 2.392;
 
     //Left PID
     public static final double leftKP = 1;
@@ -35,7 +35,7 @@ public final class Constants {
 
     //Values
     public static final double kEncoderCPR = 2048; //Encoder Counts per Rotation
-    public static final double kTrackWidth = Units.inchesToMeters(26); // Distance Between Sides TODO:Measure
+    public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides TODO:Measure
     public static final double kGearRatio = 75.0/7.0; //Drive Gearbox Ratio
     public static final double kWheelRadius = Units.inchesToMeters(3); //Drive wheel Radius
     public static final double kEncoderCountToMeters =  (2 * Math.PI * kWheelRadius)/(kEncoderCPR*kGearRatio); //Conversion between Counts and Meters

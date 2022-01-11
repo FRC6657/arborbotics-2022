@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.autonomous.routines.TestAuto;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.intake.PickupSubsystem;
 import frc.robot.subsystems.intake.PickupSubsystem.PickupCommand;
@@ -35,7 +36,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return null;
+    return new TestAuto(mDrivetrainSubsystem);
   }
 
   public double deadband(double input, double threshold){

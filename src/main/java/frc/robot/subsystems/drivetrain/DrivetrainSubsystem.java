@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.drivetrain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -23,6 +25,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
@@ -82,6 +85,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   //Creates an Object to set as a trajectory later
   private FieldObject2d mTrajectoryPlot = mField.getObject("trajectory");
 
+  //Creates Objects to plot the robot's path
+  private FieldObject2d mRobotPath = mField.getObject("robot-path");
+  private List<Pose2d> mPathPoints = new ArrayList<Pose2d>();
+
   /**
    * This sim is no where near perfectly accurate, should be kinda close though
    */
@@ -89,7 +96,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     DCMotor.getFalcon500(2), //Motors Per Side
     Constants.kGearRatio, //Gearing 10.71:1
     7.5, //MOI. This is not a real value
-    30, //Weight is kg. This is not a real value
+    Units.lbsToKilograms(45), //Weight is kg. This is not a real value
     Constants.kWheelRadius, //Wheel Radius in Meters
     Constants.kTrackWidth, //Distance between the sides
     null //Measurement deviation
@@ -118,7 +125,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
           DCMotor.getFalcon500(2), // Motors Per Side
           Constants.kGearRatio, // Gearing 10.71:1
           7.5, // MOI. This is not a real value
-          30, // Weight is kg. This is not a real value
+          Units.lbsToKilograms(45), // Weight is kg. This is not a real value
           Constants.kWheelRadius, // Wheel Radius in Meters
           Constants.kTrackWidth, // Distance between the sides
           null // Measurement deviation
@@ -140,7 +147,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
           DCMotor.getFalcon500(2), // Motors Per Side
           Constants.kGearRatio, // Gearing 10.71:1
           7.5, // MOI. This is not a real value
-          30, // Weight is kg. This is not a real value
+          Units.lbsToKilograms(45), // Weight is kg. This is not a real value
           Constants.kWheelRadius, // Wheel Radius in Meters
           Constants.kTrackWidth, // Distance between the sides
           null // Measurement deviation
@@ -442,18 +449,26 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     @Override
     public void initialize() {
-      
-      mTrajectoryPlot.setTrajectory(trajectory);
 
       if(resetPose){
         resetOdometry(trajectory.getInitialPose());
       }
+
+      mPathPoints.clear();
+      mPathPoints.add(mOdometry.getPoseMeters());
+      mRobotPath.setPoses(mPathPoints);
+      mTrajectoryPlot.setTrajectory(trajectory);
+
       timer.start();
     }
 
     @Override
     public void execute() {
       if (timer.get() < trajectory.getTotalTimeSeconds()) {
+
+        mPathPoints.add(mOdometry.getPoseMeters());
+
+        mRobotPath.setPoses(mPathPoints);
 
         var desiredPose = trajectory.sample(timer.get());
 
