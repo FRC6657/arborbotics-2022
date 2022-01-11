@@ -47,6 +47,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   private double kS = Constants.kS;
   private double kV = Constants.kV;
+  private double kA = Constants.kA;
 
   //Drivetrain Falcons
   private WPI_TalonFX mFrontLeft = new WPI_TalonFX(Constants.kFrontLeftID);
@@ -74,7 +75,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private final PIDController mRightPID = new PIDController(Constants.rightKP, Constants.rightKI, Constants.rightKD);
 
   //Characterization
-  private SimpleMotorFeedforward mFeedforward = new SimpleMotorFeedforward(kS, kV);
+  private SimpleMotorFeedforward mFeedforward = new SimpleMotorFeedforward(kS, kV, kA);
   
   //RemseteController
   private RamseteController mRamseteController = new RamseteController();

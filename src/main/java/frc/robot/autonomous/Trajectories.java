@@ -28,15 +28,28 @@ public class Trajectories {
         2,
         1,
         List.of(
-            new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
-            new Pose2d(Units.feetToMeters(8), Units.feetToMeters(3), Rotation2d.fromDegrees(90)),
-            new Pose2d(Units.feetToMeters(8), Units.feetToMeters(4), Rotation2d.fromDegrees(90))
+            new Pose2d(1, 3, Rotation2d.fromDegrees(0)),
+            new Pose2d(3, 5, Rotation2d.fromDegrees(90))
         ),
         false,
         "Test"
     );
 
-    public static Trajectory planner = PathPlanner.loadPath("Test Path", 4, 2);
+    
+    public static Trajectory TEST2= generateTrajectory(
+        2,
+        1,
+        List.of(
+            new Pose2d(3, 5, Rotation2d.fromDegrees(90)),
+            new Pose2d(5, 3, Rotation2d.fromDegrees(180))
+        ),
+        true,
+        "Test"
+    );
+
+    public static Trajectory mergeTest = TEST.concatenate(TEST2);
+
+    //public static Trajectory planner = PathPlanner.loadPath("Test Path", 4, 2);
 
     /**
      * 

@@ -14,7 +14,7 @@ public class TestAuto extends SequentialCommandGroup {
     addRequirements(mDrivetrainSubsystem);
     addCommands(
       mDrivetrainSubsystem.new ResetPosition().withTimeout(0.1),
-      mDrivetrainSubsystem.new TrajectoryFollowerCommand(Trajectories.planner, true).withTimeout(Trajectories.planner.getTotalTimeSeconds())
+      mDrivetrainSubsystem.new TrajectoryFollowerCommand(Trajectories.mergeTest, true).withTimeout(Trajectories.mergeTest.getTotalTimeSeconds())
     );
   }
 }
