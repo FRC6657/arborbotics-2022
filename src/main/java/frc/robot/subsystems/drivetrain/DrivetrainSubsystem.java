@@ -12,8 +12,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
-import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.BasePigeonSimCollection;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -38,7 +36,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.custom.SendablePigeonIMU;
+import frc.robot.custom.ctre.LazyTalonFX;
+import frc.robot.custom.ctre.SendablePigeonIMU;
+import frc.robot.custom.ctre.TalonEncoder;
+import frc.robot.custom.ctre.TalonEncoderSim;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
@@ -50,14 +51,16 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private double kA = Constants.kA;
 
   //Drivetrain Falcons
-  private WPI_TalonFX mFrontLeft = new WPI_TalonFX(Constants.kFrontLeftID);
-  private WPI_TalonFX mFrontRight = new WPI_TalonFX(Constants.kFrontRightID);
-  private WPI_TalonFX mBackLeft = new WPI_TalonFX(Constants.kBackLeftID);
-  private WPI_TalonFX mBackRight = new WPI_TalonFX(Constants.kBackRightID);
+  private LazyTalonFX mFrontLeft = new LazyTalonFX(Constants.kFrontLeftID);
+  private LazyTalonFX mFrontRight = new LazyTalonFX(Constants.kFrontRightID);
+  private LazyTalonFX mBackLeft = new LazyTalonFX(Constants.kBackLeftID);
+  private LazyTalonFX mBackRight = new LazyTalonFX(Constants.kBackRightID);
 
-  //Simulated Talons
-  private TalonFXSimCollection mFrontLeftSim = mFrontLeft.getSimCollection();
-  private TalonFXSimCollection mFrontRightSim = mFrontRight.getSimCollection();
+  private TalonEncoder mLeftEncoder = new TalonEncoder(mFrontLeft, true);
+  private TalonEncoder mRightEncoder = new TalonEncoder(mFrontLeft, false);
+
+  private TalonEncoderSim mLeftSimcoder = new TalonEncoderSim(mLeftEncoder);
+  private TalonEncoderSim mRightSimcoder = new TalonEncoderSim(mLeftEncoder);
 
   //Gyro
   @Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro")
@@ -172,10 +175,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * Resets the Encoder Positions
    */
   private void resetEncoders(){
-    mFrontLeft.setSelectedSensorPosition(0);
-    mFrontRight.setSelectedSensorPosition(0);
-    mBackLeft.setSelectedSensorPosition(0);
-    mBackRight.setSelectedSensorPosition(0);
+    mLeftEncoder.reset();
+    mRightEncoder.reset();
   }
 
   /**
@@ -243,6 +244,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
       mFrontRight.setInverted(TalonFXInvertType.CounterClockwise);
       mBackRight.setInverted(TalonFXInvertType.FollowMaster);
     }
+
+    mLeftEncoder.setDistancePerPulse(Constants.kEncoderCountToMeters);
+    mRightEncoder.setDistancePerPulse(Constants.kEncoderCountToMeters);
 
     //Encoders 
     mFrontLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
@@ -385,13 +389,14 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mDrivetrainSim.update(0.02);
 
     //Set Simulated Encoder Positions
-    mFrontLeftSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getLeftPositionMeters() / Constants.kEncoderCountToMeters));
-    mFrontRightSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getRightPositionMeters() / Constants.kEncoderCountToMeters));
+    mLeftSimcoder.setDistance(mDrivetrainSim.getLeftPositionMeters());
+    mRightSimcoder.setDistance(mDrivetrainSim.getRightPositionMeters());
 
     //Set Simulated Encoder Velocities
-    mFrontLeftSim.setIntegratedSensorVelocity((int) ((mDrivetrainSim.getLeftVelocityMetersPerSecond() / Constants.kEncoderCountToMeters) / 10));
-    mFrontRightSim.setIntegratedSensorVelocity((int) ((mDrivetrainSim.getRightVelocityMetersPerSecond() / Constants.kEncoderCountToMeters) / 10));
+    mLeftSimcoder.setRate(mDrivetrainSim.getLeftVelocityMetersPerSecond());
+    mRightSimcoder.setRate(mDrivetrainSim.getRightVelocityMetersPerSecond());
 
+    //Set Simulated Gyro Position
     mPigeonIMUSim.setRawHeading(mDrivetrainSim.getHeading().getDegrees());
 
   }
