@@ -24,9 +24,9 @@ public class Trajectories {
         "GENERATE"
     );
 
-    public static Trajectory TEST = generateTrajectory(
+    public static Trajectory TEST_p1 = generateTrajectory(
+        3,
         2,
-        1,
         List.of(
             new Pose2d(1, 3, Rotation2d.fromDegrees(0)),
             new Pose2d(3, 5, Rotation2d.fromDegrees(90))
@@ -36,9 +36,9 @@ public class Trajectories {
     );
 
     
-    public static Trajectory TEST2= generateTrajectory(
+    public static Trajectory TEST_p2= generateTrajectory(
+        3,
         2,
-        1,
         List.of(
             new Pose2d(3, 5, Rotation2d.fromDegrees(90)),
             new Pose2d(5, 3, Rotation2d.fromDegrees(180))
@@ -47,7 +47,7 @@ public class Trajectories {
         "Test"
     );
 
-    public static Trajectory mergeTest = TEST.concatenate(TEST2);
+    public static Trajectory TEST = TEST_p1.concatenate(TEST_p2);
 
     //public static Trajectory planner = PathPlanner.loadPath("Test Path", 4, 2);
 
