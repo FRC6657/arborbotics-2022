@@ -2,8 +2,6 @@ package frc.robot.autonomous;
 
 import java.util.List;
 
-import com.pathplanner.lib.PathPlanner;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -47,9 +45,19 @@ public class Trajectories {
         "Test"
     );
 
-    //public static Trajectory TEST = TEST_p1.concatenate(TEST_p2);
+    public static Trajectory TEST2= generateTrajectory(
+        3,
+        2,
+        List.of(
+            new Pose2d(1, 7, Rotation2d.fromDegrees(90)),
+            new Pose2d(12, 2, Rotation2d.fromDegrees(180))
+        ),
+        true,
+        "Test"
+    );
 
-    public static Trajectory TEST = PathPlanner.loadPath("Test Path", 1, 1);
+    public static Trajectory TEST = TEST_p1.concatenate(TEST_p2);
+    //public static Trajectory TEST = PathPlanner.loadPath("Test Path", 1, 1);
 
     /**
      * 
