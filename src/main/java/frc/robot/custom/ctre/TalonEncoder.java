@@ -8,6 +8,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 
 /** A class to read encoder data from CTRE motors */
+//Credit Modelmat#8218
 public class TalonEncoder implements Sendable, AutoCloseable {
   private final BaseTalon m_motor;
   private double m_distancePerPulse = 1;

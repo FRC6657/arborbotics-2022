@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 /** Class to control a simulated encoder. */
+//Credit Modelmat#8218
 public class TalonEncoderSim {
   private TalonEncoder m_encoder;
 

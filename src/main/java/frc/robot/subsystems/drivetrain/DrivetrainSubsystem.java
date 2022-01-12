@@ -13,6 +13,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.sensors.BasePigeonSimCollection;
+
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -100,10 +102,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     DCMotor.getFalcon500(2), //Motors Per Side
     Constants.kGearRatio, //Gearing 10.71:1
     7.5, //MOI. This is not a real value
-    Units.lbsToKilograms(45), //Weight is kg. This is not a real value
+    Constants.kRobotWeight, //Weight is kg. This is not a real value
     Constants.kWheelRadius, //Wheel Radius in Meters
     Constants.kTrackWidth, //Distance between the sides
-    null //Measurement deviation
+    VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005)
   );
 
   public DrivetrainSubsystem(){
@@ -129,11 +131,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
           DCMotor.getFalcon500(2), // Motors Per Side
           Constants.kGearRatio, // Gearing 10.71:1
           7.5, // MOI. This is not a real value
-          Units.lbsToKilograms(45), // Weight is kg. This is not a real value
+          Constants.kRobotWeight, // Weight is kg. This is not a real value
           Constants.kWheelRadius, // Wheel Radius in Meters
           Constants.kTrackWidth, // Distance between the sides
-          null // Measurement deviation
-      );
+          VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005)
+        );
     }
 
     resetGyro();
@@ -151,10 +153,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
           DCMotor.getFalcon500(2), // Motors Per Side
           Constants.kGearRatio, // Gearing 10.71:1
           7.5, // MOI. This is not a real value
-          Units.lbsToKilograms(45), // Weight is kg. This is not a real value
+          Constants.kRobotWeight, // Weight is kg. This is not a real value
           Constants.kWheelRadius, // Wheel Radius in Meters
           Constants.kTrackWidth, // Distance between the sides
-          null // Measurement deviation
+          VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005)
       );
     }
 
@@ -187,12 +189,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mFrontRight.set(0);
   }
 
-  /**
-   * Sets motor voltages based on input target velocities in meters/s
-   * 
-   * @param speeds Input speeds Meters/s
-   * 
-   */
   public void setSpeeds(WheelSpeeds speeds) {
 
     //Scale input to a Max Speed
@@ -202,9 +198,23 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     final double leftFeedforward = mFeedforward.calculate(speeds.left);
     final double rightFeedforward = mFeedforward.calculate(speeds.right);
     final double leftOutput =
-        mLeftPID.calculate(getEncoderRate()[0], speeds.left);
+        mLeftPID.calculate(getLeftVelocity(), speeds.left);
     final double rightOutput =
-        mRightPID.calculate(getEncoderRate()[1], speeds.right);
+        mRightPID.calculate(getRightVelocity(), speeds.right);
+
+    mFrontLeft.setVoltage(leftOutput + leftFeedforward);
+    mFrontRight.setVoltage(rightOutput + rightFeedforward);
+
+  }
+
+  public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+
+    final double leftFeedforward = mFeedforward.calculate(speeds.leftMetersPerSecond);
+    final double rightFeedforward = mFeedforward.calculate(speeds.rightMetersPerSecond);
+    final double leftOutput =
+        mLeftPID.calculate(getLeftVelocity(), speeds.leftMetersPerSecond);
+    final double rightOutput =
+        mRightPID.calculate(getRightVelocity(), speeds.rightMetersPerSecond);
 
     mFrontLeft.setVoltage(leftOutput + leftFeedforward);
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
@@ -263,19 +273,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   }
 
   /**
-   * Returns a double array with left and right in m/s²
-   */
-  public double[] getEncoderRate(){
-    double[] rates = {getLeftVelocity(),getRightVelocity()};
-    return rates;
-  }
-
-  /**
    * Get left drivetrain encoder distance in meters
    */
   @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Left Distance")
   public double getLeftMeters(){
-    return mFrontLeft.getSelectedSensorPosition() * Constants.kEncoderCountToMeters;
+    return mLeftEncoder.getDistance();
   }
 
   /**
@@ -283,7 +285,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Right Distance")
   public double getRightMeters(){
-    return mFrontRight.getSelectedSensorPosition() * Constants.kEncoderCountToMeters;
+    return mRightEncoder.getDistance();
   }
 
   /**
@@ -291,7 +293,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Left Velocity")
   public double getLeftVelocity(){
-    return mFrontLeft.getSelectedSensorVelocity() * Constants.kEncoderCountToMeters * 10;
+    return mLeftEncoder.getRate();
   }
 
   /**
@@ -299,7 +301,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity")
   public double getRightVelocity(){
-    return mFrontLeft.getSelectedSensorVelocity() * Constants.kEncoderCountToMeters * 10;
+    return mRightEncoder.getRate();
   }
 
   /**
@@ -334,43 +336,14 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     return mBackRight.getTemperature();
   }
 
-  /**
-   * Change kV
-   * @param KV new kV
-   */
-  @Config(rowIndex = 2, columnIndex = 2, width = 2, height = 1, name = "kV", defaultValueNumeric = Constants.kV)
-  public void setKV(double KV){
-    kV = KV;
-    mFeedforward = new SimpleMotorFeedforward(kS, kV);
-  }
-
-  /**
-   * Change kS
-   * @param KS new kS
-   */
-  @Config(rowIndex = 3, columnIndex = 2, width = 2, height = 1, name = "kS", defaultValueNumeric = Constants.kS)
-  public void setKS(double KS){
-    kS = KS;
-    mFeedforward = new SimpleMotorFeedforward(kS, kV);
-  }
-
-  /**
-   * Converts DifferentialDriveWheelSpeeds to DifferentialDrive.WheelSpeeds I have no idea why they are separated
-   * 
-   * @param diffSpeeds DifferentialDriveWheelSpeeds object
-   */
-  public WheelSpeeds convertSpeeds(DifferentialDriveWheelSpeeds diffSpeeds){
-    return new WheelSpeeds(diffSpeeds.leftMetersPerSecond,diffSpeeds.rightMetersPerSecond);
-  }
-
   @Override
   public void periodic() {
     
     //Update the Odometry
     mOdometry.update(
       mPigeonIMU.getRotation2d(),
-      mFrontLeft.getSelectedSensorPosition() * Constants.kEncoderCountToMeters,
-      mFrontRight.getSelectedSensorPosition() * Constants.kEncoderCountToMeters
+      mLeftEncoder.getDistance(),
+      mRightEncoder.getDistance()
     );
 
     //Send Robot Pose to the Field Visualization
@@ -480,7 +453,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
         var refChassisSpeeds = mRamseteController.calculate(mOdometry.getPoseMeters(), desiredPose);
 
-        setSpeeds(convertSpeeds(mKinematics.toWheelSpeeds(new ChassisSpeeds(refChassisSpeeds.vxMetersPerSecond, 0.0, refChassisSpeeds.omegaRadiansPerSecond))));
+        setSpeeds(mKinematics.toWheelSpeeds(new ChassisSpeeds(refChassisSpeeds.vxMetersPerSecond, 0.0, refChassisSpeeds.omegaRadiansPerSecond)));
 
       } else {
         stop();

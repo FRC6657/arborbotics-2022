@@ -1,13 +1,4 @@
 {
-  "HALProvider": {
-    "Other Devices": {
-      "Talon FX[1]/Integrated Sensor": {
-        "header": {
-          "open": true
-        }
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -21,31 +12,30 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
-        "bottom": 900,
-        "height": 8.229599952697754,
-        "image": "C:\\Users\\Andrew Card\\Desktop\\FRC\\Field2D Images\\2022-field.png",
-        "left": 74,
-        "right": 1774,
         "robot-path": {
           "arrows": false,
+          "color": [
+            0.0,
+            255.0,
+            29.999967575073242,
+            255.0
+          ],
           "selectable": false,
           "style": "Line",
-          "weight": 3.0
+          "weight": 2.0
         },
-        "top": 50,
         "trajectory": {
           "arrows": false,
           "color": [
-            0.08888888359069824,
+            0.2647058963775635,
             1.0,
             0.0,
             255.0
           ],
           "selectable": false,
           "style": "Line",
-          "weight": 3.0
+          "weight": 2.0
         },
-        "width": 16.459199905395508,
         "window": {
           "visible": true
         }
@@ -58,24 +48,13 @@
         "open": true
       },
       "open": true
-    },
-    "SmartDashboard": {
-      "Field": {
-        "open": true
-      },
-      "open": true
     }
   },
   "Plot": {
     "Plot <0>": {
       "plots": [
         {
-          "axis": [
-            {
-              "max": 1.25
-            }
-          ],
-          "height": 541,
+          "height": 473,
           "series": [
             {
               "color": [
@@ -85,6 +64,24 @@
                 1.0
               ],
               "id": "NT:/Shuffleboard/DrivetrainSubsystem/Left Velocity"
+            }
+          ]
+        }
+      ]
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "height": 347,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/DrivetrainSubsystem/Right Velocity"
             }
           ]
         }

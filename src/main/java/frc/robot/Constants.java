@@ -22,6 +22,10 @@ public final class Constants {
     public static final double kV = 2.2764;
     public static final double kA = 0.73118;
 
+    // public static final double kS = 0.675;
+    // public static final double kV = 0.73;
+    // public static final double kA = 0;
+
     //Left PID
     public static final double leftKP = 1;
     public static final double leftKI = 0;
@@ -33,11 +37,13 @@ public final class Constants {
     public static final double rightKD = 0;
 
     //Values
+    public static final double kRobotWeight = Units.lbsToKilograms(40);
     public static final double kEncoderCPR = 2048; //Encoder Counts per Rotation
     public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides TODO:Measure
-    public static final double kGearRatio = 75.0/7.0; //Drive Gearbox Ratio
+    //public static final double kGearRatio = 75.0/7.0; //Drive Gearbox Ratio
+    public static final double kGearRatio = 10.71; //Drive Gearbox Ratio
     public static final double kWheelRadius = Units.inchesToMeters(3); //Drive wheel Radius
-    public static final double kEncoderCountToMeters =  (2 * Math.PI * kWheelRadius)/(kEncoderCPR*kGearRatio); //Conversion between Counts and Meters
+    public static final double kEncoderCountToMeters =  (2 * Math.PI * kWheelRadius / kEncoderCPR); //Conversion between Counts and Meters
     public static final double kMaxSpeed = 3.5; //3.5 Meters/s
 
 }
