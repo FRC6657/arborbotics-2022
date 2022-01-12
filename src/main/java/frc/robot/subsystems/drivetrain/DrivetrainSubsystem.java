@@ -28,7 +28,6 @@ import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -110,12 +109,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     //Fancy Stuff
     mKinematics = new DifferentialDriveKinematics(Constants.kTrackWidth);
-    mDifferentialDrivePoseEstimator = new DifferentialDrivePoseEstimator( //TODO Tune this 
+    mDifferentialDrivePoseEstimator = new DifferentialDrivePoseEstimator(
       mPigeonIMU.getRotation2d(),
       new Pose2d(),
-      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5), 0.01, 0.01),
-      VecBuilder.fill(0.02, 0.02, Units.degreesToRadians(1)),
-      VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5), 0.01, 0.01), //Projected Deviation
+      VecBuilder.fill(0.02, 0.02, Units.degreesToRadians(1)), //Real Deviation
+      VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(5))); //Vision Measurement Deviation
 
     //Fancier Stuff
     mFeedForward = Constants.kFeedForward;
