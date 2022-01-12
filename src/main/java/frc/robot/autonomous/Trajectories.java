@@ -47,9 +47,9 @@ public class Trajectories {
         "Test"
     );
 
-    public static Trajectory TEST = TEST_p1.concatenate(TEST_p2);
+    //public static Trajectory TEST = TEST_p1.concatenate(TEST_p2);
 
-    //public static Trajectory TEST = PathPlanner.loadPath("Test Path", 1, 1);
+    public static Trajectory TEST = PathPlanner.loadPath("Test Path", 1, 1);
 
     /**
      * 

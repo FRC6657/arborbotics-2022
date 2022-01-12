@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -208,6 +209,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   }
 
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+
+    SmartDashboard.putNumber("Left Velocity Error", speeds.leftMetersPerSecond - getLeftVelocity());
+    SmartDashboard.putNumber("Right Velocity Error", speeds.rightMetersPerSecond - getRightVelocity());
 
     final double leftFeedforward = mFeedforward.calculate(speeds.leftMetersPerSecond);
     final double rightFeedforward = mFeedforward.calculate(speeds.rightMetersPerSecond);

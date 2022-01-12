@@ -48,6 +48,9 @@
         "open": true
       },
       "open": true
+    },
+    "SmartDashboard": {
+      "open": true
     }
   },
   "Plot": {
@@ -67,7 +70,10 @@
             }
           ]
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     },
     "Plot <1>": {
       "plots": [
@@ -84,6 +90,16 @@
               "id": "NT:/Shuffleboard/DrivetrainSubsystem/Right Velocity"
             }
           ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    },
+    "Plot <2>": {
+      "plots": [
+        {
+          "height": 338
         }
       ]
     }
