@@ -21,8 +21,8 @@ public class RobotContainer {
 
     mDrivetrainSubsystem.setDefaultCommand(
       mDrivetrainSubsystem.new DriveCommand(
-        () -> -Deadbander.applyLinearScaledDeadband(mDriver.getLeftY(),0.1),
-        () -> Deadbander.applyLinearScaledDeadband(mDriver.getRightX(),0.1),
+        () -> -Deadbander.applyLinearScaledDeadband(mDriver.getLeftY(), 0.1),
+        () -> Deadbander.applyLinearScaledDeadband(mDriver.getRightX(), 0.1),
         () -> mDriver.getRightBumper()
       )
     );

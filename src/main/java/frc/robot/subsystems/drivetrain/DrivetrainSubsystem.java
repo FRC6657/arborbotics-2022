@@ -20,9 +20,11 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -34,6 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -58,7 +61,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private BasePigeonSimCollection mPigeonIMUSim;
 
   private final DifferentialDriveKinematics mKinematics;
-  private final DifferentialDriveOdometry mOdometry;
+  private final DifferentialDrivePoseEstimator mDifferentialDrivePoseEstimator;
 
   private final SimpleMotorFeedforward mFeedForward;
   private final PIDController mPIDController;
@@ -107,7 +110,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     //Fancy Stuff
     mKinematics = new DifferentialDriveKinematics(Constants.kTrackWidth);
-    mOdometry = new DifferentialDriveOdometry(mPigeonIMU.getRotation2d());
+    mDifferentialDrivePoseEstimator = new DifferentialDrivePoseEstimator( //TODO Tune this 
+      mPigeonIMU.getRotation2d(),
+      new Pose2d(),
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5), 0.01, 0.01),
+      VecBuilder.fill(0.02, 0.02, Units.degreesToRadians(1)),
+      VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
     //Fancier Stuff
     mFeedForward = Constants.kFeedForward;
@@ -193,7 +201,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     }
     resetEncoders();
     resetGyro();
-    mOdometry.resetPosition(pose, pose.getRotation());
+    mDifferentialDrivePoseEstimator.resetPosition(pose, pose.getRotation());
   }
 
   /**
@@ -263,7 +271,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * @return Robot Position
    */
   public Pose2d getPose() {
-    return mOdometry.getPoseMeters();
+    return mDifferentialDrivePoseEstimator.getEstimatedPosition();
   }
 
   /**
@@ -400,7 +408,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
       }
 
       mPathPoints.clear();
-      mPathPoints.add(mOdometry.getPoseMeters());
+      mPathPoints.add(mDifferentialDrivePoseEstimator.getEstimatedPosition());
       mRobotPath.setPoses(mPathPoints);
       mTrajectoryPlot.setTrajectory(trajectory);
 
@@ -409,11 +417,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     @Override
     public void execute() {
-        mPathPoints.add(mOdometry.getPoseMeters());
+        mPathPoints.add(mDifferentialDrivePoseEstimator.getEstimatedPosition());
         mRobotPath.setPoses(mPathPoints);
 
         State desiredPose = trajectory.sample(timer.get());
-        ChassisSpeeds refChassisSpeeds = mRamseteController.calculate(mOdometry.getPoseMeters(), desiredPose);
+        ChassisSpeeds refChassisSpeeds = mRamseteController.calculate(mDifferentialDrivePoseEstimator.getEstimatedPosition(), desiredPose);
         DifferentialDriveWheelSpeeds wheelSpeeds = mKinematics.toWheelSpeeds(refChassisSpeeds);
 
         setSpeeds(wheelSpeeds);
@@ -446,8 +454,14 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   @Override
   public void periodic() {
-    mOdometry.update(mPigeonIMU.getRotation2d(), mLeftEncoder.getDistance(), mRightEncoder.getDistance());
-    mField.setRobotPose(mOdometry.getPoseMeters());
+    mDifferentialDrivePoseEstimator.update(
+      mPigeonIMU.getRotation2d(),
+      new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity()),
+      getLeftMeters(),
+      getRightMeters()
+    );
+
+    mField.setRobotPose(mDifferentialDrivePoseEstimator.getEstimatedPosition());
   }
 
   @Override

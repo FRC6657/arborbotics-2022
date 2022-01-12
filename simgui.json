@@ -36,7 +36,6 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
-        "image": "D:\\FRC\\Fields\\2020-field.png",
         "robot-path": {
           "arrows": false,
           "color": [
@@ -160,7 +159,7 @@
     "Plot <3>": {
       "plots": [
         {
-          "height": 338,
+          "height": 360,
           "series": [
             {
               "color": [
