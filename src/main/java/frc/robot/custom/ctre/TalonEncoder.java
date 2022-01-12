@@ -44,22 +44,6 @@ public class TalonEncoder implements Sendable, AutoCloseable {
   }
 
   /**
-   * Returns the period of the most recent pulse. Returns the period of the most recent Encoder
-   * pulse in seconds. This method compensates for the decoding type.
-   *
-   * <p><b>Warning:</b> This returns unscaled periods. Use getRate() for rates that are scaled using
-   * the value from setDistancePerPulse().
-   *
-   * @return Period in seconds of the most recent pulse.
-   * @deprecated Use getRate() in favor of this method.
-   */
-  @Deprecated
-  public double getPeriod() {
-    // distance / (distance / second) = seconds
-    return m_distancePerPulse / getRate();
-  }
-
-  /**
    * The last direction the encoder value changed.
    *
    * @return The last direction the encoder value changed.
