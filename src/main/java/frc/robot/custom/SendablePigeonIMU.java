@@ -1,4 +1,4 @@
-package frc.robot.custom.ctre;
+package frc.robot.custom;
 
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
