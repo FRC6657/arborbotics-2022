@@ -8,6 +8,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 
 /** A class to read encoder data from CTRE motors */
+//Credit Modelmat#8218
 public class TalonEncoder implements Sendable, AutoCloseable {
   private final BaseTalon m_motor;
   private double m_distancePerPulse = 1;
@@ -40,22 +41,6 @@ public class TalonEncoder implements Sendable, AutoCloseable {
   /** Reset the Encoder distance to zero. Resets the current count to zero on the encoder. */
   public void reset() {
     m_motor.setSelectedSensorPosition(0);
-  }
-
-  /**
-   * Returns the period of the most recent pulse. Returns the period of the most recent Encoder
-   * pulse in seconds. This method compensates for the decoding type.
-   *
-   * <p><b>Warning:</b> This returns unscaled periods. Use getRate() for rates that are scaled using
-   * the value from setDistancePerPulse().
-   *
-   * @return Period in seconds of the most recent pulse.
-   * @deprecated Use getRate() in favor of this method.
-   */
-  @Deprecated
-  public double getPeriod() {
-    // distance / (distance / second) = seconds
-    return m_distancePerPulse / getRate();
   }
 
   /**

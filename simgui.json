@@ -1,7 +1,22 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "Talon FX[1]/Integrated Sensor": {
+      "Talon FX[1]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX[2]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX[3]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX[4]": {
         "header": {
           "open": true
         }
@@ -21,38 +36,171 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
-        "bottom": 900,
-        "height": 8.229599952697754,
-        "image": "C:\\Users\\Andrew Card\\Desktop\\FRC\\Field2D Images\\2022-field.png",
-        "left": 74,
-        "right": 1774,
+        "image": "D:\\FRC\\Fields\\2020-field.png",
         "robot-path": {
           "arrows": false,
+          "color": [
+            0.0,
+            255.0,
+            29.999967575073242,
+            255.0
+          ],
           "selectable": false,
           "style": "Line",
-          "weight": 3.0
+          "weight": 2.0
         },
-        "top": 50,
         "trajectory": {
           "arrows": false,
           "color": [
-            0.08888888359069824,
+            0.2647058963775635,
             1.0,
             0.0,
             255.0
           ],
           "selectable": false,
           "style": "Line",
-          "weight": 3.0
+          "weight": 2.0
         },
-        "width": 16.459199905395508,
         "window": {
           "visible": true
         }
       }
     }
   },
+  "NetworkTables": {
+    "Shuffleboard": {
+      "DrivetrainSubsystem": {
+        "open": true
+      },
+      "open": true
+    },
+    "SmartDashboard": {
+      "Field": {
+        "open": true
+      },
+      "open": true
+    }
+  },
   "NetworkTables View": {
     "visible": false
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "height": 473,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/DrivetrainSubsystem/Left Velocity"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "height": 347,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/DrivetrainSubsystem/Right Velocity"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    },
+    "Plot <2>": {
+      "plots": [
+        {
+          "height": 338,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Left Velocity Error"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Right Velocity Error"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    },
+    "Plot <3>": {
+      "plots": [
+        {
+          "height": 338,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "CANMotor:Talon FX[1]-percentOutput"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "CANMotor:Talon FX[3]-percentOutput"
+            },
+            {
+              "color": [
+                0.3333333432674408,
+                0.658823549747467,
+                0.4078431725502014,
+                1.0
+              ],
+              "id": "CANMotor:Talon FX[2]-percentOutput"
+            },
+            {
+              "color": [
+                0.7686275243759155,
+                0.30588236451148987,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "CANMotor:Talon FX[4]-percentOutput"
+            }
+          ]
+        }
+      ]
+    }
   }
 }

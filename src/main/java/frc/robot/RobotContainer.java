@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.autonomous.routines.TestAuto;
+import frc.robot.custom.controls.Deadbander;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 
 public class RobotContainer {
@@ -20,8 +21,8 @@ public class RobotContainer {
 
     mDrivetrainSubsystem.setDefaultCommand(
       mDrivetrainSubsystem.new DriveCommand(
-        () -> -deadband(mDriver.getLeftY(),0.1),
-        () -> deadband(mDriver.getRightX(),0.1),
+        () -> -Deadbander.applyLinearScaledDeadband(mDriver.getLeftY(),0.1),
+        () -> Deadbander.applyLinearScaledDeadband(mDriver.getRightX(),0.1),
         () -> mDriver.getRightBumper()
       )
     );
@@ -32,13 +33,4 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return new TestAuto(mDrivetrainSubsystem);
   }
-
-  public double deadband(double input, double threshold){
-    if(Math.abs(input)<threshold){
-      return 0;
-    } else{
-      return (input-(Math.abs(input)/input)*threshold ) / (1.0 - threshold);
-    }
-  }
-
 }

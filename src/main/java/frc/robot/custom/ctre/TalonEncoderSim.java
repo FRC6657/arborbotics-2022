@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 /** Class to control a simulated encoder. */
+//Credit Modelmat#8218
 public class TalonEncoderSim {
   private TalonEncoder m_encoder;
 
@@ -81,7 +82,7 @@ public class TalonEncoderSim {
    * @return the encoder period
    */
   public double getPeriod() {
-    return m_encoder.getPeriod();
+    return m_encoder.getDistancePerPulse() / m_encoder.getRate();
   }
 
   /**
