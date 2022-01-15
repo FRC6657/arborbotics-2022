@@ -1,27 +1,12 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "Pigeon IMU[5]": {
-        "header": {
-          "open": true
-        }
-      },
       "Talon FX[1]": {
         "header": {
           "open": true
         }
       },
-      "Talon FX[1]/Integrated Sensor": {
-        "header": {
-          "open": true
-        }
-      },
       "Talon FX[2]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[2]/Integrated Sensor": {
         "header": {
           "open": true
         }
@@ -50,7 +35,6 @@
       "/SmartDashboard/Field": {
         "bottom": 900,
         "height": 8.229599952697754,
-        "image": "C:\\Users\\Andrew Card\\Desktop\\FRC\\Field2D Images\\2022-field.png",
         "left": 74,
         "right": 1774,
         "robot-path": {
@@ -59,10 +43,6 @@
           "style": "Line",
           "weight": 3.0
         },
-        "bottom": 514,
-        "height": 8.210550308227539,
-        "left": 96,
-        "right": 1040,
         "top": 25,
         "trajectory": {
           "arrows": false,
