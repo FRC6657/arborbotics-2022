@@ -49,10 +49,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private double kV = Constants.kV;
 
   //Drivetrain Falcons
-  private WPI_TalonFX mFrontLeft = new WPI_TalonFX(Constants.kFrontLeftID);
-  private WPI_TalonFX mFrontRight = new WPI_TalonFX(Constants.kFrontRightID);
-  private WPI_TalonFX mBackLeft = new WPI_TalonFX(Constants.kBackLeftID);
-  private WPI_TalonFX mBackRight = new WPI_TalonFX(Constants.kBackRightID);
+  private final WPI_TalonFX mFrontLeft = new WPI_TalonFX(Constants.kFrontLeftID);
+  private final WPI_TalonFX mFrontRight = new WPI_TalonFX(Constants.kFrontRightID);
+  private final WPI_TalonFX mBackLeft = new WPI_TalonFX(Constants.kBackLeftID);
+  private final WPI_TalonFX mBackRight = new WPI_TalonFX(Constants.kBackRightID);
 
   //Simulated Talons
   private TalonFXSimCollection mFrontLeftSim = mFrontLeft.getSimCollection();
