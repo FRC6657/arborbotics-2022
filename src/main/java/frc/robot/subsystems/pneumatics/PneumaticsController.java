@@ -12,17 +12,36 @@ import io.github.oblarg.oblog.Loggable;
 
 public class PneumaticsController extends SubsystemBase implements Loggable {
 
-  private Compressor compressor = new Compressor(Constants.kPCMID, PneumaticsModuleType.CTREPCM);
+  private final Compressor compressor = new Compressor(Constants.kPCMID, PneumaticsModuleType.CTREPCM);
 
   public PneumaticsController() {
-    configPneumatics();
+    
   }
 
-  private void configPneumatics() {
+  private void runCompressor() {
+    compressor.enableDigital();
+  }
+
+  private void stop() {
+    compressor.disable();
+  }
+
+  private boolean enabled() {
+    return compressor.enabled();
+  }
+
+  private boolean pressureSwitch() {
+    return compressor.getPressureSwitchValue();
+  }
+
+  private double current() {
+    return compressor.getCurrent();
   }
 
   @Override
   public void periodic() {
 
   }
+
+ 
 }
