@@ -45,17 +45,16 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
     public void initialize() {
       pickup(Constants.kPickupSpeed);
     }
+    @Override
+    public void end(boolean interrupted) {
+        stop();
+    }
   }
 
   public class PickupStopCommand extends CommandBase {
     @Override
     public void initialize() {
       stop();
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        stop();
     }
   }
 }
