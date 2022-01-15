@@ -15,7 +15,7 @@ import io.github.oblarg.oblog.annotations.Config;
 
 public class PickupSubsystem extends SubsystemBase implements Loggable {
 
-  private WPI_TalonSRX pickupMotor = new WPI_TalonSRX(Constants.kPickupID);
+  private final WPI_TalonSRX pickupMotor = new WPI_TalonSRX(Constants.kPickupID);
 
   public PickupSubsystem() {
     configMotor();
