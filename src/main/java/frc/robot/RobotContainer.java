@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.routines.TestAuto;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.intake.PickupSubsystem;
-import frc.robot.subsystems.intake.PickupSubsystem.PickupCommand;
+
 
 public class RobotContainer {
   
@@ -32,7 +32,7 @@ public class RobotContainer {
 
   }
   private void configureButtonBindings() {
-    new JoystickButton(mDriver, XboxController.Button.kA.value).whenPressed(mPickupSubsystem.new PickupCommand()).whenReleased(mPickupSubsystem.new PickupStopCommand());
+    new JoystickButton(mDriver, XboxController.Button.kA.value).whenHeld(mPickupSubsystem.new PickupCommand());
   }
 
   public Command getAutonomousCommand() {

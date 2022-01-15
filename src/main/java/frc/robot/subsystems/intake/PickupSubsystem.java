@@ -52,5 +52,10 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
     public void initialize() {
       stop();
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        stop();
+    }
   }
 }
