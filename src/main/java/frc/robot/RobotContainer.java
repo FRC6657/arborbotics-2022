@@ -11,7 +11,6 @@ import frc.robot.autonomous.routines.TestAuto;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.intake.PickupSubsystem;
 
-
 public class RobotContainer {
   
   private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
@@ -32,7 +31,7 @@ public class RobotContainer {
 
   }
   private void configureButtonBindings() {
-    new JoystickButton(mDriver, XboxController.Button.kA.value).whenHeld(mPickupSubsystem.new PickupCommand());
+    //new JoystickButton(mDriver, XboxController.Button.kA.value).whenHeld(mPickupSubsystem.new PickupCommand());
   }
 
   public Command getAutonomousCommand() {

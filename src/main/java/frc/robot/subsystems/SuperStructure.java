@@ -11,13 +11,13 @@ import frc.robot.subsystems.intake.PickupSubsystem;
 public class SuperStructure extends SubsystemBase {
   
   public final DrivetrainSubsystem drivetrain;
-  public final PickupSubsystem pickup;
+  //public final PickupSubsystem pickup;
 
   public SuperStructure(
     DrivetrainSubsystem drivetrain,
     PickupSubsystem pickup
   ) {
     this.drivetrain = drivetrain;
-    this.pickup = pickup;
+    //this.pickup = pickup;
   }
 }
