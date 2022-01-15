@@ -18,6 +18,7 @@ public class PivotSubsystem extends SubsystemBase implements Loggable {
   private final DoubleSolenoid extender = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
 
   public PivotSubsystem() {
+    configExtender();
   }
 
   @Override
@@ -31,9 +32,10 @@ public class PivotSubsystem extends SubsystemBase implements Loggable {
 
   private final void toggle() {
     extender.toggle();
+    System.out.println("We are toggling;");
   }
 
-  public class toggleCommand extends InstantCommand {
+  public class ToggleCommand extends InstantCommand {
 
     @Override
     public final void initialize() {

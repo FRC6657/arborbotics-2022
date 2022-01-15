@@ -1,17 +1,7 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "Pigeon IMU[5]": {
-        "header": {
-          "open": true
-        }
-      },
       "Talon FX[1]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[1]/Integrated Sensor": {
         "header": {
           "open": true
         }
@@ -21,15 +11,25 @@
           "open": true
         }
       },
-      "Talon FX[2]/Integrated Sensor": {
-        "header": {
-          "open": true
-        }
-      },
       "Talon SRX[6]": {
         "header": {
           "open": true
         }
+      }
+    },
+    "Solenoids": {
+      "0": {
+        "header": {
+          "open": true
+        }
+      },
+      "7": {
+        "header": {
+          "open": true
+        }
+      },
+      "window": {
+        "visible": true
       }
     }
   },
@@ -38,6 +38,8 @@
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/DrivetrainSubsystem": "Subsystem",
       "/LiveWindow/PickupSubsystem": "Subsystem",
+      "/LiveWindow/PivotSubsystem": "Subsystem",
+      "/LiveWindow/PneumaticsController": "Subsystem",
       "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
@@ -50,7 +52,6 @@
       "/SmartDashboard/Field": {
         "bottom": 900,
         "height": 8.229599952697754,
-        "image": "C:\\Users\\Andrew Card\\Desktop\\FRC\\Field2D Images\\2022-field.png",
         "left": 74,
         "right": 1774,
         "robot-path": {
@@ -59,10 +60,6 @@
           "style": "Line",
           "weight": 3.0
         },
-        "bottom": 514,
-        "height": 8.210550308227539,
-        "left": 96,
-        "right": 1040,
         "top": 25,
         "trajectory": {
           "arrows": false,

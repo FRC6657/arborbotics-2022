@@ -10,17 +10,19 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.routines.TestAuto;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.intake.PickupSubsystem;
-import frc.robot.subsystems.intake.PickupSubsystem.PickupCommand;
+import frc.robot.subsystems.intake.PivotSubsystem;
+import frc.robot.subsystems.pneumatics.PneumaticsController;
 
 public class RobotContainer {
   
   private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
   private final PickupSubsystem mPickupSubsystem = new PickupSubsystem();
+  private final PneumaticsController mPneumaticsController = new PneumaticsController(); 
+  private final PivotSubsystem mPivotSubsystem = new PivotSubsystem();
 
   private final XboxController mDriver = new XboxController(0);
 
   public RobotContainer() {
-    configureButtonBindings();
 
     mDrivetrainSubsystem.setDefaultCommand(
       mDrivetrainSubsystem.new DriveCommand(
@@ -30,9 +32,12 @@ public class RobotContainer {
       )
     );
 
+    configureButtonBindings();
+
   }
   private void configureButtonBindings() {
-    new JoystickButton(mDriver, XboxController.Button.kA.value).whenPressed(mPickupSubsystem.new PickupCommand()).whenReleased(mPickupSubsystem.new PickupStopCommand());
+    new JoystickButton(mDriver, XboxController.Button.kA.value).whenHeld(mPickupSubsystem.new PickupCommand());
+    new JoystickButton(mDriver, XboxController.Button.kY.value).whenPressed(mPivotSubsystem.new ToggleCommand());
   }
 
   public Command getAutonomousCommand() {

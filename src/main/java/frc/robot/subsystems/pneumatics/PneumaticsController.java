@@ -6,6 +6,7 @@ package frc.robot.subsystems.pneumatics;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import io.github.oblarg.oblog.Loggable;
@@ -15,7 +16,7 @@ public class PneumaticsController extends SubsystemBase implements Loggable {
   private final Compressor compressor = new Compressor(Constants.kPCMID, PneumaticsModuleType.CTREPCM);
 
   public PneumaticsController() {
-    
+
   }
 
   private void runCompressor() {
@@ -43,5 +44,22 @@ public class PneumaticsController extends SubsystemBase implements Loggable {
 
   }
 
- 
+  public class runCompressor extends CommandBase {
+    @Override
+    public void initialize() {
+
+      runCompressor();
+
+    }
+
+  }
+
+  public class disableCompressor extends CommandBase {
+    @Override
+    public void initialize() {
+
+      stop();
+
+    }
+  }
 }

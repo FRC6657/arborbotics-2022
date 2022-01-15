@@ -28,11 +28,13 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
 
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = Constants.kPickupSpeed)
   private void pickup(double percent) {
+    System.out.println("Setting power to " + percent);
     pickupMotor.set(percent);
   }
 
   private void stop() {
     pickupMotor.set(0);
+    System.out.println("Setting power to 0");
   }
 
   @Override
@@ -45,12 +47,9 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
     public void initialize() {
       pickup(Constants.kPickupSpeed);
     }
-  }
-
-  public class PickupStopCommand extends CommandBase {
     @Override
-    public void initialize() {
-      stop();
+    public void end(boolean interrupted) {
+        stop();
     }
   }
 }
