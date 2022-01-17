@@ -44,6 +44,7 @@ public final class Constants {
     //Intake Constants
     public static final double kPivotSpeed = .5;
     public static final double kPickupSpeed = .95;
+    public static final double kLimitValue = 0.5;
 
     //Pivot Constants
     public static final double kExtendedPos = 4096;

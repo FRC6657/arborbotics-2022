@@ -7,6 +7,7 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -18,6 +19,7 @@ import io.github.oblarg.oblog.annotations.Config;
 public class PickupSubsystem extends SubsystemBase implements Loggable {
 
   private WPI_TalonSRX pickupMotor = new WPI_TalonSRX(Constants.kPickupID);
+  private SlewRateLimiter intakeLimit = new SlewRateLimiter(Constants.kLimitValue);
 
   public PickupSubsystem() {
     configMotor();
@@ -26,11 +28,12 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
   private void configMotor() {
     pickupMotor.configFactoryDefault();
     pickupMotor.setNeutralMode(NeutralMode.Brake);
+
   }
 
-  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = Constants.kPickupSpeed)
+  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = Constants.kPickupSpeed / Constants.kLimitValue)
   private void run(double percent) {
-    pickupMotor.set(percent);
+    pickupMotor.set(intakeLimit.calculate(percent));
   }
 
   private void stop() {
