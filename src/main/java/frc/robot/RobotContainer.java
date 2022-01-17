@@ -31,7 +31,7 @@ public class RobotContainer {
 
   }
   private void configureButtonBindings() {
-    //new JoystickButton(mDriver, XboxController.Button.kA.value).whenHeld(mPickupSubsystem.new PickupCommand());
+    new JoystickButton(mDriver, XboxController.Button.kA.value).whenHeld(mPickupSubsystem.new PickupCommand(mPickupSubsystem));
   }
 
   public Command getAutonomousCommand() {

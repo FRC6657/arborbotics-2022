@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import io.github.oblarg.oblog.Loggable;
@@ -27,7 +29,7 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
   }
 
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = Constants.kPickupSpeed)
-  private void pickup(double percent) {
+  private void run(double percent) {
     pickupMotor.set(percent);
   }
 
@@ -39,25 +41,18 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
   public void periodic() {
 
   }
-
   public class PickupCommand extends CommandBase {
+
+    public PickupCommand(PickupSubsystem pickup){
+      addRequirements(PickupSubsystem.this);
+    }
+
     @Override
     public void initialize() {
-      stop();
+      run(Constants.kPickupSpeed);
     }
     @Override
     public void end(boolean interrupted) {
-        stop();
-    }
-    @Override
-    public void execute() {
-        pickup(Constants.kPickupSpeed);
-    }
-  }
-
-  public class PickupStopCommand extends CommandBase {
-    @Override
-    public void initialize() {
       stop();
     }
   }
