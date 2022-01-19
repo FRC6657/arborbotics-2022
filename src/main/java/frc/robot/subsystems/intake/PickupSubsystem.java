@@ -23,33 +23,18 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
 
   private void configMotor() {
     pickupMotor.configFactoryDefault();
-    pickupMotor.setNeutralMode(NeutralMode.Brake);
+    pickupMotor.setNeutralMode(NeutralMode.Coast);
   }
-
-  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = Constants.kPickupSpeed)
-  private void pickup(double percent) {
-    System.out.println("Setting power to " + percent);
+  
+  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = 0)
+  private void set(double percent) {
     pickupMotor.set(percent);
   }
 
-  private void stop() {
-    pickupMotor.set(0);
-    System.out.println("Setting power to 0");
+  public void run(){
+    set(Constants.kPickupSpeed);
   }
 
-  @Override
-  public void periodic() {
-
-  }
-
-  public class PickupCommand extends CommandBase {
-    @Override
-    public void initialize() {
-      pickup(Constants.kPickupSpeed);
-    }
-    @Override
-    public void end(boolean interrupted) {
-        stop();
-    }
-  }
+  public void stop() {
+    set(0);
 }
