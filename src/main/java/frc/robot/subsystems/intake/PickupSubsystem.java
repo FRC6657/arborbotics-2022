@@ -27,7 +27,7 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
   }
 
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = 0)
-  public void set(double percent) {
+  private void set(double percent) {
     pickupMotor.set(percent);
   }
 
