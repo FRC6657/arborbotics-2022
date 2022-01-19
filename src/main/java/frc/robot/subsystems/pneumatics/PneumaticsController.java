@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 
 public class PneumaticsController extends SubsystemBase implements Loggable {
 
@@ -19,47 +20,22 @@ public class PneumaticsController extends SubsystemBase implements Loggable {
 
   }
 
-  private void runCompressor() {
+  @Config
+  public void runCompressor() {
     compressor.enableDigital();
   }
 
-  private void stop() {
+  @Config
+  public void disableCompressor() {
     compressor.disable();
   }
 
-  private boolean enabled() {
+  public boolean enabled() {
     return compressor.enabled();
   }
 
-  private boolean pressureSwitch() {
+  public boolean pressureSwitch() {
     return compressor.getPressureSwitchValue();
   }
 
-  private double current() {
-    return compressor.getCurrent();
-  }
-
-  @Override
-  public void periodic() {
-
-  }
-
-  public class runCompressor extends CommandBase {
-    @Override
-    public void initialize() {
-
-      runCompressor();
-
-    }
-
-  }
-
-  public class disableCompressor extends CommandBase {
-    @Override
-    public void initialize() {
-
-      stop();
-
-    }
-  }
 }
