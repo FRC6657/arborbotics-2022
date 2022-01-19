@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.routines.TestAuto;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
@@ -31,7 +32,11 @@ public class RobotContainer {
 
   }
   private void configureButtonBindings() {
-    new JoystickButton(mDriver, XboxController.Button.kA.value).whenHeld(mPickupSubsystem.new PickupCommand(mPickupSubsystem));
+    new JoystickButton(mDriver, XboxController.Button.kA.value)
+      .whenPressed(new InstantCommand(mPickupSubsystem::run, mPickupSubsystem))
+      .whenReleased(new InstantCommand(mPickupSubsystem::stop, mPickupSubsystem));
+
+      
   }
 
   public Command getAutonomousCommand() {
