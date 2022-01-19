@@ -7,17 +7,25 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.intake.PickupSubsystem;
+import frc.robot.subsystems.intake.PivotSubsystem;
+import frc.robot.subsystems.pneumatics.PneumaticsController;
 
 public class SuperStructure extends SubsystemBase {
   
   public final DrivetrainSubsystem drivetrain;
-  //public final PickupSubsystem pickup;
+  public final PickupSubsystem pickup;
+  public final PivotSubsystem pivot;
+  public final PneumaticsController pneumatics;
 
   public SuperStructure(
     DrivetrainSubsystem drivetrain,
-    PickupSubsystem pickup
+    PickupSubsystem pickup,
+    PivotSubsystem pivot,
+    PneumaticsController pneumatics
   ) {
     this.drivetrain = drivetrain;
-    //this.pickup = pickup;
+    this.pickup = pickup;
+    this.pivot = pivot;
+    this.pneumatics = pneumatics;
   }
 }

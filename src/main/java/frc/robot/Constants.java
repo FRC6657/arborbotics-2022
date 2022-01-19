@@ -17,7 +17,7 @@ public final class Constants {
     public static final int kBackRightID = 4;
     public static final int kPigeonID = 5;
     public static final int kPickupID = 6;
-    public static final int kPivotID = 7;
+    public static final int kPCMID = 7;
 
     //Characterization
     public static final double kS = 0.51623;

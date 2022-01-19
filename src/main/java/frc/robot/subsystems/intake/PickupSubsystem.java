@@ -15,7 +15,7 @@ import io.github.oblarg.oblog.annotations.Config;
 
 public class PickupSubsystem extends SubsystemBase implements Loggable {
 
-  private WPI_TalonSRX pickupMotor = new WPI_TalonSRX(Constants.kPickupID);
+  private final WPI_TalonSRX pickupMotor = new WPI_TalonSRX(Constants.kPickupID);
 
   public PickupSubsystem() {
     configMotor();
@@ -25,7 +25,7 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
     pickupMotor.configFactoryDefault();
     pickupMotor.setNeutralMode(NeutralMode.Coast);
   }
-
+  
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = 0)
   private void set(double percent) {
     pickupMotor.set(percent);
@@ -37,5 +37,4 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
 
   public void stop() {
     set(0);
-  }
 }
