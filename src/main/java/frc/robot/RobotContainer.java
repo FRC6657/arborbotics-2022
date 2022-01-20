@@ -23,7 +23,6 @@ public class RobotContainer {
   private final SlewRateLimiter mAccelLimit = new SlewRateLimiter(Constants.kMaxAccel);
 
   public RobotContainer() {
-    configureButtonBindings();
 
     mDrivetrainSubsystem.setDefaultCommand(
       mDrivetrainSubsystem.new DriveCommand(
@@ -33,13 +32,13 @@ public class RobotContainer {
       )
     );
 
+    configureButtonBindings();
+
   }
   private void configureButtonBindings() {
     new JoystickButton(mDriver, XboxController.Button.kA.value)
       .whenPressed(new InstantCommand(mPickupSubsystem::run, mPickupSubsystem))
       .whenReleased(new InstantCommand(mPickupSubsystem::stop, mPickupSubsystem));
-
-      
   }
 
   public Command getAutonomousCommand() {
