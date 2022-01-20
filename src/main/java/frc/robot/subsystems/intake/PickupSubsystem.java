@@ -38,3 +38,5 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
   public void stop() {
     set(0);
 }
+
+}
