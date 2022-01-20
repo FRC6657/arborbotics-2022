@@ -39,11 +39,12 @@ public final class Constants {
     public static final double kGearRatio = 75.0/7.0; //Drive Gearbox Ratio
     public static final double kWheelRadius = Units.inchesToMeters(3); //Drive wheel Radius
     public static final double kEncoderCountToMeters =  (2 * Math.PI * kWheelRadius)/(kEncoderCPR*kGearRatio); //Conversion between Counts and Meters
-    public static final double kMaxSpeed = 3.5; //3.5 Meters/s
+    public static final double kMaxSpeed = 1.5; //Meters per second
+    public static final double kMaxAccel = kMaxSpeed; //Meters per second per second
 
     //Intake Constants
     public static final double kPivotSpeed = .5;
-    public static final double kPickupSpeed = .95;
+    public static final double kPickupSpeed = 0.5;
     public static final double kLimitValue = 0.5;
 
     //Pivot Constants
