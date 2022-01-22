@@ -143,8 +143,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     //Set the neutral modes
     mFrontLeft.setNeutralMode(NeutralMode.Brake);
     mFrontRight.setNeutralMode(NeutralMode.Brake);
-    mBackLeft.setNeutralMode(NeutralMode.Coast);
-    mBackRight.setNeutralMode(NeutralMode.Coast);
+    mBackLeft.setNeutralMode(NeutralMode.Brake);
+    mBackRight.setNeutralMode(NeutralMode.Brake);
 
     //Makes Green go Forward. Sim is weird so thats what the if statement is for
     if (RobotBase.isReal()) {
