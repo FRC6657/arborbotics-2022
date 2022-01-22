@@ -13,8 +13,7 @@ public class TestAuto extends SequentialCommandGroup {
   public TestAuto(DrivetrainSubsystem mDrivetrainSubsystem) {
     addRequirements(mDrivetrainSubsystem);
     addCommands(
-      mDrivetrainSubsystem.new ResetPosition().withTimeout(0.1),
-      mDrivetrainSubsystem.new TrajectoryFollowerCommand(Trajectories.TEST, true)//.withTimeout(Trajectories.TEST.getTotalTimeSeconds())
+      mDrivetrainSubsystem.new TrajectoryFollowerCommand(Trajectories.TEST, true).withTimeout(Trajectories.TEST.getTotalTimeSeconds())
     );
   }
 }

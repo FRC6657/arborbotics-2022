@@ -14,7 +14,7 @@
       "/SmartDashboard/Field": {
         "bottom": 900,
         "height": 8.229599952697754,
-        "image": "C:\\Users\\Andrew Card\\Desktop\\FRC\\Field2D Images\\2022-field.png",
+        "image": "FieldImages\\2022-field.png",
         "left": 74,
         "right": 1774,
         "robot-path": {
@@ -43,7 +43,53 @@
       }
     }
   },
+  "NetworkTables": {
+    "LiveWindow": {
+      "open": true
+    },
+    "Shuffleboard": {
+      "DrivetrainSubsystem": {
+        "open": true
+      },
+      "open": true
+    },
+    "SmartDashboard": {
+      "Field": {
+        "open": true
+      },
+      "open": true
+    }
+  },
   "NetworkTables View": {
     "visible": false
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "height": 473,
+          "series": [
+            {
+              "color": [
+                0.936274528503418,
+                0.547510027885437,
+                0.055074967443943024,
+                1.0
+              ],
+              "id": "NT:/LiveWindow/Ungrouped/PIDController[1]/setpoint"
+            },
+            {
+              "color": [
+                0.32156869769096375,
+                0.49792397022247314,
+                0.8666667342185974,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/DrivetrainSubsystem/Left Velocity"
+            }
+          ]
+        }
+      ]
+    }
   }
 }

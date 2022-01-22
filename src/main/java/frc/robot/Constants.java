@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 
 public final class Constants {
     
@@ -17,27 +21,36 @@ public final class Constants {
     public static final int kBackRightID = 4;
     public static final int kPigeonID = 5;
 
-    //Characterization
-    public static final double kS = 0.53584;
-    public static final double kV = 2.2764;
-    public static final double kA = 0.73118;
 
-    //Left PID
-    public static final double leftKP = 2.4109;
-    public static final double leftKI = 0;
-    public static final double leftKD = 0;
+    //Drivetrain Characterization
+    public static final double drive_kS = 0.53584;
+    public static final double drive_kV = 2.2764;
+    public static final double drive_kA = 0.73118;
+    public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(drive_kS, drive_kV, drive_kA);
 
-    //Right PID
-    public static final double rightKP = 2.4109;
-    public static final double rightKI = 0;
-    public static final double rightKD = 0;
+    //Drivetrain PID
+    public static final double drive_kP = 3.1976; 
+    public static final double drive_kI = 0;
+    public static final double drive_kD = 0;
+    public static final PIDController kDrivePIDController = new PIDController(drive_kP, drive_kI, drive_kD);
 
-    //Values
-    public static final double kEncoderCPR = 2048; //Encoder Counts per Rotation
-    public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides TODO:Measure
-    public static final double kGearRatio = 75.0/7.0; //Drive Gearbox Ratio
+    //Drivetrain Values
+    public static final double kRobotWeight = Units.lbsToKilograms(40);
+    public static final double kFalconEncoderCPR = 2048; //Encoder Counts per Rotation
+    public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides
+    public static final double kGearRatio = 10.71; //Drive Gearbox Ratio
     public static final double kWheelRadius = Units.inchesToMeters(3); //Drive wheel Radius
-    public static final double kEncoderCountToMeters =  (2 * Math.PI * kWheelRadius)/(kEncoderCPR*kGearRatio); //Conversion between Counts and Meters
-    public static final double kMaxSpeed = 3.5; //3.5 Meters/s
+    public static final double kDistancePerPulse =  (2 * Math.PI * kWheelRadius / kFalconEncoderCPR); //Conversion between Counts and Meters
+    public static final double kMaxSpeed = 3.5; //Meters/s
+
+        //Default Sim
+    public static final DifferentialDrivetrainSim kDrivetrainSim = new DifferentialDrivetrainSim( //Simulation
+        DCMotor.getFalcon500(2),
+        kGearRatio,
+        7.5,
+        kRobotWeight,
+        kWheelRadius,
+        kTrackWidth,
+        null);
 
 }
