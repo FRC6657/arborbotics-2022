@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -41,7 +42,9 @@ public final class Constants {
     public static final double kGearRatio = 10.71; //Drive Gearbox Ratio
     public static final double kWheelRadius = Units.inchesToMeters(3); //Drive wheel Radius
     public static final double kDistancePerPulse =  (2 * Math.PI * kWheelRadius / kFalconEncoderCPR); //Conversion between Counts and Meters
-    public static final double kMaxSpeed = 3.5; //Meters/s
+    public static final double kDriveMaxSpeed = 3.5; //Meters/s
+    public static final double kDriveMaxAccel = kDriveMaxSpeed * 3; //Meters/s/s
+    public static final SlewRateLimiter kDriveLimter = new SlewRateLimiter(kDriveMaxAccel/kDriveMaxSpeed);
 
         //Default Sim
     public static final DifferentialDrivetrainSim kDrivetrainSim = new DifferentialDrivetrainSim( //Simulation

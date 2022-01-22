@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -59,6 +60,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   private final DifferentialDriveKinematics mKinematics;
   private final DifferentialDriveOdometry mOdometry;
+  private SlewRateLimiter mDriveLimiter;
 
   private final SimpleMotorFeedforward mFeedForward;
   private final PIDController mPIDController;
@@ -108,6 +110,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     //Fancy Stuff
     mKinematics = new DifferentialDriveKinematics(Constants.kTrackWidth);
     mOdometry = new DifferentialDriveOdometry(mPigeonIMU.getRotation2d());
+
+    mDriveLimiter = Constants.kDriveLimter;
 
     //Fancier Stuff
     mFeedForward = Constants.kFeedForward;
@@ -219,6 +223,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * 
    */
 
+  /**
+   * Autonomous setSpeeds
+   */
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
     final double leftFeedforward = mFeedForward.calculate(speeds.leftMetersPerSecond);
     final double rightFeedforward = mFeedForward.calculate(speeds.rightMetersPerSecond);
@@ -230,10 +237,13 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
   }
 
+  /**
+   * TeleOp setSpeeds
+   */
   public void setSpeeds(WheelSpeeds speeds) {
 
-    speeds.left *= Constants.kMaxSpeed;
-    speeds.right *= Constants.kMaxSpeed;
+    speeds.left *= Constants.kDriveMaxSpeed;
+    speeds.right *= Constants.kDriveMaxSpeed;
 
     final double leftFeedforward = mFeedForward.calculate(speeds.left);
     final double rightFeedforward = mFeedForward.calculate(speeds.right);
@@ -332,12 +342,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     return 0;
   }
 
-  @Log.Dial(rowIndex = 2, columnIndex = 2, width = 1, height = 1, name = "Left Vel", min = -Constants.kMaxSpeed, max = Constants.kMaxSpeed, showValue = false)
+  @Log.Dial(rowIndex = 2, columnIndex = 2, width = 1, height = 1, name = "Left Vel", min = -Constants.kDriveMaxSpeed, max = Constants.kDriveMaxSpeed, showValue = false)
   public double leftVelocityGauge(){
     return getLeftVelocity();
   }
 
-  @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.kMaxSpeed, max = Constants.kMaxSpeed, showValue = false)
+  @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.kDriveMaxSpeed, max = Constants.kDriveMaxSpeed, showValue = false)
   public double rightVelocityGauge(){
     return getRightVelocity();
   }
@@ -370,7 +380,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     @Override
     public void execute() {
-      setSpeeds(DifferentialDrive.curvatureDriveIK(xSpeed.getAsDouble(), zRotation.getAsDouble(), isQuickturn.getAsBoolean()));
+      setSpeeds(DifferentialDrive.curvatureDriveIK(mDriveLimiter.calculate(xSpeed.getAsDouble()), zRotation.getAsDouble(), isQuickturn.getAsBoolean()));
     }
 
     @Override
