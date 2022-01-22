@@ -15,6 +15,8 @@ import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -61,7 +63,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   }
 
   public void configureMotors() {
-    mProtagonist.setInverted(false);
+    mProtagonist.setInverted(true);
     mProtagonist.setNeutralMode(NeutralMode.Coast);
 
     /*
@@ -70,10 +72,12 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
      * mAntagonist.setNeutralMode(NeutralMode.Coast);
      */
 
+     mProtagonist.setSelectedSensorPosition(0);
+
   }
 
   public double getRadiansPerSecond() {
-    return (mProtagonist.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kEncoderCPR);
+    return (mProtagonist.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kEncoderCPR / 3);
   }
 
   @Log(width = 2, height = 1, name = "Rotations Per Minute")
@@ -112,4 +116,12 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     }
 
   }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("RPM", getRPM());
+    SmartDashboard.putNumber("Position",
+        mProtagonist.getSelectedSensorPosition() * (2.0 * Math.PI / Constants.kEncoderCPR / 3));
+  }
+
 }
