@@ -18,6 +18,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import io.github.oblarg.oblog.annotations.Log;
 
 public class FlywheelSubsystem extends SubsystemBase {
 
@@ -44,23 +45,29 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   public FlywheelSubsystem() {
     mProtagonist = new WPI_TalonFX(Constants.kLeftFlywheelID);
-    mAntagonist = new WPI_TalonFX(Constants.kRightFlywheelID);
+    /* mAntagonist = new WPI_TalonFX(Constants.kRightFlywheelID); */
     configureMotors();
 
   }
+
 
   public void configureMotors(){
     mProtagonist.setInverted(false);
     mProtagonist.setNeutralMode(NeutralMode.Coast);
 
-    mAntagonist.follow(mProtagonist);
+   /*  mAntagonist.follow(mProtagonist);
     mAntagonist.setInverted(InvertType.OpposeMaster);
-    mAntagonist.setNeutralMode(NeutralMode.Coast);
+    mAntagonist.setNeutralMode(NeutralMode.Coast); */
 
   }
 
   public double getRadiansPerSecond(){
-    return (mProtagonist.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kEncoderCountToMeters);
+    return (mProtagonist.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kEncoderCPR);
+  }
+
+  @Log(width = 2, height = 1, name = "Rotations Per Minute")
+  public double getRPM(){
+    return Units.radiansPerSecondToRotationsPerMinute(getRadiansPerSecond());
   }
 
   public class AdjustRPM extends CommandBase {
