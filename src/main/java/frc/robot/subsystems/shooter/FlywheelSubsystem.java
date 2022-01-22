@@ -18,9 +18,11 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
-public class FlywheelSubsystem extends SubsystemBase {
+public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   // The observer fuses our encoder data and voltage inputs to reject noise.
   private final KalmanFilter<N1, N1, N1> mFlywheelObserver = new KalmanFilter<>(
@@ -37,11 +39,10 @@ public class FlywheelSubsystem extends SubsystemBase {
       VecBuilder.fill(12.0), // Control effort (voltage) tolerance
       0.020);
 
-  private final LinearSystemLoop<N1, N1, N1> mFlywheelLoop =
-      new LinearSystemLoop<>(Constants.kFlywheelPlant, mFlywheelController, mFlywheelObserver, 12.0, 0.020);
+  private final LinearSystemLoop<N1, N1, N1> mFlywheelLoop = new LinearSystemLoop<>(Constants.kFlywheelPlant,
+      mFlywheelController, mFlywheelObserver, 12.0, 0.020);
 
   private WPI_TalonFX mProtagonist, mAntagonist;
-
 
   public FlywheelSubsystem() {
     mProtagonist = new WPI_TalonFX(Constants.kLeftFlywheelID);
@@ -50,23 +51,33 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   }
 
+  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Motor Percent", defaultValueNumeric = 0)
+  private void set(double percent) {
+    mProtagonist.set(percent);
+  }
 
-  public void configureMotors(){
+  public void run() {
+    set(.2);
+  }
+
+  public void configureMotors() {
     mProtagonist.setInverted(false);
     mProtagonist.setNeutralMode(NeutralMode.Coast);
 
-   /*  mAntagonist.follow(mProtagonist);
-    mAntagonist.setInverted(InvertType.OpposeMaster);
-    mAntagonist.setNeutralMode(NeutralMode.Coast); */
+    /*
+     * mAntagonist.follow(mProtagonist);
+     * mAntagonist.setInverted(InvertType.OpposeMaster);
+     * mAntagonist.setNeutralMode(NeutralMode.Coast);
+     */
 
   }
 
-  public double getRadiansPerSecond(){
+  public double getRadiansPerSecond() {
     return (mProtagonist.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kEncoderCPR);
   }
 
   @Log(width = 2, height = 1, name = "Rotations Per Minute")
-  public double getRPM(){
+  public double getRPM() {
     return Units.radiansPerSecondToRotationsPerMinute(getRadiansPerSecond());
   }
 
@@ -74,7 +85,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     private double mRPM;
 
-    public AdjustRPM(double rpm){
+    public AdjustRPM(double rpm) {
 
       this.mRPM = rpm;
       addRequirements(FlywheelSubsystem.this);
@@ -88,16 +99,16 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     @Override
     public void execute() {
-        mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRPM)));
-        mFlywheelLoop.correct(VecBuilder.fill(getRadiansPerSecond()));
-        mFlywheelLoop.predict(0.020);
-        double mNextVolts = mFlywheelLoop.getU(0);
-        mProtagonist.setVoltage(mNextVolts);
+      mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRPM)));
+      mFlywheelLoop.correct(VecBuilder.fill(getRadiansPerSecond()));
+      mFlywheelLoop.predict(0.020);
+      double mNextVolts = mFlywheelLoop.getU(0);
+      mProtagonist.setVoltage(mNextVolts);
     }
 
     @Override
     public void end(boolean interrupted) {
-        mFlywheelLoop.setNextR(VecBuilder.fill(0.0));
+      mFlywheelLoop.setNextR(VecBuilder.fill(0.0));
     }
 
   }
