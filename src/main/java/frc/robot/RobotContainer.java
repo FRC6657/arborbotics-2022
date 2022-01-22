@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.routines.TestAuto;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.intake.PickupSubsystem;
+import frc.robot.subsystems.intake.PivotSubsystem;
+import frc.robot.subsystems.pneumatics.PneumaticsController;
 
 public class RobotContainer {
   

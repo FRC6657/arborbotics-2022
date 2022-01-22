@@ -15,9 +15,10 @@ import io.github.oblarg.oblog.annotations.Config;
 
 public class PivotSubsystem extends SubsystemBase implements Loggable {
 
-  private final DoubleSolenoid extender = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+  private final DoubleSolenoid extender; 
 
   public PivotSubsystem() {
+    extender = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
     configExtender();
   }
 
