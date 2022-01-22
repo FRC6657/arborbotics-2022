@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -18,10 +19,10 @@ public class RobotContainer {
   
   private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
   private final PickupSubsystem mPickupSubsystem = new PickupSubsystem();
-  private final PneumaticsController mPneumaticsController = new PneumaticsController(); 
-  private final PivotSubsystem mPivotSubsystem = new PivotSubsystem();
 
   private final XboxController mDriver = new XboxController(0);
+
+  private final SlewRateLimiter mAccelLimit = new SlewRateLimiter(Constants.kMaxAccel);
 
   public RobotContainer() {
 
