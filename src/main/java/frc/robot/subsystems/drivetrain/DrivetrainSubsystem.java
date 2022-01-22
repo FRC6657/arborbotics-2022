@@ -13,7 +13,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
-import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.BasePigeonSimCollection;
 
@@ -41,14 +40,18 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
-import frc.robot.custom.SendablePigeonIMU;
+import frc.robot.custom.ctre.SendablePigeonIMU;
+import frc.robot.custom.ctre.TalonEncoder;
+import frc.robot.custom.ctre.TalonEncoderSim;
+
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   private final WPI_TalonFX mFrontLeft, mFrontRight, mBackLeft, mBackRight; 
-  private TalonFXSimCollection mLeftSim, mRightSim;
+  private final TalonEncoder mLeftEncoder, mRightEncoder;
+  private TalonEncoderSim mLeftSimcoder, mRightSimcoder;
   
   @Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro")
   private final SendablePigeonIMU mPigeonIMU;
@@ -84,9 +87,16 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     //Left Stuff
     mFrontLeft = new WPI_TalonFX(Constants.kFrontLeftID);
     mBackLeft = new WPI_TalonFX(Constants.kBackLeftID);
+    mLeftEncoder = new TalonEncoder(mFrontLeft,true);
+    mLeftEncoder.setDistancePerPulse(Constants.kDistancePerPulse);
+    mLeftEncoder.reset();
+
     //Right Stuff
     mFrontRight = new WPI_TalonFX(Constants.kFrontRightID);
     mBackRight = new WPI_TalonFX(Constants.kBackRightID);
+    mRightEncoder = new TalonEncoder(mFrontRight);
+    mRightEncoder.setDistancePerPulse(Constants.kDistancePerPulse);
+    mRightEncoder.reset();
 
     //Configures the motors
     configureMotors();
@@ -110,8 +120,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     if(RobotBase.isSimulation()){
       mDrivetrainSim = Constants.kDrivetrainSim;
       mPigeonIMUSim = mPigeonIMU.getSimCollection();
-      mLeftSim = mFrontLeft.getSimCollection();
-      mRightSim = mFrontRight.getSimCollection();
+      mLeftSimcoder = new TalonEncoderSim(mLeftEncoder);
+      mRightSimcoder = new TalonEncoderSim(mRightEncoder);
     }
   }
 
@@ -148,6 +158,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
       mFrontRight.setInverted(TalonFXInvertType.CounterClockwise);
       mBackRight.setInverted(TalonFXInvertType.FollowMaster);
     }
+
+    //Configures encoders to read in meters
+    mLeftEncoder.setDistancePerPulse(Constants.kDistancePerPulse);
+    mRightEncoder.setDistancePerPulse(Constants.kDistancePerPulse);
 
     // Encoders
     mFrontLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
@@ -188,8 +202,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * Resets the encoders
    */
   public void resetEncoders(){
-    mFrontLeft.setSelectedSensorPosition(0);
-    mFrontRight.setSelectedSensorPosition(0);
+    mLeftEncoder.reset();
+    mRightEncoder.reset();
   }
 
   /**
@@ -209,8 +223,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     final double leftFeedforward = mFeedForward.calculate(speeds.leftMetersPerSecond);
     final double rightFeedforward = mFeedForward.calculate(speeds.rightMetersPerSecond);
 
-    final double leftOutput = mPIDController.calculate(getLeftVelocity(), speeds.leftMetersPerSecond);
-    final double rightOutput = mPIDController.calculate(getRightVelocity(), speeds.rightMetersPerSecond);
+    final double leftOutput = mPIDController.calculate(mLeftEncoder.getRate(), speeds.leftMetersPerSecond);
+    final double rightOutput = mPIDController.calculate(mRightEncoder.getRate(), speeds.rightMetersPerSecond);
 
     mFrontLeft.setVoltage(leftOutput + leftFeedforward);
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
@@ -224,8 +238,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     final double leftFeedforward = mFeedForward.calculate(speeds.left);
     final double rightFeedforward = mFeedForward.calculate(speeds.right);
 
-    final double leftOutput = mPIDController.calculate(getLeftVelocity(), speeds.left);
-    final double rightOutput = mPIDController.calculate(getRightVelocity(), speeds.right);
+    final double leftOutput = mPIDController.calculate(mLeftEncoder.getRate(), speeds.left);
+    final double rightOutput = mPIDController.calculate(mRightEncoder.getRate(), speeds.right);
 
     mFrontLeft.setVoltage(leftOutput + leftFeedforward);
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
@@ -255,7 +269,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Left Distance")
   public double getLeftMeters() {
-    return (int) mFrontLeft.getSelectedSensorPosition() * Constants.kDistancePerPulse;
+    return mLeftEncoder.getDistance();
   }
 
   /**
@@ -263,7 +277,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Right Distance")
   public double getRightMeters() {
-    return (int) mFrontRight.getSelectedSensorPosition() * Constants.kDistancePerPulse;
+    return mRightEncoder.getDistance();
   }
 
   /**
@@ -271,7 +285,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Left Velocity")
   public double getLeftVelocity() {
-    return mFrontLeft.getSelectedSensorVelocity() * 10 * Constants.kDistancePerPulse;
+    return mLeftEncoder.getRate();
   }
 
   /**
@@ -279,7 +293,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity")
   public double getRightVelocity() {
-    return mFrontRight.getSelectedSensorVelocity() * 10 *Constants.kDistancePerPulse;
+    return mRightEncoder.getRate();
   }
 
   /**
@@ -430,7 +444,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   @Override
   public void periodic() {
-    mOdometry.update(mPigeonIMU.getRotation2d(), getLeftMeters(), getRightMeters());
+    mOdometry.update(mPigeonIMU.getRotation2d(), mLeftEncoder.getDistance(), mRightEncoder.getDistance());
     mField.setRobotPose(mOdometry.getPoseMeters());
   }
 
@@ -442,10 +456,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   
     mDrivetrainSim.update(0.02);
 
-    mLeftSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getLeftPositionMeters() / Constants.kDistancePerPulse));
-    mRightSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getRightPositionMeters() / Constants.kDistancePerPulse));
-    mLeftSim.setIntegratedSensorVelocity((int) (mDrivetrainSim.getLeftVelocityMetersPerSecond() / (10 * Constants.kDistancePerPulse)));
-    mRightSim.setIntegratedSensorVelocity((int) (mDrivetrainSim.getRightVelocityMetersPerSecond() / (10 * Constants.kDistancePerPulse)));
+    mLeftSimcoder.setDistance(mDrivetrainSim.getLeftPositionMeters());
+    mLeftSimcoder.setRate(mDrivetrainSim.getLeftVelocityMetersPerSecond());
+
+    mRightSimcoder.setDistance(mDrivetrainSim.getRightPositionMeters());
+    mRightSimcoder.setRate(mDrivetrainSim.getRightVelocityMetersPerSecond());
 
     mPigeonIMUSim.setRawHeading(mDrivetrainSim.getHeading().getDegrees());
   }
