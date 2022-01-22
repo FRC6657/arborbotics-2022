@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.routines.FlyWheelTest;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
@@ -35,6 +36,7 @@ public class RobotContainer {
     new JoystickButton(mDriver, XboxController.Button.kA.value)
       .whenPressed(mFlywheelSubsystem.new AdjustRPM(1000)
       .withInterrupt(() -> mDriver.getBButton()));
+    new JoystickButton(mDriver, XboxController.Button.kX.value).whenPressed(new InstantCommand(mFlywheelSubsystem::run, mFlywheelSubsystem).withInterrupt(() -> mDriver.getYButton()));
 
   }
 
