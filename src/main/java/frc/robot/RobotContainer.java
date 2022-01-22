@@ -6,12 +6,15 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.autonomous.routines.TestAuto;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.autonomous.routines.FlyWheelTest;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
+import frc.robot.subsystems.shooter.FlywheelSubsystem;
 
 public class RobotContainer {
   
   private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
+  private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
 
   private final XboxController mDriver = new XboxController(0);
 
@@ -27,10 +30,16 @@ public class RobotContainer {
     );
 
   }
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+
+    new JoystickButton(mDriver, XboxController.Button.kA.value)
+      .whenPressed(mFlywheelSubsystem.new AdjustRPM(1000)
+      .withInterrupt(() -> mDriver.getBButton()));
+
+  }
 
   public Command getAutonomousCommand() {
-    return new TestAuto(mDrivetrainSubsystem);
+    return new FlyWheelTest(mFlywheelSubsystem);
   }
 
   public double deadband(double input, double threshold){

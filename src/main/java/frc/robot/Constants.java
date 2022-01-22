@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
@@ -16,6 +19,21 @@ public final class Constants {
     public static final int kBackLeftID = 3;
     public static final int kBackRightID = 4;
     public static final int kPigeonID = 5;
+
+    public static final int kLeftFlywheelID = 7;
+    public static final int kRightFlywheelID = 8;
+
+    /**
+     * Drivetrain Values
+     */
+
+    //General
+    public static final double kEncoderCPR = 2048; //Encoder Counts per Rotation
+    public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides
+    public static final double kGearRatio = 75.0/7.0; //Drive Gearbox Ratio
+    public static final double kWheelRadius = Units.inchesToMeters(3); //Drive wheel Radius
+    public static final double kEncoderCountToMeters =  (2 * Math.PI * kWheelRadius)/(kEncoderCPR*kGearRatio); //Conversion between Counts and Meters
+    public static final double kMaxSpeed = 3.5; //3.5 Meters/s
 
     //Characterization
     public static final double kS = 0.53584;
@@ -32,12 +50,19 @@ public final class Constants {
     public static final double rightKI = 0;
     public static final double rightKD = 0;
 
-    //Values
-    public static final double kEncoderCPR = 2048; //Encoder Counts per Rotation
-    public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides TODO:Measure
-    public static final double kGearRatio = 75.0/7.0; //Drive Gearbox Ratio
-    public static final double kWheelRadius = Units.inchesToMeters(3); //Drive wheel Radius
-    public static final double kEncoderCountToMeters =  (2 * Math.PI * kWheelRadius)/(kEncoderCPR*kGearRatio); //Conversion between Counts and Meters
-    public static final double kMaxSpeed = 3.5; //3.5 Meters/s
+
+    /**
+     * Shooter Values
+     */
+
+     //General
+     public static final double kSpinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500);
+
+     //Characterization //TODO Do this
+     public static final double kFlywheelKv = 0.023;
+     public static final double kFlywheelKa = 0.001;
+
+     public static final LinearSystem<N1, N1, N1> kFlywheelPlant =
+     LinearSystemId.identifyVelocitySystem(kFlywheelKv, kFlywheelKa);
 
 }

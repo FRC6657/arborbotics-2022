@@ -1,20 +1,30 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "Talon FX[8]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/DrivetrainSubsystem": "Subsystem",
+      "/LiveWindow/FlywheelSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon IMU [5]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/Shuffleboard/DrivetrainSubsystem/Gyro": "Gyro",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Flywheel": "Mechanism2d"
     },
     "windows": {
       "/SmartDashboard/Field": {
         "bottom": 900,
         "height": 8.229599952697754,
-        "image": "C:\\Users\\Andrew Card\\Desktop\\FRC\\Field2D Images\\2022-field.png",
         "left": 74,
         "right": 1774,
         "robot-path": {
@@ -41,6 +51,29 @@
           "visible": true
         }
       }
+    }
+  },
+  "NetworkTables": {
+    "Shuffleboard": {
+      ".metadata": {
+        "open": true
+      },
+      "DrivetrainSubsystem": {
+        "open": true
+      },
+      "RobotContainer": {
+        "open": true
+      },
+      "open": true
+    },
+    "SmartDashboard": {
+      "Field": {
+        "open": true
+      },
+      "Flywheel": {
+        "open": true
+      },
+      "open": true
     }
   },
   "NetworkTables View": {
