@@ -31,6 +31,10 @@ public final class Constants {
     //General Values
     public static final double kFalconEncoderCPR = 2048; // Encoder Counts per Rotation
 
+
+    /**
+     * Drivetrain Values
+     */
     public static class Drivetrain {
         // Drivetrain Characterization
         public static final double drive_kS = 0.53584;
@@ -68,10 +72,9 @@ public final class Constants {
     /**
      * Intake Values
      */
-    public static final double kPickupSpeed = 0.55;
-
-
-    
+    public class Intake{
+        public static final double kSpeed = 0.55;
+    }
     /**
      * Shooter Values
      */

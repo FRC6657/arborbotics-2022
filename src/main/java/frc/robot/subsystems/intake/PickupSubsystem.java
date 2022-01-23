@@ -33,7 +33,7 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
   }
 
   public void run(){
-    set(Constants.kPickupSpeed);
+    set(Constants.Intake.kSpeed);
   }
 
   public void stop() {

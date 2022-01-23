@@ -14,7 +14,6 @@ import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -44,7 +43,8 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   private WPI_TalonFX mProtagonist, mAntagonist;
 
-  private boolean atTarget = false;
+  private boolean mAtTarget = false;
+  private double mRpmTarget = 0;
 
   public FlywheelSubsystem() {
     mProtagonist = new WPI_TalonFX(Constants.kLeftFlywheelID);
@@ -53,7 +53,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   }
 
-  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Motor Percent", defaultValueNumeric = 0)
+  @Config(rowIndex = 2, columnIndex = 0, width = 2, height = 1, name = "Motor Percent", defaultValueNumeric = 0)
   private void set(double percent) {
     mProtagonist.set(percent);
   }
@@ -76,14 +76,24 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     return (mProtagonist.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kFalconEncoderCPR / 3);
   }
 
-  @Log(name = "Rotations Per Minute")
+  @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "RPM")
   public double getRPM() {
     return Units.radiansPerSecondToRotationsPerMinute(getRadiansPerSecond());
   }
 
-  @Log(name = "At RPM Target")
+  @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "RPM Target")
+  public double getRPMTarget(){
+    return mRpmTarget;
+  }
+
+  @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "RPM Delta")
+  public double getRPMDelta(){
+    return Math.abs(getRPMTarget()-getRPM());
+  }
+
+  @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "At RPM Target")
   public boolean atTarget(){
-    return atTarget;
+    return mAtTarget;
   }
 
   public class AdjustRPM extends CommandBase {
@@ -92,17 +102,18 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
     public AdjustRPM(double rpm) {
       this.mRPM = rpm;
+      mRpmTarget = this.mRPM;
       addRequirements(FlywheelSubsystem.this);
     }
 
     @Override
     public void execute() {
 
-      if(Math.abs(Math.abs(getRPM())-Math.abs(mRPM)) > Constants.kRPMTollerance){
-        atTarget = true;
+      if(getRPMDelta() > Constants.kRPMTollerance){
+        mAtTarget = true;
       }
       else{
-        atTarget = false;
+        mAtTarget = false;
       }
 
       mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRPM)));
@@ -117,13 +128,6 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
       mFlywheelLoop.setNextR(VecBuilder.fill(0.0));
     }
 
-  }
-
-  @Override
-  public void periodic() {
-    SmartDashboard.putNumber("RPM", getRPM());
-    SmartDashboard.putNumber("Position",
-    mProtagonist.getSelectedSensorPosition() * (2.0 * Math.PI / Constants.kFalconEncoderCPR / 3));
   }
 
 }
