@@ -4,22 +4,58 @@
 
 package frc.FRC6657.subsystems;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
+import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
+import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
+import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 
 public class SuperStructure extends SubsystemBase {
   
   public final DrivetrainSubsystem drivetrain;
   public final PickupSubsystem pickup;
+  public final ExtensionSubsystem intakeExtension;
+  public final FlywheelSubsystem flywheel;
+  public final AcceleratorSubsystem accelerator;
   
 
   public SuperStructure(
     DrivetrainSubsystem drivetrain,
-    PickupSubsystem pickup
-   
+    PickupSubsystem pickup,
+    ExtensionSubsystem intakeExtension,
+    FlywheelSubsystem flywheel,
+    AcceleratorSubsystem accelerator
   ) {
     this.drivetrain = drivetrain;
     this.pickup = pickup;
+    this.intakeExtension = intakeExtension;
+    this.flywheel = flywheel;
+    this.accelerator = accelerator;
   }
+
+  public class RunIntakeCommand extends SequentialCommandGroup {
+    public RunIntakeCommand(){
+      addRequirements(SuperStructure.this);
+      addCommands(
+        new InstantCommand(intakeExtension::toggleState),
+        new InstantCommand(pickup::run)
+      );
+    }
+  }
+
+  public class StopIntakeCommand extends SequentialCommandGroup{
+    public StopIntakeCommand(){
+      addRequirements(SuperStructure.this);
+      addCommands(
+        new WaitCommand(0.25),
+        new InstantCommand(intakeExtension::toggleState),
+        new InstantCommand(pickup::stop)
+      );
+    }
+  }
+
 }
