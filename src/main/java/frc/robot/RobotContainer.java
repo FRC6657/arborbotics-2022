@@ -33,8 +33,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     new JoystickButton(mDriver, XboxController.Button.kA.value)
-        .whenPressed(mFlywheelSubsystem.new AdjustRPM(2000)
-            .withInterrupt(() -> mDriver.getBButton()));
+        .whenPressed(mFlywheelSubsystem.new AdjustRPM(0));
+    new JoystickButton(mDriver, XboxController.Button.kB.value).whenPressed(mFlywheelSubsystem.new AdjustRPM(500));
     new JoystickButton(mDriver, XboxController.Button.kX.value).whenPressed(
         new InstantCommand(mFlywheelSubsystem::run, mFlywheelSubsystem).withInterrupt(() -> mDriver.getYButton()));
 

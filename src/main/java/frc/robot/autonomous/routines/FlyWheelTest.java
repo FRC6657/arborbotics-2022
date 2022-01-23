@@ -12,7 +12,7 @@ public class FlyWheelTest extends SequentialCommandGroup {
   public FlyWheelTest(FlywheelSubsystem mFlywheelSubsystem) {
     addRequirements(mFlywheelSubsystem);
     addCommands(
-      mFlywheelSubsystem.new AdjustRPM(500)
+      mFlywheelSubsystem.new AdjustRPM(2000)
     );
   }
 }
