@@ -4,16 +4,31 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
+import frc.robot.subsystems.shooter.FlywheelSubsystem;
 
 public class SuperStructure extends SubsystemBase {
   
   public final DrivetrainSubsystem drivetrain;
+  public final FlywheelSubsystem flywheel;
 
   public SuperStructure(
-    DrivetrainSubsystem drivetrain
+    DrivetrainSubsystem drivetrain,
+    FlywheelSubsystem flywheel
   ) {
     this.drivetrain = drivetrain;
+    this.flywheel = flywheel;
+  }
+
+  public class ShootCommand extends SequentialCommandGroup{
+
+    public ShootCommand(){
+      addRequirements(SuperStructure.this);
+      addCommands(
+        
+      );
+    }
   }
 }

@@ -44,6 +44,8 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   private WPI_TalonFX mProtagonist, mAntagonist;
 
+  private boolean atTarget = false;
+
   public FlywheelSubsystem() {
     mProtagonist = new WPI_TalonFX(Constants.kLeftFlywheelID);
     /* mAntagonist = new WPI_TalonFX(Constants.kRightFlywheelID); */
@@ -54,10 +56,6 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Motor Percent", defaultValueNumeric = 0)
   private void set(double percent) {
     mProtagonist.set(percent);
-  }
-
-  public void run() {
-    set(.2);
   }
 
   public void configureMotors() {
@@ -78,9 +76,14 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     return (mProtagonist.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kEncoderCPR / 3);
   }
 
-  @Log(width = 2, height = 1, name = "Rotations Per Minute")
+  @Log(name = "Rotations Per Minute")
   public double getRPM() {
     return Units.radiansPerSecondToRotationsPerMinute(getRadiansPerSecond());
+  }
+
+  @Log(name = "At RPM Target")
+  public boolean atTarget(){
+    return atTarget;
   }
 
   public class AdjustRPM extends CommandBase {
@@ -94,6 +97,14 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
     @Override
     public void execute() {
+
+      if(Math.abs(Math.abs(getRPM())-Math.abs(mRPM)) > Constants.kRPMTollerance){
+        atTarget = true;
+      }
+      else{
+        atTarget = false;
+      }
+
       mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRPM)));
       mFlywheelLoop.correct(VecBuilder.fill(getRadiansPerSecond()));
       mFlywheelLoop.predict(0.020);
@@ -112,7 +123,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   public void periodic() {
     SmartDashboard.putNumber("RPM", getRPM());
     SmartDashboard.putNumber("Position",
-        mProtagonist.getSelectedSensorPosition() * (2.0 * Math.PI / Constants.kEncoderCPR / 3));
+    mProtagonist.getSelectedSensorPosition() * (2.0 * Math.PI / Constants.kEncoderCPR / 3));
   }
 
 }

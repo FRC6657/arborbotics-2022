@@ -40,7 +40,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.custom.SendablePigeonIMU;
 import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
@@ -296,58 +295,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity")
   public double getRightVelocity(){
     return mFrontLeft.getSelectedSensorVelocity() * Constants.kEncoderCountToMeters * 10;
-  }
-
-  /**
-   * Get temperature of the front left motor in celsius
-   */
-  @Log.Dial(rowIndex = 0, columnIndex = 4, width = 2, height = 2, name = "FL Temp", max = 110, min = 20, showValue = false)
-  public double getFrontLeftTemp(){
-    return mFrontLeft.getTemperature();
-  }
-
-  /**
-   * Get temperature of the front right motor in celsius
-   */
-  @Log.Dial(rowIndex = 0, columnIndex = 6, width = 2, height = 2, name = "FR Temp", max = 110, min = 20, showValue = false)
-  public double getFrontRightTemp(){
-    return mFrontRight.getTemperature();
-  }
-
-  /**
-   * Get temperature of the back left motor in celsius
-   */
-  @Log.Dial(rowIndex = 2, columnIndex = 4, width = 2, height = 2, name = "BL Temp", max = 110, min = 20, showValue = false)
-  public double getBackLeftTemp(){
-    return mBackLeft.getTemperature();
-  }
-
-  /**
-   * Get temperature of the back right motor in celsius
-   */
-  @Log.Dial(rowIndex = 2, columnIndex = 6, width = 2, height = 2, name = "BR Temp", max = 110, min = 20, showValue = false)
-  public double getBackRightTemp(){
-    return mBackRight.getTemperature();
-  }
-
-  /**
-   * Change kV
-   * @param KV new kV
-   */
-  @Config(rowIndex = 2, columnIndex = 2, width = 2, height = 1, name = "kV", defaultValueNumeric = Constants.kV)
-  public void setKV(double KV){
-    kV = KV;
-    mFeedforward = new SimpleMotorFeedforward(kS, kV);
-  }
-
-  /**
-   * Change kS
-   * @param KS new kS
-   */
-  @Config(rowIndex = 3, columnIndex = 2, width = 2, height = 1, name = "kS", defaultValueNumeric = Constants.kS)
-  public void setKS(double KS){
-    kS = KS;
-    mFeedforward = new SimpleMotorFeedforward(kS, kV);
   }
 
   /**

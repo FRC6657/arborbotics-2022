@@ -57,6 +57,7 @@ public final class Constants {
 
      //General
      public static final double kSpinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500);
+     public static final double kRPMTollerance = 50;
 
      //Characterization //TODO Do this
      public static final double kFlywheelKv = 0.051151;
