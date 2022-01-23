@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.drivetrain;
+package frc.FRC6657.subsystems.drivetrain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +38,8 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import frc.robot.Constants;
-import frc.robot.custom.ctre.SendablePigeonIMU;
+import frc.FRC6657.Constants;
+import frc.FRC6657.custom.ctre.SendablePigeonIMU;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 

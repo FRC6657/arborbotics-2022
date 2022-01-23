@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;
+package frc.FRC6657;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -52,7 +52,7 @@ public final class Constants {
         // Drivetrain Values
         public static final double kRobotWeight = Units.lbsToKilograms(40);
         public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides
-        public static final double kGearRatio = 10.71; // Drive Gearbox Ratio
+        public static final double kGearRatio = 75/7; // Drive Gearbox Ratio
         public static final double kWheelRadius = Units.inchesToMeters(3); // Drive wheel Radius
         public static final double kDistancePerPulse = (2 * Math.PI * kWheelRadius) / (kFalconEncoderCPR * kGearRatio); // Conversion between Counts and Meters
         public static final double kMaxSpeed = 3.5; // Meters per second

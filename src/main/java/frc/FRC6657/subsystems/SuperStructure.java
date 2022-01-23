@@ -2,11 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.FRC6657.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
-import frc.robot.subsystems.intake.PickupSubsystem;
+import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
+import frc.FRC6657.subsystems.intake.PickupSubsystem;
 
 public class SuperStructure extends SubsystemBase {
   

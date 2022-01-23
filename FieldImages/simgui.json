@@ -5,21 +5,6 @@
         "header": {
           "open": true
         }
-      },
-      "Talon SRX[6]": {
-        "header": {
-          "open": true
-        }
-      }
-    },
-    "Solenoids": {
-      "0": {
-        "header": {
-          "open": true
-        }
-      },
-      "window": {
-        "visible": true
       }
     }
   },
@@ -29,7 +14,6 @@
       "/LiveWindow/DrivetrainSubsystem": "Subsystem",
       "/LiveWindow/FlywheelSubsystem": "Subsystem",
       "/LiveWindow/PickupSubsystem": "Subsystem",
-      "/LiveWindow/PivotSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon IMU [5]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
@@ -38,20 +22,15 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
-        "Robot": {
-          "style": "Box/Image"
-        },
         "bottom": 900,
         "height": 8.229599952697754,
         "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
         "left": 74,
         "right": 1774,
         "robot-path": {
-          "arrowSize": 0,
           "arrows": false,
-          "selectable": false,
           "style": "Line",
-          "weight": 2.0
+          "weight": 1.0
         },
         "top": 50,
         "trajectory": {
@@ -64,7 +43,6 @@
             0.0,
             255.0
           ],
-          "selectable": false,
           "style": "Line",
           "weight": 2.0
         },
@@ -74,8 +52,5 @@
         }
       }
     }
-  },
-  "NetworkTables View": {
-    "visible": false
   }
 }
