@@ -20,6 +20,8 @@ public final class Constants {
     public static final int kBackLeftID = 3;
     public static final int kBackRightID = 4;
     public static final int kPigeonID = 5;
+    public static final int kPickupID = 6;
+    public static final int kPCMID = 7;
 
 
     //Drivetrain Characterization
@@ -52,5 +54,14 @@ public final class Constants {
         kWheelRadius,
         kTrackWidth,
         null);
+  
+    public static final double kEncoderCountToMeters =  (2 * Math.PI * kWheelRadius)/(kEncoderCPR*kGearRatio); //Conversion between Counts and Meters
+    public static final double kMaxSpeed = 1.5; //Meters per second
+    public static final double kMaxAccel = kMaxSpeed; //Meters per second per second
+
+    //Intake Constants
+    public static final double kPivotSpeed = .5;
+    public static final double kPickupSpeed = 0.5;
+    public static final double kLimitValue = 0.5;
 
 }
