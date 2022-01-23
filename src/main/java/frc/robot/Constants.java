@@ -59,8 +59,8 @@ public final class Constants {
      public static final double kSpinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500);
 
      //Characterization //TODO Do this
-     public static final double kFlywheelKv = 0.023;
-     public static final double kFlywheelKa = 0.001;
+     public static final double kFlywheelKv = 0.051151;
+     public static final double kFlywheelKa = 0.0024487;
 
      public static final LinearSystem<N1, N1, N1> kFlywheelPlant =
      LinearSystemId.identifyVelocitySystem(kFlywheelKv, kFlywheelKa);

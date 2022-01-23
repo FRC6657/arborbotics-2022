@@ -15,11 +15,16 @@ import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
-public class FlywheelSubsystem extends SubsystemBase {
+public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   // The observer fuses our encoder data and voltage inputs to reject noise.
   private final KalmanFilter<N1, N1, N1> mFlywheelObserver = new KalmanFilter<>(
@@ -43,23 +48,41 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   public FlywheelSubsystem() {
     mProtagonist = new WPI_TalonFX(Constants.kLeftFlywheelID);
-    mAntagonist = new WPI_TalonFX(Constants.kRightFlywheelID);
+    /* mAntagonist = new WPI_TalonFX(Constants.kRightFlywheelID); */
     configureMotors();
 
   }
 
+  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Motor Percent", defaultValueNumeric = 0)
+  private void set(double percent) {
+    mProtagonist.set(percent);
+  }
+
+  public void run() {
+    set(.2);
+  }
+
   public void configureMotors() {
-    mProtagonist.setInverted(false);
+    mProtagonist.setInverted(true);
     mProtagonist.setNeutralMode(NeutralMode.Coast);
 
-    mAntagonist.follow(mProtagonist);
-    mAntagonist.setInverted(InvertType.OpposeMaster);
-    mAntagonist.setNeutralMode(NeutralMode.Coast);
+    /*
+     * mAntagonist.follow(mProtagonist);
+     * mAntagonist.setInverted(InvertType.OpposeMaster);
+     * mAntagonist.setNeutralMode(NeutralMode.Coast);
+     */
+
+     mProtagonist.setSelectedSensorPosition(0);
 
   }
 
   public double getRadiansPerSecond() {
-    return (mProtagonist.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kEncoderCountToMeters);
+    return (mProtagonist.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kEncoderCPR / 3);
+  }
+
+  @Log(width = 2, height = 1, name = "Rotations Per Minute")
+  public double getRPM() {
+    return Units.radiansPerSecondToRotationsPerMinute(getRadiansPerSecond());
   }
 
   public class AdjustRPM extends CommandBase {
@@ -86,4 +109,12 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
   }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("RPM", getRPM());
+    SmartDashboard.putNumber("Position",
+        mProtagonist.getSelectedSensorPosition() * (2.0 * Math.PI / Constants.kEncoderCPR / 3));
+  }
+
 }
