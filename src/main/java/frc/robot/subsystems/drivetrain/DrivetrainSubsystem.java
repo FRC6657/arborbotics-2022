@@ -37,11 +37,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
-import frc.robot.custom.SendablePigeonIMU;
+import frc.robot.custom.ctre.SendablePigeonIMU;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -96,19 +95,19 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mPigeonIMU.reset();
 
     //Fancy Stuff
-    mKinematics = new DifferentialDriveKinematics(Constants.kTrackWidth);
+    mKinematics = new DifferentialDriveKinematics(Constants.Drivetrain.kTrackWidth);
     mOdometry = new DifferentialDriveOdometry(mPigeonIMU.getRotation2d());
 
     //Fancier Stuff
-    mFeedForward = Constants.kFeedForward;
-    mPIDController = Constants.kDrivePIDController;
+    mFeedForward = Constants.Drivetrain.kFeedForward;
+    mPIDController = Constants.Drivetrain.kDrivePIDController;
 
     //Field Visualization
     SmartDashboard.putData(mField);
 
     //Simulation Stuff
     if(RobotBase.isSimulation()){
-      mDrivetrainSim = Constants.kDrivetrainSim;
+      mDrivetrainSim = Constants.Drivetrain.kSim;
       mPigeonIMUSim = mPigeonIMU.getSimCollection();
       mLeftSim = mFrontLeft.getSimCollection();
       mRightSim = mFrontRight.getSimCollection();
@@ -176,7 +175,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   public void resetOdometry(Pose2d pose) {
     
     if(RobotBase.isSimulation()){
-      mDrivetrainSim = Constants.kDrivetrainSim;
+      mDrivetrainSim = Constants.Drivetrain.kSim;
     }
 
     resetEncoders();
@@ -205,6 +204,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * 
    */
 
+  /**
+   * Sets motor voltage based on left and right velocities.
+   * @param speeds Left and Right Velocities.
+   */
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
     final double leftFeedforward = mFeedForward.calculate(speeds.leftMetersPerSecond);
     final double rightFeedforward = mFeedForward.calculate(speeds.rightMetersPerSecond);
@@ -216,10 +219,14 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
   }
 
+  /**
+   * Sets motor voltage based on left and right signals which get scaled to a max speed
+   * @param speeds Left and Right speeds input -1 to 1
+   */
   public void setSpeeds(WheelSpeeds speeds) {
 
-    speeds.left *= Constants.kMaxSpeed;
-    speeds.right *= Constants.kMaxSpeed;
+    speeds.left *= Constants.Drivetrain.kMaxSpeed;
+    speeds.right *= Constants.Drivetrain.kMaxSpeed;
 
     final double leftFeedforward = mFeedForward.calculate(speeds.left);
     final double rightFeedforward = mFeedForward.calculate(speeds.right);
@@ -255,7 +262,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Left Distance")
   public double getLeftMeters() {
-    return (int) mFrontLeft.getSelectedSensorPosition() * Constants.kDistancePerPulse;
+    return mFrontLeft.getSelectedSensorPosition() * Constants.Drivetrain.kDistancePerPulse;
   }
 
   /**
@@ -263,7 +270,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Right Distance")
   public double getRightMeters() {
-    return (int) mFrontRight.getSelectedSensorPosition() * Constants.kDistancePerPulse;
+    return mFrontRight.getSelectedSensorPosition() * Constants.Drivetrain.kDistancePerPulse;
   }
 
   /**
@@ -271,7 +278,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Left Velocity")
   public double getLeftVelocity() {
-    return mFrontLeft.getSelectedSensorVelocity() * 10 * Constants.kDistancePerPulse;
+    return mFrontLeft.getSelectedSensorVelocity() * 10 * Constants.Drivetrain.kDistancePerPulse;
   }
 
   /**
@@ -279,7 +286,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity")
   public double getRightVelocity() {
-    return mFrontRight.getSelectedSensorVelocity() * 10 *Constants.kDistancePerPulse;
+    return mFrontRight.getSelectedSensorVelocity() * 10 * Constants.Drivetrain.kDistancePerPulse;
   }
 
   /**
@@ -318,12 +325,20 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     return 0;
   }
 
-  @Log.Dial(rowIndex = 2, columnIndex = 2, width = 1, height = 1, name = "Left Vel", min = -Constants.kMaxSpeed, max = Constants.kMaxSpeed, showValue = false)
+  /**
+   * This is mainly to have a velocity gauge on shuffleboard.
+   * @return Same as getLeftVelocity()
+   */
+  @Log.Dial(rowIndex = 2, columnIndex = 2, width = 1, height = 1, name = "Left Vel", min = -Constants.Drivetrain.kMaxSpeed, max = Constants.Drivetrain.kMaxSpeed, showValue = false)
   public double leftVelocityGauge(){
     return getLeftVelocity();
   }
 
-  @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.kMaxSpeed, max = Constants.kMaxSpeed, showValue = false)
+  /**
+   * This is mainly to have a velocity gauge on shuffleboard.
+   * @return Same as getRightVelocity()
+   */
+  @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.Drivetrain.kMaxSpeed, max = Constants.Drivetrain.kMaxSpeed, showValue = false)
   public double rightVelocityGauge(){
     return getRightVelocity();
   }
@@ -364,6 +379,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
       stop();
     }
   }
+  
+  /**
+   * Command to follow a given trajectory
+   */
   public class TrajectoryFollowerCommand extends CommandBase {
 
     private final Timer timer = new Timer();
@@ -414,14 +433,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     }
   }
 
-  public class ResetPosition extends InstantCommand{
-    @Override
-    public void initialize() {
-      resetOdometry(new Pose2d());
-    }
-  }
-
-
   /*
    *
    * WPILib Methods
@@ -442,10 +453,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   
     mDrivetrainSim.update(0.02);
 
-    mLeftSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getLeftPositionMeters() / Constants.kDistancePerPulse));
-    mRightSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getRightPositionMeters() / Constants.kDistancePerPulse));
-    mLeftSim.setIntegratedSensorVelocity((int) (mDrivetrainSim.getLeftVelocityMetersPerSecond() / (10 * Constants.kDistancePerPulse)));
-    mRightSim.setIntegratedSensorVelocity((int) (mDrivetrainSim.getRightVelocityMetersPerSecond() / (10 * Constants.kDistancePerPulse)));
+    mLeftSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getLeftPositionMeters() / Constants.Drivetrain.kDistancePerPulse));
+    mRightSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getRightPositionMeters() / Constants.Drivetrain.kDistancePerPulse));
+    mLeftSim.setIntegratedSensorVelocity((int) (mDrivetrainSim.getLeftVelocityMetersPerSecond() / (10 * Constants.Drivetrain.kDistancePerPulse)));
+    mRightSim.setIntegratedSensorVelocity((int) (mDrivetrainSim.getRightVelocityMetersPerSecond() / (10 * Constants.Drivetrain.kDistancePerPulse)));
 
     mPigeonIMUSim.setRawHeading(mDrivetrainSim.getHeading().getDegrees());
   }

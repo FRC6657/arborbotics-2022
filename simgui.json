@@ -1,0 +1,55 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "Talon FX[3]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/DrivetrainSubsystem": "Subsystem",
+      "/LiveWindow/PickupSubsystem": "Subsystem",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/Pigeon IMU [5]": "Gyro",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/Shuffleboard/DrivetrainSubsystem/Gyro": "Gyro",
+      "/SmartDashboard/Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "bottom": 900,
+        "height": 8.229599952697754,
+        "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
+        "left": 74,
+        "right": 1774,
+        "robot-path": {
+          "arrows": false,
+          "style": "Line",
+          "weight": 1.0
+        },
+        "top": 50,
+        "trajectory": {
+          "arrowSize": 3,
+          "arrowWeight": 1.0,
+          "arrows": false,
+          "color": [
+            240.00001525878906,
+            255.0,
+            0.0,
+            255.0
+          ],
+          "style": "Line",
+          "weight": 2.0
+        },
+        "width": 16.459199905395508,
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  }
+}
