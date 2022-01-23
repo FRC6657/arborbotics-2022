@@ -41,7 +41,9 @@
     "windows": {
       "/SmartDashboard/Field": {
         "Robot": {
-          "style": "Box/Image"
+          "length": 0.9857739806175232,
+          "style": "Box/Image",
+          "width": 0.8508999943733215
         },
         "bottom": 900,
         "height": 8.229599952697754,
