@@ -2,6 +2,8 @@ package frc.FRC6657.autonomous;
 
 import java.util.List;
 
+import com.pathplanner.lib.PathPlanner;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -46,7 +48,16 @@ public class Trajectories {
 
     public static Trajectory TEST = TEST_p1.concatenate(TEST_p2);
 
-    //public static Trajectory planner = PathPlanner.loadPath("Test Path", 4, 2);
+    public static Trajectory Two_Ball_Far_1 = generateTrajectory(
+        3,
+        2,
+        List.of(
+            new Pose2d(7.75, 2.81, Rotation2d.fromDegrees(249)),
+            new Pose2d(7.62, 0.68, Rotation2d.fromDegrees(270))
+        ),
+        false,
+        "2BF1"
+    );
 
     /**
      * 
