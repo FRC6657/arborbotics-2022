@@ -6,7 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 
@@ -22,6 +25,8 @@ public final class Constants {
     public static final int kPigeonID = 5;
     public static final int kPickupID = 6;
     public static final int kPCMID = 7;
+    public static final int kLeftFlywheelID = 8;
+    public static final int kRightFlywheelID = 9;
 
     //General Values
     public static final double kFalconEncoderCPR = 2048; // Encoder Counts per Rotation
@@ -60,7 +65,27 @@ public final class Constants {
                 null);
     }
 
-    // Intake Values
+    /**
+     * Intake Values
+     */
     public static final double kPickupSpeed = 0.55;
+
+
+    
+    /**
+     * Shooter Values
+     */
+
+     //General
+     public static final double kSpinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500);
+     public static final double kRPMTollerance = 50;
+
+     //Characterization
+     public static final double kFlywheelKv = 0.051151;
+     public static final double kFlywheelKa = 0.0024487;
+
+     public static final LinearSystem<N1, N1, N1> kFlywheelPlant =
+     LinearSystemId.identifyVelocitySystem(kFlywheelKv, kFlywheelKa);
+
 
 }
