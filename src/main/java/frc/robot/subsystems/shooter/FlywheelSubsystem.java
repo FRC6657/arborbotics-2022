@@ -36,11 +36,10 @@ public class FlywheelSubsystem extends SubsystemBase {
       VecBuilder.fill(12.0), // Control effort (voltage) tolerance
       0.020);
 
-  private final LinearSystemLoop<N1, N1, N1> mFlywheelLoop =
-      new LinearSystemLoop<>(Constants.kFlywheelPlant, mFlywheelController, mFlywheelObserver, 12.0, 0.020);
+  private final LinearSystemLoop<N1, N1, N1> mFlywheelLoop = new LinearSystemLoop<>(Constants.kFlywheelPlant,
+      mFlywheelController, mFlywheelObserver, 12.0, 0.020);
 
   private WPI_TalonFX mProtagonist, mAntagonist;
-
 
   public FlywheelSubsystem() {
     mProtagonist = new WPI_TalonFX(Constants.kLeftFlywheelID);
@@ -49,7 +48,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   }
 
-  public void configureMotors(){
+  public void configureMotors() {
     mProtagonist.setInverted(false);
     mProtagonist.setNeutralMode(NeutralMode.Coast);
 
@@ -59,7 +58,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   }
 
-  public double getRadiansPerSecond(){
+  public double getRadiansPerSecond() {
     return (mProtagonist.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kEncoderCountToMeters);
   }
 
@@ -67,30 +66,23 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     private double mRPM;
 
-    public AdjustRPM(double rpm){
-
+    public AdjustRPM(double rpm) {
       this.mRPM = rpm;
       addRequirements(FlywheelSubsystem.this);
-
-    }
-
-    @Override
-    public void initialize() {
-      mFlywheelLoop.reset(VecBuilder.fill(getRadiansPerSecond()));
     }
 
     @Override
     public void execute() {
-        mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRPM)));
-        mFlywheelLoop.correct(VecBuilder.fill(getRadiansPerSecond()));
-        mFlywheelLoop.predict(0.020);
-        double mNextVolts = mFlywheelLoop.getU(0);
-        mProtagonist.setVoltage(mNextVolts);
+      mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRPM)));
+      mFlywheelLoop.correct(VecBuilder.fill(getRadiansPerSecond()));
+      mFlywheelLoop.predict(0.020);
+      double mNextVolts = mFlywheelLoop.getU(0);
+      mProtagonist.setVoltage(mRPM == 0 ? 0 : mNextVolts);
     }
 
     @Override
     public void end(boolean interrupted) {
-        mFlywheelLoop.setNextR(VecBuilder.fill(0.0));
+      mFlywheelLoop.setNextR(VecBuilder.fill(0.0));
     }
 
   }
