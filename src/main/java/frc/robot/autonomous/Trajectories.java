@@ -2,14 +2,11 @@ package frc.robot.autonomous;
 
 import java.util.List;
 
-import com.pathplanner.lib.PathPlanner;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.util.Units;
 
 public class Trajectories {
     
