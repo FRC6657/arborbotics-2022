@@ -10,12 +10,13 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.Loggable;
 
-public class PivotSubsystem extends SubsystemBase implements Loggable {
+public class ExtensionSubsystem extends SubsystemBase implements Loggable {
 
-  private final DoubleSolenoid extender = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+  private final DoubleSolenoid mPiston1 = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+  private final DoubleSolenoid mPiston2 = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
 
-  public PivotSubsystem() {
-    configExtender();
+  public ExtensionSubsystem() {
+    setDefaultState();
   }
 
   @Override
@@ -23,12 +24,14 @@ public class PivotSubsystem extends SubsystemBase implements Loggable {
 
   }
 
-  private final void configExtender() {
-    extender.set(Value.kReverse);
+  private final void setDefaultState() {
+    mPiston1.set(Value.kReverse);
+    mPiston2.set(Value.kReverse);
   }
 
-  public final void toggle() {
-    extender.toggle();
+  public final void toggleState() {
+    mPiston1.toggle();
+    mPiston2.toggle();
   }
   
 }

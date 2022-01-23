@@ -12,15 +12,15 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.FRC6657.autonomous.routines.TestAuto;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
+import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
-import frc.FRC6657.subsystems.intake.PivotSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 
 public class RobotContainer {
   
   private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
   private final PickupSubsystem mPickupSubsystem = new PickupSubsystem();
-  private final PivotSubsystem mPivotSubsystem = new PivotSubsystem();
+  private final ExtensionSubsystem mExtensionSubsystem = new ExtensionSubsystem();
   private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
 
   private final XboxController mDriver = new XboxController(0);
@@ -46,7 +46,7 @@ public class RobotContainer {
       .whenReleased(new InstantCommand(mPickupSubsystem::stop, mPickupSubsystem));
 
     new JoystickButton(mDriver, XboxController.Button.kB.value)
-      .whenPressed(new InstantCommand(mPivotSubsystem::toggle, mPivotSubsystem));
+      .whenPressed(new InstantCommand(mExtensionSubsystem::toggleState, mExtensionSubsystem));
 
   }
 
