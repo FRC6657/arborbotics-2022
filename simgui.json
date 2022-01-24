@@ -6,6 +6,11 @@
           "open": true
         }
       },
+      "Talon FX[8]": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon SRX[6]": {
         "header": {
           "open": true
@@ -35,6 +40,7 @@
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon IMU [5]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/VisionSubsystem": "Subsystem",
       "/Shuffleboard/DrivetrainSubsystem/Gyro": "Gyro",
       "/SmartDashboard/Field": "Field2d"
     },
@@ -47,7 +53,7 @@
         },
         "bottom": 900,
         "height": 8.229599952697754,
-        "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
+        "image": "C:\\Users\\Andrew Card\\Desktop\\FRC\\Field2D Images\\2022-field.png",
         "left": 74,
         "right": 1774,
         "robot-path": {

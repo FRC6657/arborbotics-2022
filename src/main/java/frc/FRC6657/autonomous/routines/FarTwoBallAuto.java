@@ -4,32 +4,39 @@
 
 package frc.FRC6657.autonomous.routines;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.FRC6657.autonomous.Trajectories;
 import frc.FRC6657.subsystems.SuperStructure;
-import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
-import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 
 public class FarTwoBallAuto extends SequentialCommandGroup {
 
-  public FarTwoBallAuto(DrivetrainSubsystem mDrivetrainSubsystem, SuperStructure mSuperStructure, FlywheelSubsystem mFlywheelSubsystem) {
-    addRequirements(mDrivetrainSubsystem, mSuperStructure, mFlywheelSubsystem);
+  public FarTwoBallAuto(
+    SuperStructure mSuperStructure
+  ) {
+    addRequirements(
+      mSuperStructure
+    );
     addCommands(
-      mDrivetrainSubsystem.new TrajectoryFollowerCommand(Trajectories.Two_Ball_Far_1, true) //Move to Pickup Ball #2
+      mSuperStructure.drivetrain.new TrajectoryFollowerCommand(Trajectories.Two_Ball_Far_1, true) //Move to Pickup Ball #2
         .beforeStarting(
             mSuperStructure.new RunIntakeCommand() //Extend Intake Before Moving
         )
         .withTimeout(Trajectories.Two_Ball_Far_1.getTotalTimeSeconds()
       ),
-      mDrivetrainSubsystem.new TrajectoryFollowerCommand(Trajectories.Two_Ball_Far_2, false) // Move to firing position
+      mSuperStructure.drivetrain.new TrajectoryFollowerCommand(Trajectories.Two_Ball_Far_2, false) // Move to firing position
         .beforeStarting(
           new ParallelCommandGroup(
             mSuperStructure.new StopIntakeCommand(),
-            mFlywheelSubsystem.new setRPMTarget(500)
+            mSuperStructure.flywheel.new setRPMTarget(500)
           )
         )
-        .withTimeout(Trajectories.Two_Ball_Far_2.getTotalTimeSeconds())
+        .withTimeout(Trajectories.Two_Ball_Far_2.getTotalTimeSeconds()),
+      new ParallelCommandGroup(
+        new InstantCommand(mSuperStructure.vision::toggleLEDs, mSuperStructure)
+      )
     );
   }
 }

@@ -11,6 +11,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
 
@@ -22,7 +23,7 @@ public class VisionSubsystem extends SubsystemBase {
   private double distance;
   private boolean hasTargets;
   public final VisionSupplier visionSupplier = new VisionSupplier();
-  
+
   @Override
   public void periodic() {
     PhotonPipelineResult result = mLimelight.getLatestResult();
@@ -63,16 +64,16 @@ public class VisionSubsystem extends SubsystemBase {
       return hasTargets;
     }
 
-    //Toggles the LL LEDs
-    public void toggleLEDs(){
-      if(mLimelight.getLEDMode() == VisionLEDMode.kOn){
-        mLimelight.setLED(VisionLEDMode.kOff);
-      }
-      else{
-        mLimelight.setLED(VisionLEDMode.kOn);
+    // Toggles the LL LEDs
+    public void toggleLEDs() {
+      if (RobotBase.isReal()) {
+        if(mLimelight.getLEDMode() == VisionLEDMode.kOn){
+          mLimelight.setLED(VisionLEDMode.kOff);
+        }
+        else{
+          mLimelight.setLED(VisionLEDMode.kOn);
+        }
       }
     }
-
   }
-
 }
