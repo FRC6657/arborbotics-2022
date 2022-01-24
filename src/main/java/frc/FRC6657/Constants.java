@@ -107,7 +107,7 @@ public final class Constants {
         public static final FlywheelSim kSim = new FlywheelSim(
             kPlant,
             DCMotor.getFalcon500(1),
-            0.5
+            kRatio
         );
 
     }

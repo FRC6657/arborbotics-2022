@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
-import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
+//import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
@@ -20,7 +20,7 @@ public class SuperStructure extends SubsystemBase {
   
   public final DrivetrainSubsystem drivetrain;
   public final PickupSubsystem pickup;
-  public final ExtensionSubsystem intakeExtension;
+  //public final ExtensionSubsystem intakeExtension;
   public final FlywheelSubsystem flywheel;
   public final AcceleratorSubsystem accelerator;
   public final VisionSupplier vision;
@@ -29,14 +29,14 @@ public class SuperStructure extends SubsystemBase {
   public SuperStructure(
     DrivetrainSubsystem drivetrain,
     PickupSubsystem pickup,
-    ExtensionSubsystem intakeExtension,
+    //ExtensionSubsystem intakeExtension,
     FlywheelSubsystem flywheel,
     AcceleratorSubsystem accelerator,
     VisionSupplier vision
   ) {
     this.drivetrain = drivetrain;
     this.pickup = pickup;
-    this.intakeExtension = intakeExtension;
+    //this.intakeExtension = intakeExtension;
     this.flywheel = flywheel;
     this.accelerator = accelerator;
     this.vision = vision;
@@ -44,9 +44,9 @@ public class SuperStructure extends SubsystemBase {
 
   public class RunIntakeCommand extends SequentialCommandGroup {
     public RunIntakeCommand(){
-      addRequirements(intakeExtension, pickup, SuperStructure.this);
+      addRequirements(pickup, SuperStructure.this);
       addCommands(
-        new InstantCommand(intakeExtension::toggleState),
+        //new InstantCommand(intakeExtension::toggleState),
         new InstantCommand(pickup::run)
       );
     }
@@ -54,9 +54,9 @@ public class SuperStructure extends SubsystemBase {
 
   public class StopIntakeCommand extends SequentialCommandGroup{
     public StopIntakeCommand(){
-      addRequirements(intakeExtension, pickup, SuperStructure.this);
+      addRequirements(pickup, SuperStructure.this);
       addCommands(
-        new InstantCommand(intakeExtension::toggleState),
+        //new InstantCommand(intakeExtension::toggleState),
         new InstantCommand(pickup::stop)
       );
     }

@@ -14,7 +14,7 @@ import frc.FRC6657.autonomous.routines.FarTwoBallAuto;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.subsystems.SuperStructure;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
-import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
+//import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 //import frc.FRC6657.subsystems.vision.VisionSubsystem;
@@ -23,7 +23,7 @@ public class RobotContainer {
   
   private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
   private final PickupSubsystem mPickupSubsystem = new PickupSubsystem();
-  private final ExtensionSubsystem mExtensionSubsystem = new ExtensionSubsystem();
+  //private final ExtensionSubsystem mExtensionSubsystem = new ExtensionSubsystem();
   private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
   //private final AcceleratorSubsystem mAcceleratorSubsystem = new AcceleratorSubsystem();
   //private final VisionSubsystem mVisionSubsystem = new VisionSubsystem();
@@ -31,7 +31,7 @@ public class RobotContainer {
   private final SuperStructure mSuperStructure = new SuperStructure(
     mDrivetrainSubsystem,
     mPickupSubsystem,
-    mExtensionSubsystem,
+    //mExtensionSubsystem,
     mFlywheelSubsystem,
     null,//mAcceleratorSubsystem, 
     null//mVisionSubsystem.visionSupplier
@@ -59,9 +59,6 @@ public class RobotContainer {
       .whenPressed(mSuperStructure.new RunIntakeCommand())
       .whenReleased(new WaitCommand(0.25).andThen(mSuperStructure.new StopIntakeCommand())
     );
-    new JoystickButton(mDriver, XboxController.Button.kB.value)
-      .whenPressed(new InstantCommand(mExtensionSubsystem::toggleState, mExtensionSubsystem));
-
     new JoystickButton(mDriver, XboxController.Button.kY.value)
       .whenPressed(mSuperStructure.flywheel.new setRPMTarget(1000))
       .whenReleased(mSuperStructure.flywheel.new setRPMTarget(0)
