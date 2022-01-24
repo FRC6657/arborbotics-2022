@@ -38,6 +38,7 @@
       "/LiveWindow/PivotSubsystem": "Subsystem",
       "/LiveWindow/SuperStructure": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon IMU [5]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/VisionSubsystem": "Subsystem",

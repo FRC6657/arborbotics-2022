@@ -99,7 +99,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     //Fancier Stuff
     mFeedForward = Constants.Drivetrain.kFeedForward;
-    mPIDController = Constants.Drivetrain.kDrivePIDController;
+    mPIDController = Constants.Drivetrain.kLinearPIDController;
 
     //Field Visualization
     SmartDashboard.putData(mField);

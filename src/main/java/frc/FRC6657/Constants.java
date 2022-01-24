@@ -44,25 +44,26 @@ public final class Constants {
         public static final double drive_kS = 0.53584;
         public static final double drive_kV = 2.2764;
         public static final double drive_kA = 0.73118;
-        public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(drive_kS, drive_kV,
-                drive_kA);
+        public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(drive_kS, drive_kV, drive_kA);
 
         // Drivetrain PID
-        public static final double drive_kP = 3.1976;
-        public static final double drive_kI = 0;
-        public static final double drive_kD = 0;
-        public static final PIDController kDrivePIDController = new PIDController(drive_kP, drive_kI, drive_kD);
+        public static final double drive_linear_kP = 3.1976;
+        public static final double drive_linear_kI = 0;
+        public static final double drive_linear_kD = 0;
+
+        public static final double drive_angular_kP = 0; //TODO Run angular char
+        public static final double drive_angular_kI = 0;
+        public static final double drive_angular_kD = 0;
+
+        public static final PIDController kLinearPIDController = new PIDController(drive_linear_kP, drive_linear_kI, drive_linear_kD);
+        public static final PIDController kAngularPIDController = new PIDController(drive_angular_kP, drive_angular_kI, drive_angular_kD);
 
         // Drivetrain Values
         public static final double kRobotWeight = Units.lbsToKilograms(40);
         public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides
         public static final double kGearRatio = 75 / 7; // Drive Gearbox Ratio
         public static final double kWheelRadius = Units.inchesToMeters(3); // Drive wheel Radius
-        public static final double kDistancePerPulse = (2 * Math.PI * kWheelRadius) / (kFalconEncoderCPR * kGearRatio); // Conversion
-                                                                                                                        // between
-                                                                                                                        // Counts
-                                                                                                                        // and
-                                                                                                                        // Meters
+        public static final double kDistancePerPulse = (2 * Math.PI * kWheelRadius) / (kFalconEncoderCPR * kGearRatio); // Conversion between Counts and Meters
         public static final double kMaxSpeed = 3.5; // Meters per second
         public static final double kMaxAccel = kMaxSpeed * 3; // Meters per second per second
 
