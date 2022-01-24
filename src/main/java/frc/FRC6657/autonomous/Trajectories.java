@@ -9,6 +9,9 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 
 public class Trajectories {
     
+    /**
+     * This trajectory is only used to pre-generate all of the trajectories.
+     */
     public static Trajectory GENERATE = generateTrajectory(
         1,
         1,
@@ -20,6 +23,9 @@ public class Trajectories {
         "GENERATE"
     );
 
+    /**
+     * Part 1 of a simple trajectory test
+     */
     public static Trajectory TEST_p1 = generateTrajectory(
         3,
         2,
@@ -30,8 +36,9 @@ public class Trajectories {
         false,
         "Test"
     );
-
-    
+    /**
+     * Part 2 of a simple trajectory test
+     */
     public static Trajectory TEST_p2= generateTrajectory(
         3,
         2,
@@ -42,9 +49,14 @@ public class Trajectories {
         true,
         "Test"
     );
-
+    /**
+     * Concatenation of the 2 test trajectory parts
+     */
     public static Trajectory TEST = TEST_p1.concatenate(TEST_p2);
 
+    /**
+     * Part 1 of a 2 ball auto starting away from the hangar
+     */
     public static Trajectory Two_Ball_Far_1 = generateTrajectory(
         3,
         3,
@@ -56,6 +68,9 @@ public class Trajectories {
         "2BF1"
     );
 
+    /**
+     * Part 2 of a 2 ball auto starting away from the hangar
+     */
     public static Trajectory Two_Ball_Far_2 = generateTrajectory(
         3,
         2,
@@ -66,8 +81,6 @@ public class Trajectories {
         true,
         "2BF2"
     );
-
-    public static Trajectory Two_Ball_Far = Two_Ball_Far_1.concatenate(Two_Ball_Far_2);
 
     /**
      * 
