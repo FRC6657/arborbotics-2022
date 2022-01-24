@@ -51,7 +51,7 @@ public class Trajectories {
 
     public static Trajectory Two_Ball_Far_1 = generateTrajectory(
         3,
-        2,
+        3,
         List.of(
             new Pose2d(7.627, 1.929, Rotation2d.fromDegrees(-90)),
             new Pose2d(7.62, 0.68, Rotation2d.fromDegrees(-90))
@@ -62,7 +62,7 @@ public class Trajectories {
 
     public static Trajectory Two_Ball_Far_2 = generateTrajectory(
         3,
-        1.5,
+        2,
         List.of(
             new Pose2d(7.62, 0.68, Rotation2d.fromDegrees(-90)),
             new Pose2d(6, 0.88, Rotation2d.fromDegrees(55.3))

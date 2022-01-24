@@ -8,8 +8,11 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.FRC6657.autonomous.routines.FarTwoBallAuto;
+import frc.FRC6657.autonomous.routines.TestAuto;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.subsystems.SuperStructure;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
@@ -50,7 +53,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(mDriver, XboxController.Button.kA.value)
       .whenPressed(mSuperStructure.new RunIntakeCommand())
-      .whenReleased(mSuperStructure.new StopIntakeCommand()
+      .whenReleased(new WaitCommand(0.25).andThen(mSuperStructure.new StopIntakeCommand())
     );
 
     new JoystickButton(mDriver, XboxController.Button.kB.value)
@@ -65,5 +68,6 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return new FarTwoBallAuto(mDrivetrainSubsystem, mSuperStructure, mFlywheelSubsystem);
+    //return new TestAuto(mDrivetrainSubsystem);
   }
 }

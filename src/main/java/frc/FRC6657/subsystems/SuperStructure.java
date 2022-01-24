@@ -56,14 +56,13 @@ public class SuperStructure extends SubsystemBase {
     public StopIntakeCommand(){
       addRequirements(SuperStructure.this);
       addCommands(
-        new WaitCommand(0.25),
         new InstantCommand(intakeExtension::toggleState),
         new InstantCommand(pickup::stop)
       );
     }
   }
 
-  public class ShootCommand extends CommandBase{
+  public class ShootCommand extends SequentialCommandGroup{
     public ShootCommand(){
       addRequirements(SuperStructure.this);
     }
