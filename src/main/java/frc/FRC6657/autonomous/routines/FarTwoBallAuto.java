@@ -18,15 +18,15 @@ public class FarTwoBallAuto extends SequentialCommandGroup {
     addCommands(
       mDrivetrainSubsystem.new TrajectoryFollowerCommand(Trajectories.Two_Ball_Far_1, true) //Move to Pickup Ball #2
         .beforeStarting(
-          mSuperStructure.new RunIntakeCommand() //Extend Intake Before Moving
+            mSuperStructure.new RunIntakeCommand() //Extend Intake Before Moving
         )
         .withTimeout(Trajectories.Two_Ball_Far_1.getTotalTimeSeconds()
       ),
-      mDrivetrainSubsystem.new TrajectoryFollowerCommand(Trajectories.Two_Ball_Far_2, false) //Move to firing position
+      mDrivetrainSubsystem.new TrajectoryFollowerCommand(Trajectories.Two_Ball_Far_2, false) // Move to firing position
         .beforeStarting(
           new ParallelCommandGroup(
-            mSuperStructure.new StopIntakeCommand(), //Stop and retract intake
-            mFlywheelSubsystem.new setRPMTarget(500) //Set Ballpark RPM
+            mSuperStructure.new StopIntakeCommand(),
+            mFlywheelSubsystem.new setRPMTarget(500)
           )
         )
         .withTimeout(Trajectories.Two_Ball_Far_2.getTotalTimeSeconds())

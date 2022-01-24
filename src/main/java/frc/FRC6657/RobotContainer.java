@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.FRC6657.autonomous.routines.*;
+import frc.FRC6657.autonomous.routines.FarTwoBallAuto;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.subsystems.SuperStructure;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
@@ -39,10 +39,6 @@ public class RobotContainer {
         () -> Deadbander.applyLinearScaledDeadband(mDriver.getRightX(),0.1),
         () -> mDriver.getRightBumper()
       )
-    );
-
-    mFlywheelSubsystem.setDefaultCommand(
-      mFlywheelSubsystem.new FlywheelController()
     );
 
     configureButtonBindings();

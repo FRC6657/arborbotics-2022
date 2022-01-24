@@ -7,9 +7,6 @@ package frc.FRC6657.subsystems.shooter;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
-import org.opencv.features2d.FastFeatureDetector;
-
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
@@ -24,7 +21,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
-import frc.FRC6657.Constants.Flywheel;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
@@ -69,9 +65,14 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   }
 
-  @Config(rowIndex = 2, columnIndex = 0, width = 2, height = 1, name = "Motor Percent", defaultValueNumeric = 0)
+  @Config(rowIndex = 2, columnIndex = 0, width = 2, height = 1, name = "Set Motor Percent", defaultValueNumeric = 0)
   private void set(double percent) {
     mProtagonist.set(percent);
+  }
+
+  @Log(rowIndex = 2, columnIndex = 2, width = 2, height = 1, name = "Flywheel Percent")
+  public double getMotorPercent(){
+    return mProtagonist.get();
   }
 
   public void configureMotors() {
@@ -143,28 +144,20 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     }
   }
 
-  public class FlywheelController extends CommandBase {
-
-    public FlywheelController() {
-      addRequirements(FlywheelSubsystem.this);
+  @Override
+  public void periodic() {
+    if(getRPMDelta() < Constants.Flywheel.kRPMTollerance){
+      mAtTarget = true;
+    }
+    else{
+      mAtTarget = false;
     }
 
-    @Override
-    public void execute() {
-
-      if(getRPMDelta() < Constants.Flywheel.kRPMTollerance){
-        mAtTarget = true;
-      }
-      else{
-        mAtTarget = false;
-      }
-
-      mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRpmTarget)));
-      mFlywheelLoop.correct(VecBuilder.fill(getRadiansPerSecond()));
-      mFlywheelLoop.predict(0.020);
-      double mNextVolts = mFlywheelLoop.getU(0);
-      mProtagonist.setVoltage(mRpmTarget == 0 ? 0 : mNextVolts);
-    }
+    mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRpmTarget)));
+    mFlywheelLoop.correct(VecBuilder.fill(getRadiansPerSecond()));
+    mFlywheelLoop.predict(0.020);
+    double mNextVolts = mFlywheelLoop.getU(0);
+    mProtagonist.setVoltage(mRpmTarget == 0 ? 0 : mNextVolts);
   }
 
   @Override
