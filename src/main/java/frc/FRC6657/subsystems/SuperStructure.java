@@ -75,18 +75,14 @@ public class SuperStructure extends SubsystemBase {
     }
   }
 
-  public class TrackCommand extends CommandBase {
+  public class TrackCommand extends SequentialCommandGroup {
 
-    @Override
-    public void execute() {
-      
-    }
-
-    @Override
-    public boolean isFinished() {
-        return true; //return try when in tollerance
+    public TrackCommand(){
+      addRequirements(SuperStructure.this);
+      addCommands(
+        drivetrain.new VisionAimCommand(vision.getYaw(), vision.hasTarget())
+      );
     }
 
   }
-
 }

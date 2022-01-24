@@ -239,12 +239,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
   }
 
-  public void visionAim(double yaw){
-    WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(0, -mAngularPIDController.calculate(yaw,0), false);
-    mFrontLeft.set(speeds.left);
-    mFrontRight.set(speeds.right);
-  }
-
   /**
    * Stops the Drivetrain
    */
@@ -440,6 +434,38 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
       return timer.get() > trajectory.getTotalTimeSeconds();
     }
   }
+
+  public class VisionAimCommand extends CommandBase{
+    
+    public final double error;
+    public final boolean hasTarget;
+
+    public VisionAimCommand(double error, boolean hasTarget){
+      this.error = error;
+      this.hasTarget = hasTarget;
+    }
+
+    @Override
+    public void execute() {
+      if(hasTarget){
+        WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(0, -mAngularPIDController.calculate(error,0), false);
+        mFrontLeft.set(speeds.left);
+        mFrontRight.set(speeds.right);
+      }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+      stop();
+    }
+
+    @Override
+    public boolean isFinished() {
+      return error < Constants.Drivetrain.kAimTollerance || !hasTarget;
+    }
+
+  }
+
 
   /*
    *
