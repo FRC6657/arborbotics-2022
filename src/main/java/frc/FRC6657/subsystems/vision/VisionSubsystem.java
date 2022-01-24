@@ -6,6 +6,7 @@ package frc.FRC6657.subsystems.vision;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
+import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -60,6 +61,16 @@ public class VisionSubsystem extends SubsystemBase {
     // Method to check whether vision has targets
     public boolean hasTarget() {
       return hasTargets;
+    }
+
+    //Toggles the LL LEDs
+    public void toggleLEDs(){
+      if(mLimelight.getLEDMode() == VisionLEDMode.kOn){
+        mLimelight.setLED(VisionLEDMode.kOff);
+      }
+      else{
+        mLimelight.setLED(VisionLEDMode.kOn);
+      }
     }
 
   }
