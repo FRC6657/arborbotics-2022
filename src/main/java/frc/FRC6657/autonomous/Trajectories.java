@@ -1,10 +1,6 @@
 package frc.FRC6657.autonomous;
 
-import java.nio.file.Path;
 import java.util.List;
-
-import com.pathplanner.lib.PathPlanner;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
