@@ -87,7 +87,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   }
 
   public double getRadiansPerSecond() {
-    return (mProtagonist.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kFalconEncoderCPR / 3);
+    return (mProtagonist.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kFalconEncoderCPR / Constants.Flywheel.kRatio);
   }
 
   @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "RPM")
@@ -163,7 +163,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   @Override
   public void simulationPeriodic() {
 
-    mFlywheelSim.setInput(mProtagonist.getBusVoltage());
+    mFlywheelSim.setInput(mProtagonist.get() * RobotController.getInputVoltage());
 
     mFlywheelSim.update(0.02);
 
