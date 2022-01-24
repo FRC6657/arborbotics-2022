@@ -91,9 +91,6 @@
       }
     },
     "Shuffleboard": {
-      "DrivetrainSubsystem": {
-        "open": true
-      },
       "open": true
     }
   },

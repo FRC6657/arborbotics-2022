@@ -10,8 +10,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
+import io.github.oblarg.oblog.Loggable;
 
-public class AcceleratorSubsystem extends SubsystemBase {
+public class AcceleratorSubsystem extends SubsystemBase implements Loggable{
   
   private final WPI_TalonSRX mMotor;
 

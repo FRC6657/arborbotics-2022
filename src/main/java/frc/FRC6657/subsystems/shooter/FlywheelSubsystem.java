@@ -175,7 +175,5 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
     mMotorSim.setBusVoltage(RobotController.getBatteryVoltage());
 
-    SmartDashboard.putNumber("simRPM", mFlywheelSim.getAngularVelocityRPM());
-
   }
 }
