@@ -5,6 +5,7 @@
 package frc.FRC6657.subsystems.shooter;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.Nat;
@@ -14,6 +15,10 @@ import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
@@ -43,6 +48,9 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   private final WPI_TalonFX mProtagonist; //, mAntagonist;
 
+  private TalonFXSimCollection mMotorSim;
+  private FlywheelSim mFlywheelSim;
+
   private boolean mAtTarget = false;
   private double mRpmTarget = 0;
 
@@ -50,6 +58,11 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     mProtagonist = new WPI_TalonFX(Constants.kLeftFlywheelID);
     /* mAntagonist = new WPI_TalonFX(Constants.kRightFlywheelID); */
     configureMotors();
+
+    if(RobotBase.isSimulation()){
+      mMotorSim = mProtagonist.getSimCollection();
+      mFlywheelSim = Constants.Flywheel.kSim;
+    }
 
   }
 
@@ -132,7 +145,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     @Override
     public void execute() {
 
-      if(getRPMDelta() > Constants.Flywheel.kRPMTollerance){
+      if(getRPMDelta() < Constants.Flywheel.kRPMTollerance){
         mAtTarget = true;
       }
       else{
@@ -145,5 +158,24 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
       double mNextVolts = mFlywheelLoop.getU(0);
       mProtagonist.setVoltage(mRpmTarget == 0 ? 0 : mNextVolts);
     }
+  }
+
+  @Override
+  public void simulationPeriodic() {
+
+    mFlywheelSim.setInput(mProtagonist.getBusVoltage());
+
+    mFlywheelSim.update(0.02);
+
+    double flywheelNativeVelocity = mFlywheelSim.getAngularVelocityRPM() * 2048 / (60 * 10) * Constants.Flywheel.kRatio;
+    double flywheelNativePositionDelta = flywheelNativeVelocity*10*0.02;
+
+    mMotorSim.setIntegratedSensorVelocity((int)flywheelNativeVelocity);
+    mMotorSim.addIntegratedSensorPosition((int)flywheelNativePositionDelta);
+
+    mMotorSim.setBusVoltage(RobotController.getBatteryVoltage());
+
+    SmartDashboard.putNumber("simRPM", mFlywheelSim.getAngularVelocityRPM());
+
   }
 }

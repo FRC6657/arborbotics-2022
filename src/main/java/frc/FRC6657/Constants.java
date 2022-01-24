@@ -12,6 +12,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 public final class Constants {
 
@@ -88,12 +89,20 @@ public final class Constants {
         // General
         public static final double kSpinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500);
         public static final double kRPMTollerance = 50;
+        public static final double kRatio = 1/2;
 
         // Characterization
         public static final double kV = 0.051151;
         public static final double kA= 0.0024487;
 
         public static final LinearSystem<N1, N1, N1> kPlant = LinearSystemId.identifyVelocitySystem(kV, kA);
+
+        public static final FlywheelSim kSim = new FlywheelSim(
+            kPlant,
+            DCMotor.getFalcon500(1),
+            0.5
+        );
+
     }
 
     

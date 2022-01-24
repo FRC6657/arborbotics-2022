@@ -87,15 +87,13 @@
         },
         "Talon SRX [6]": {
           "open": true
-        },
-        "open": true
-      },
-      "open": true
+        }
+      }
     },
     "Shuffleboard": {
-      "open": true
-    },
-    "SmartDashboard": {
+      "DrivetrainSubsystem": {
+        "open": true
+      },
       "open": true
     }
   },
