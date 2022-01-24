@@ -34,10 +34,9 @@ public class FarTwoBallAuto extends SequentialCommandGroup {
         )
         .withTimeout(Trajectories.Two_Ball_Far_2.getTotalTimeSeconds()),
       new ParallelCommandGroup(
-        new InstantCommand(mSuperStructure.vision::toggleLEDs, mSuperStructure) //Toggle LL LEDs
+        //new InstantCommand(mSuperStructure.vision::toggleLEDs, mSuperStructure) //Toggle LL LEDs
       )
     );
   }
 }
 
-  

@@ -17,7 +17,7 @@ import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
-import frc.FRC6657.subsystems.vision.VisionSubsystem;
+//import frc.FRC6657.subsystems.vision.VisionSubsystem;
 
 public class RobotContainer {
   
@@ -26,7 +26,7 @@ public class RobotContainer {
   private final ExtensionSubsystem mExtensionSubsystem = new ExtensionSubsystem();
   private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
   //private final AcceleratorSubsystem mAcceleratorSubsystem = new AcceleratorSubsystem();
-  private final VisionSubsystem mVisionSubsystem = new VisionSubsystem();
+  //private final VisionSubsystem mVisionSubsystem = new VisionSubsystem();
   
   private final SuperStructure mSuperStructure = new SuperStructure(
     mDrivetrainSubsystem,
@@ -34,7 +34,7 @@ public class RobotContainer {
     mExtensionSubsystem,
     mFlywheelSubsystem,
     null,//mAcceleratorSubsystem, 
-    mVisionSubsystem.visionSupplier
+    null//mVisionSubsystem.visionSupplier
   );
 
   private final XboxController mDriver = new XboxController(0);
