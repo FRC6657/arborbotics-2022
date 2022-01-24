@@ -44,7 +44,7 @@ public class SuperStructure extends SubsystemBase {
 
   public class RunIntakeCommand extends SequentialCommandGroup {
     public RunIntakeCommand(){
-      addRequirements(SuperStructure.this);
+      addRequirements(intakeExtension, pickup, SuperStructure.this);
       addCommands(
         new InstantCommand(intakeExtension::toggleState),
         new InstantCommand(pickup::run)
@@ -54,7 +54,7 @@ public class SuperStructure extends SubsystemBase {
 
   public class StopIntakeCommand extends SequentialCommandGroup{
     public StopIntakeCommand(){
-      addRequirements(SuperStructure.this);
+      addRequirements(intakeExtension, pickup, SuperStructure.this);
       addCommands(
         new InstantCommand(intakeExtension::toggleState),
         new InstantCommand(pickup::stop)

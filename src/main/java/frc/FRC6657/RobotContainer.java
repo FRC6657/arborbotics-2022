@@ -59,15 +59,13 @@ public class RobotContainer {
       .whenPressed(mSuperStructure.new RunIntakeCommand())
       .whenReleased(new WaitCommand(0.25).andThen(mSuperStructure.new StopIntakeCommand())
     );
-
     new JoystickButton(mDriver, XboxController.Button.kB.value)
       .whenPressed(new InstantCommand(mExtensionSubsystem::toggleState, mExtensionSubsystem));
 
     new JoystickButton(mDriver, XboxController.Button.kY.value)
-      .whenPressed(mFlywheelSubsystem.new setRPMTarget(1000))
-      .whenReleased(mFlywheelSubsystem.new setRPMTarget(0)
+      .whenPressed(mSuperStructure.flywheel.new setRPMTarget(1000))
+      .whenReleased(mSuperStructure.flywheel.new setRPMTarget(0)
     );
-
   }
 
   public Command getAutonomousCommand() {
