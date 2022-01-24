@@ -67,6 +67,7 @@ public final class Constants {
         public static final double kMaxSpeed = 3.5; // Meters per second
         public static final double kMaxAccel = kMaxSpeed * 3; // Meters per second per second
         public static final double kAimTollerance = 3;
+        public static final double kDistanceTollerance = 0.1;
 
         // Default Sim
         public static final DifferentialDrivetrainSim kSim = new DifferentialDrivetrainSim( // Simulation

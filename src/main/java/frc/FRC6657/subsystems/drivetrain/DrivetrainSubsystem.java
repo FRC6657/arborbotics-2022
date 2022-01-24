@@ -437,18 +437,20 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   public class VisionAimCommand extends CommandBase{
     
-    public final double error;
+    public final double turnError;
+    public final double distanceError;
     public final boolean hasTarget;
 
-    public VisionAimCommand(double error, boolean hasTarget){
-      this.error = error;
+    public VisionAimCommand(double turnError, double distanceError, boolean hasTarget){
+      this.turnError = turnError;
+      this.distanceError = distanceError;
       this.hasTarget = hasTarget;
     }
 
     @Override
     public void execute() {
       if(hasTarget){
-        WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(0, -mAngularPIDController.calculate(error,0), false);
+        WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(distanceError, -mAngularPIDController.calculate(turnError,0), false);
         mFrontLeft.set(speeds.left);
         mFrontRight.set(speeds.right);
       }
@@ -461,7 +463,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     @Override
     public boolean isFinished() {
-      return error < Constants.Drivetrain.kAimTollerance || !hasTarget;
+      return (turnError < Constants.Drivetrain.kAimTollerance && distanceError < Constants.Drivetrain.kDistanceTollerance) || !hasTarget;
     }
 
   }

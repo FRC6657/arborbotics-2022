@@ -80,7 +80,7 @@ public class SuperStructure extends SubsystemBase {
     public TrackCommand(){
       addRequirements(SuperStructure.this);
       addCommands(
-        drivetrain.new VisionAimCommand(vision.getYaw(), vision.hasTarget())
+        drivetrain.new VisionAimCommand(vision.getYaw(), vision.getDistance(), vision.hasTarget())
       );
     }
 
