@@ -24,7 +24,7 @@ public class RobotContainer {
   private final ExtensionSubsystem mExtensionSubsystem = new ExtensionSubsystem();
   private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
   
-  private final SuperStructure mSuperStructure = new SuperStructure(mDrivetrainSubsystem, mPickupSubsystem, mExtensionSubsystem, mFlywheelSubsystem, null);
+  private final SuperStructure mSuperStructure = new SuperStructure(mDrivetrainSubsystem, mPickupSubsystem, mExtensionSubsystem, mFlywheelSubsystem, null, null);
 
   private final XboxController mDriver = new XboxController(0);
 
