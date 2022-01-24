@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import org.opencv.features2d.FastFeatureDetector;
+
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
@@ -22,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
+import frc.FRC6657.Constants.Flywheel;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
@@ -73,7 +76,11 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   public void configureMotors() {
     mProtagonist.configFactoryDefault();
-    mProtagonist.setInverted(true);
+    if(RobotBase.isReal()){
+      mProtagonist.setInverted(true);
+    }else{
+      mProtagonist.setInverted(false);
+    }
     mProtagonist.setNeutralMode(NeutralMode.Coast);
 
     /*
