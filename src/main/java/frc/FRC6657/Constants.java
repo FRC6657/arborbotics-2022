@@ -69,13 +69,14 @@ public final class Constants {
 
         // Default Sim
         public static final DifferentialDrivetrainSim kSim = new DifferentialDrivetrainSim( // Simulation
-                DCMotor.getFalcon500(2),
-                kGearRatio,
-                7.5,
-                kRobotWeight,
-                kWheelRadius,
-                kTrackWidth,
-                null);
+            DCMotor.getFalcon500(2),
+            kGearRatio,
+            7.5,
+            kRobotWeight,
+            kWheelRadius,
+            kTrackWidth,
+            null
+        );
     }
 
     /**

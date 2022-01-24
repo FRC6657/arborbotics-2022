@@ -56,7 +56,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private final DifferentialDriveOdometry mOdometry;
 
   private final SimpleMotorFeedforward mFeedForward;
-  private final PIDController mPIDController;
+  private final PIDController mLinearPIDController;
+  private final PIDController mAngularPIDController;
 
   private RamseteController mRamseteController = new RamseteController();
 
@@ -99,7 +100,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     //Fancier Stuff
     mFeedForward = Constants.Drivetrain.kFeedForward;
-    mPIDController = Constants.Drivetrain.kLinearPIDController;
+    mLinearPIDController = Constants.Drivetrain.kLinearPIDController;
+    mAngularPIDController = Constants.Drivetrain.kAngularPIDController;
 
     //Field Visualization
     SmartDashboard.putData(mField);
@@ -211,8 +213,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     final double leftFeedforward = mFeedForward.calculate(speeds.leftMetersPerSecond);
     final double rightFeedforward = mFeedForward.calculate(speeds.rightMetersPerSecond);
 
-    final double leftOutput = mPIDController.calculate(getLeftVelocity(), speeds.leftMetersPerSecond);
-    final double rightOutput = mPIDController.calculate(getRightVelocity(), speeds.rightMetersPerSecond);
+    final double leftOutput = mLinearPIDController.calculate(getLeftVelocity(), speeds.leftMetersPerSecond);
+    final double rightOutput = mLinearPIDController.calculate(getRightVelocity(), speeds.rightMetersPerSecond);
 
     mFrontLeft.setVoltage(leftOutput + leftFeedforward);
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
@@ -230,11 +232,17 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     final double leftFeedforward = mFeedForward.calculate(speeds.left);
     final double rightFeedforward = mFeedForward.calculate(speeds.right);
 
-    final double leftOutput = mPIDController.calculate(getLeftVelocity(), speeds.left);
-    final double rightOutput = mPIDController.calculate(getRightVelocity(), speeds.right);
+    final double leftOutput = mLinearPIDController.calculate(getLeftVelocity(), speeds.left);
+    final double rightOutput = mLinearPIDController.calculate(getRightVelocity(), speeds.right);
 
     mFrontLeft.setVoltage(leftOutput + leftFeedforward);
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
+  }
+
+  public void visionAim(double yaw){
+    WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(0, -mAngularPIDController.calculate(yaw,0), false);
+    mFrontLeft.set(speeds.left);
+    mFrontRight.set(speeds.right);
   }
 
   /**
