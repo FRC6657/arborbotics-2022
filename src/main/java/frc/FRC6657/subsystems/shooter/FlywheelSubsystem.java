@@ -27,21 +27,21 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   private final KalmanFilter<N1, N1, N1> mFlywheelObserver = new KalmanFilter<>(
       Nat.N1(),
       Nat.N1(),
-      Constants.kFlywheelPlant,
+      Constants.Flywheel.kPlant,
       VecBuilder.fill(3.0), // How accurate we think our model is
       VecBuilder.fill(0.01), // How accurate we think our encoder data is
       0.020);
 
   private final LinearQuadraticRegulator<N1, N1, N1> mFlywheelController = new LinearQuadraticRegulator<>(
-      Constants.kFlywheelPlant,
+      Constants.Flywheel.kPlant,
       VecBuilder.fill(8.0), // Velocity error tolerance
       VecBuilder.fill(12.0), // Control effort (voltage) tolerance
       0.020);
 
-  private final LinearSystemLoop<N1, N1, N1> mFlywheelLoop = new LinearSystemLoop<>(Constants.kFlywheelPlant,
+  private final LinearSystemLoop<N1, N1, N1> mFlywheelLoop = new LinearSystemLoop<>(Constants.Flywheel.kPlant,
       mFlywheelController, mFlywheelObserver, 12.0, 0.020);
 
-  private WPI_TalonFX mProtagonist, mAntagonist;
+  private final WPI_TalonFX mProtagonist; //, mAntagonist;
 
   private boolean mAtTarget = false;
   private double mRpmTarget = 0;
@@ -59,6 +59,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   }
 
   public void configureMotors() {
+    mProtagonist.configFactoryDefault();
     mProtagonist.setInverted(true);
     mProtagonist.setNeutralMode(NeutralMode.Coast);
 
@@ -96,38 +97,53 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     return mAtTarget;
   }
 
-  public class AdjustRPM extends CommandBase {
+  public class setRPMTarget extends CommandBase{
+    double newTarget;
+    public setRPMTarget(double newTarget){
+      this.newTarget = newTarget;
+      addRequirements(FlywheelSubsystem.this);
+    }
+    @Override
+    public void initialize() {
+      mRpmTarget = newTarget;
+    }
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
+  }
 
-    private double mRPM;
+  public class WaitForFlywheel extends CommandBase{
+    public WaitForFlywheel(){
+      addRequirements(FlywheelSubsystem.this);
+    }
+    @Override
+    public boolean isFinished() {
+        return atTarget();
+    }
+  }
 
-    public AdjustRPM(double rpm) {
-      this.mRPM = rpm;
-      mRpmTarget = this.mRPM;
+  public class FlywheelController extends CommandBase {
+
+    public FlywheelController() {
       addRequirements(FlywheelSubsystem.this);
     }
 
     @Override
     public void execute() {
 
-      if(getRPMDelta() > Constants.kRPMTollerance){
+      if(getRPMDelta() > Constants.Flywheel.kRPMTollerance){
         mAtTarget = true;
       }
       else{
         mAtTarget = false;
       }
 
-      mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRPM)));
+      mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRpmTarget)));
       mFlywheelLoop.correct(VecBuilder.fill(getRadiansPerSecond()));
       mFlywheelLoop.predict(0.020);
       double mNextVolts = mFlywheelLoop.getU(0);
-      mProtagonist.setVoltage(mRPM == 0 ? 0 : mNextVolts);
+      mProtagonist.setVoltage(mRpmTarget == 0 ? 0 : mNextVolts);
     }
-
-    @Override
-    public void end(boolean interrupted) {
-      mFlywheelLoop.setNextR(VecBuilder.fill(0.0));
-    }
-
   }
-
 }

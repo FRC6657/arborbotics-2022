@@ -27,10 +27,10 @@ public final class Constants {
     public static final int kPCMID = 7;
     public static final int kLeftFlywheelID = 8;
     public static final int kRightFlywheelID = 9;
+    public static final int kAcceleratorID = 10;
 
-    //General Values
+    // General Values
     public static final double kFalconEncoderCPR = 2048; // Encoder Counts per Rotation
-
 
     /**
      * Drivetrain Values
@@ -52,11 +52,15 @@ public final class Constants {
         // Drivetrain Values
         public static final double kRobotWeight = Units.lbsToKilograms(40);
         public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides
-        public static final double kGearRatio = 75/7; // Drive Gearbox Ratio
+        public static final double kGearRatio = 75 / 7; // Drive Gearbox Ratio
         public static final double kWheelRadius = Units.inchesToMeters(3); // Drive wheel Radius
-        public static final double kDistancePerPulse = (2 * Math.PI * kWheelRadius) / (kFalconEncoderCPR * kGearRatio); // Conversion between Counts and Meters
+        public static final double kDistancePerPulse = (2 * Math.PI * kWheelRadius) / (kFalconEncoderCPR * kGearRatio); // Conversion
+                                                                                                                        // between
+                                                                                                                        // Counts
+                                                                                                                        // and
+                                                                                                                        // Meters
         public static final double kMaxSpeed = 3.5; // Meters per second
-        public static final double kMaxAccel = kMaxSpeed*3; // Meters per second per second
+        public static final double kMaxAccel = kMaxSpeed * 3; // Meters per second per second
 
         // Default Sim
         public static final DifferentialDrivetrainSim kSim = new DifferentialDrivetrainSim( // Simulation
@@ -72,23 +76,32 @@ public final class Constants {
     /**
      * Intake Values
      */
-    public class Intake{
+    public class Intake {
         public static final double kSpeed = 0.55;
     }
+
     /**
      * Shooter Values
      */
 
-     //General
-     public static final double kSpinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500);
-     public static final double kRPMTollerance = 50;
+    public static class Flywheel {
+        // General
+        public static final double kSpinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500);
+        public static final double kRPMTollerance = 50;
 
-     //Characterization
-     public static final double kFlywheelKv = 0.051151;
-     public static final double kFlywheelKa = 0.0024487;
+        // Characterization
+        public static final double kV = 0.051151;
+        public static final double kA= 0.0024487;
 
-     public static final LinearSystem<N1, N1, N1> kFlywheelPlant =
-     LinearSystemId.identifyVelocitySystem(kFlywheelKv, kFlywheelKa);
+        public static final LinearSystem<N1, N1, N1> kPlant = LinearSystemId.identifyVelocitySystem(kV, kA);
+    }
 
+    
+    /**
+     * Accelerator Values
+     */
+    public static class Accelerator{
+        public static final double kSpeed = 1;
+    }
 
 }

@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.FRC6657.autonomous.routines.TestAuto;
+import frc.FRC6657.autonomous.routines.FarTwoBallAuto;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.subsystems.SuperStructure;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
@@ -40,6 +40,10 @@ public class RobotContainer {
       )
     );
 
+    mFlywheelSubsystem.setDefaultCommand(
+      mFlywheelSubsystem.new FlywheelController()
+    );
+
     configureButtonBindings();
 
   }
@@ -52,9 +56,14 @@ public class RobotContainer {
     new JoystickButton(mDriver, XboxController.Button.kB.value)
       .whenPressed(new InstantCommand(mExtensionSubsystem::toggleState, mExtensionSubsystem));
 
+    new JoystickButton(mDriver, XboxController.Button.kY.value)
+      .whenPressed(mFlywheelSubsystem.new setRPMTarget(1000))
+      .whenReleased(mFlywheelSubsystem.new setRPMTarget(0)
+    );
+
   }
 
   public Command getAutonomousCommand() {
-    return new TestAuto(mDrivetrainSubsystem);
+    return new FarTwoBallAuto(mDrivetrainSubsystem, mSuperStructure, mFlywheelSubsystem);
   }
 }

@@ -79,6 +79,26 @@
       }
     }
   },
+  "NetworkTables": {
+    "LiveWindow": {
+      "Ungrouped": {
+        "Talon FX [8]": {
+          "open": true
+        },
+        "Talon SRX [6]": {
+          "open": true
+        },
+        "open": true
+      },
+      "open": true
+    },
+    "Shuffleboard": {
+      "open": true
+    },
+    "SmartDashboard": {
+      "open": true
+    }
+  },
   "NetworkTables View": {
     "visible": false
   }

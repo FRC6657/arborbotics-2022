@@ -4,6 +4,7 @@
 
 package frc.FRC6657.subsystems;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -56,6 +57,33 @@ public class SuperStructure extends SubsystemBase {
         new InstantCommand(pickup::stop)
       );
     }
+  }
+
+  public class ShootCommand extends CommandBase{
+    public ShootCommand(){
+      addRequirements(SuperStructure.this);
+    }
+
+    @Override
+    public void execute() {
+        if(flywheel.atTarget()){
+          accelerator.run();
+        }
+    }
+  }
+
+  public class TrackCommand extends CommandBase {
+
+    @Override
+    public void execute() {
+      //Track Target
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true; //return try when in tollerance
+    }
+
   }
 
 }

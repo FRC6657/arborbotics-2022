@@ -4,14 +4,36 @@
 
 package frc.FRC6657.subsystems.shooter;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.FRC6657.Constants;
 
 public class AcceleratorSubsystem extends SubsystemBase {
   
-  public AcceleratorSubsystem() {}
+  private final WPI_TalonSRX mMotor;
 
-  @Override
-  public void periodic() {
-    
+  public AcceleratorSubsystem() {
+    mMotor = new WPI_TalonSRX(Constants.kAcceleratorID);
+    configureMotor();
   }
+
+  private void configureMotor(){
+    mMotor.configFactoryDefault();
+    mMotor.setNeutralMode(NeutralMode.Coast);
+    mMotor.setInverted(false);
+    mMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 45, 0.5));
+  }
+
+  private void set(double percent){
+    mMotor.set(percent);
+  }
+
+
+  public void run(){
+    set(Constants.Accelerator.kSpeed);
+  }
+
 }
