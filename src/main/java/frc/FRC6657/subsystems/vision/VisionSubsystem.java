@@ -11,13 +11,11 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.FRC6657.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
 
   private final PhotonCamera mLimelight = new PhotonCamera("limelight");
-  private final double cameraHeightMeters = Units.inchesToMeters(30.111986);// CAD Estimate
-  private final double targetHeightMeters = Units.feetToMeters(8 + 8 / 12); // 8` 8" from manual
-  private final double cameraPitchRadians = Units.degreesToRadians(30); // CAD Estimate
   private double yaw;
   private double pitch;
   private double distance;
@@ -33,9 +31,9 @@ public class VisionSubsystem extends SubsystemBase {
       yaw = target.getYaw();
       pitch = target.getPitch();
       distance = PhotonUtils.calculateDistanceToTargetMeters(
-          cameraHeightMeters,
-          targetHeightMeters,
-          cameraPitchRadians,
+          Constants.Vision.kCameraHeightMeters,
+          Constants.Vision.kTargetHeightMeters,
+          Constants.Vision.kCameraPitchRadians,
           Units.degreesToRadians(pitch));
     } else {
       hasTargets = false;

@@ -4,8 +4,11 @@
 
 package frc.FRC6657;
 
+import org.photonvision.SimVisionSystem;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -111,6 +114,32 @@ public final class Constants {
      */
     public static class Accelerator{
         public static final double kSpeed = 1;
+    }
+
+    public static class Vision{
+        public static final double kCameraHeightMeters = Units.inchesToMeters(30.111986);// CAD Estimate
+        public static final double kTargetHeightMeters = Units.feetToMeters(8 + 8 / 12); // 8` 8" from manual
+        public static final double kCameraPitchRadians = Units.degreesToRadians(30); // CAD Estimate
+        public static final double kCamDiagFOV = 67.8; // degrees
+        public static final double kMaxLEDRange = 20; // meters
+        public static final int kCamResolutionWidth = 320; // pixels
+        public static final int kCamResolutionHeight = 240; // pixels
+        public static final double kMinTargetArea = 10; // square pixels
+
+        SimVisionSystem simVision =
+            new SimVisionSystem(
+                "limelight",
+                kCamDiagFOV,
+                kCameraPitchRadians,
+                new Transform2d(),        
+                kCameraHeightMeters,
+                kMaxLEDRange,
+                kCamResolutionHeight,
+                kCamResolutionHeight,
+                kMinTargetArea
+            );
+
+        
     }
 
 }
