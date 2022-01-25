@@ -99,8 +99,8 @@ public final class Constants {
         public static final double kRatio = 3.0/1.0;
 
         // Characterization
-        public static final double kV = 0.051151;
-        public static final double kA= 0.0024487;
+        public static final double kV = 0.0549; // 0.051151
+        public static final double kA= 0.0024487; //0.0024487 
 
         public static final LinearSystem<N1, N1, N1> kPlant = LinearSystemId.identifyVelocitySystem(kV, kA);
 

@@ -4,8 +4,12 @@
 
 package frc.FRC6657.subsystems.shooter;
 
+import java.nio.file.DirectoryStream.Filter;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
+import com.ctre.phoenix.motorcontrol.can.FilterConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
@@ -37,7 +41,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   private final LinearQuadraticRegulator<N1, N1, N1> mFlywheelController = new LinearQuadraticRegulator<>(
       Constants.Flywheel.kPlant,
-      VecBuilder.fill(8.0), // Velocity error tolerance
+      VecBuilder.fill(500.0), // Velocity error tolerance 8.0
       VecBuilder.fill(12.0), // Control effort (voltage) tolerance
       0.020);
 
@@ -55,6 +59,11 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   public FlywheelSubsystem() {
     mProtagonist = new WPI_TalonFX(Constants.kLeftFlywheelID);
     /* mAntagonist = new WPI_TalonFX(Constants.kRightFlywheelID); */
+    
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    mProtagonist.configAllSettings(config);
+
     configureMotors();
 
     if(RobotBase.isSimulation()){
@@ -126,6 +135,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     @Override
     public void initialize() {
       mRpmTarget = newTarget;
+      System.out.println(mFlywheelController.getK());
     }
     @Override
     public boolean isFinished() {
