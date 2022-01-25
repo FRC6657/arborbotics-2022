@@ -17,6 +17,8 @@ import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.BasePigeonSimCollection;
 
+import org.photonvision.SimVisionSystem;
+
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
@@ -68,6 +70,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private List<Pose2d> mPathPoints = new ArrayList<Pose2d>();
 
   DifferentialDrivetrainSim mDrivetrainSim;
+  SimVisionSystem mVisionSim;
 
   /*
    * 
@@ -103,16 +106,19 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mLinearPIDController = Constants.Drivetrain.kLinearPIDController;
     mAngularPIDController = Constants.Drivetrain.kAngularPIDController;
 
-    //Field Visualization
-    SmartDashboard.putData(mField);
-
     //Simulation Stuff
     if(RobotBase.isSimulation()){
       mDrivetrainSim = Constants.Drivetrain.kSim;
+      mVisionSim = Constants.Vision.kSim;
       mPigeonIMUSim = mPigeonIMU.getSimCollection();
       mLeftSim = mFrontLeft.getSimCollection();
       mRightSim = mFrontRight.getSimCollection();
+      mVisionSim.addSimVisionTarget(Constants.Vision.kTarget);
     }
+
+    //Field Visualization
+    SmartDashboard.putData(mField);
+
   }
 
   /**
@@ -488,6 +494,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
                              mFrontRight.get() * RobotController.getInputVoltage());
   
     mDrivetrainSim.update(0.02);
+    mVisionSim.processFrame(mDrivetrainSim.getPose());
 
     mLeftSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getLeftPositionMeters() / Constants.Drivetrain.kDistancePerPulse));
     mRightSim.setIntegratedSensorRawPosition((int) (mDrivetrainSim.getRightPositionMeters() / Constants.Drivetrain.kDistancePerPulse));

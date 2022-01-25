@@ -54,7 +54,6 @@
         },
         "bottom": 900,
         "height": 8.229599952697754,
-        "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
         "left": 74,
         "right": 1774,
         "robot-path": {
@@ -63,10 +62,6 @@
           "selectable": false,
           "style": "Line",
           "weight": 2.0
-        },
-        "tes": {
-          "arrowSize": 5,
-          "style": "Line"
         },
         "top": 50,
         "trajectory": {
@@ -103,12 +98,9 @@
     },
     "Shuffleboard": {
       "open": true
-    },
-    "photonvision": {
-      "limelight": {
-        "open": true
-      },
-      "open": true
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }

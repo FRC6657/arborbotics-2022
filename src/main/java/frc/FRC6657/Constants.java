@@ -5,10 +5,14 @@
 package frc.FRC6657;
 
 import org.photonvision.SimVisionSystem;
+import org.photonvision.SimVisionTarget;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -129,8 +133,13 @@ public final class Constants {
         public static final int kCamResolutionWidth = 320; // pixels
         public static final int kCamResolutionHeight = 240; // pixels
         public static final double kMinTargetArea = 10; // square pixels
+        public static final double kTargetX = 8.25;
+        public static final double kTargetY = 4.125;
+        public static final double kTargetWidth = Units.feetToMeters(4);
+        public static final Pose2d kTargetPos = new Pose2d(new Translation2d(kTargetX, kTargetY), new Rotation2d(0.0));
+        public static final SimVisionTarget kTarget = new SimVisionTarget(Constants.Vision.kTargetPos, Constants.Vision.kTargetHeightMeters, Constants.Vision.kTargetWidth, Units.inchesToMeters(2));
 
-        SimVisionSystem simVision =
+        public static final SimVisionSystem kSim =
             new SimVisionSystem(
                 "limelight",
                 kCamDiagFOV,
