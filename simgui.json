@@ -83,6 +83,18 @@
           "style": "Line",
           "weight": 2.0
         },
+        "vision-target": {
+          "arrows": false,
+          "color": [
+            0.0,
+            1.0,
+            0.02941155433654785,
+            255.0
+          ],
+          "length": 0.05079999938607216,
+          "style": "Box/Image",
+          "width": 1.2192000150680542
+        },
         "width": 16.459199905395508,
         "window": {
           "visible": true

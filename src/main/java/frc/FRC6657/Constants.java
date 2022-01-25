@@ -125,7 +125,7 @@ public final class Constants {
     }
 
     public static class Vision{
-        public static final double kCameraHeightMeters = Units.inchesToMeters(30.111986);// CAD Estimate
+        public static final double kCameraHeightMeters = Units.inchesToMeters(35.111986);// CAD Estimate
         public static final double kTargetHeightMeters = Units.feetToMeters(8 + 8 / 12); // 8` 8" from manual
         public static final double kCameraPitchRadians = Units.degreesToRadians(30); // CAD Estimate
         public static final double kCamDiagFOV = 67.8; // degrees

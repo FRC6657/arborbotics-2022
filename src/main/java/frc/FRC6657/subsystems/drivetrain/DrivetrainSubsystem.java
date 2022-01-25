@@ -71,6 +71,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   DifferentialDrivetrainSim mDrivetrainSim;
   SimVisionSystem mVisionSim;
+  private FieldObject2d mVisionTarget = mField.getObject("vision-target");
 
   /*
    * 
@@ -114,6 +115,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
       mLeftSim = mFrontLeft.getSimCollection();
       mRightSim = mFrontRight.getSimCollection();
       mVisionSim.addSimVisionTarget(Constants.Vision.kTarget);
+      mVisionTarget.setPose(Constants.Vision.kTargetPos);
     }
 
     //Field Visualization
