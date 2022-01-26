@@ -16,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.BasePigeonSimCollection;
+import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
 import org.photonvision.SimVisionSystem;
 
@@ -28,6 +29,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -103,7 +105,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     //Fancy Stuff
     mKinematics = new DifferentialDriveKinematics(Constants.Drivetrain.kTrackWidth);
-    mOdometry = new DifferentialDriveOdometry(mPigeonIMU.getRotation2d());
+    mOdometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getGyroAngle()));
 
     //Fancier Stuff
     mFeedForward = Constants.Drivetrain.kFeedForward;
@@ -199,7 +201,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     }
 
     resetEncoders();
-    mOdometry.resetPosition(pose, mPigeonIMU.getRotation2d());
+    mOdometry.resetPosition(pose, Rotation2d.fromDegrees(getGyroAngle()));
     
   }
 
@@ -363,6 +365,13 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     return getRightVelocity();
   }
 
+  public double getGyroAngle(){
+    if(mPigeonIMU.getState() == PigeonState.Ready){
+      return mPigeonIMU.getFusedHeading();
+    }
+    return 0;
+  }
+
 
   /*
    * Commands 
@@ -496,7 +505,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   @Override
   public void periodic() {
-    mOdometry.update(mPigeonIMU.getRotation2d(), getLeftMeters(), getRightMeters());
+    mOdometry.update(Rotation2d.fromDegrees(getGyroAngle()), getLeftMeters(), getRightMeters());
     mField.setRobotPose(mOdometry.getPoseMeters());
   }
 
