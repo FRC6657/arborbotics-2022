@@ -71,7 +71,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   DifferentialDrivetrainSim mDrivetrainSim;
   SimVisionSystem mVisionSim;
-  private FieldObject2d mVisionTarget = mField.getObject("vision-target");
+  private FieldObject2d mVisionTarget1 = mField.getObject("vision-target-1");
+  private FieldObject2d mVisionTarget2 = mField.getObject("vision-target-2");
+  private FieldObject2d mVisionTarget3 = mField.getObject("vision-target-3");
+  private FieldObject2d mVisionTarget4 = mField.getObject("vision-target-4");
 
   /*
    * 
@@ -114,8 +117,16 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
       mPigeonIMUSim = mPigeonIMU.getSimCollection();
       mLeftSim = mFrontLeft.getSimCollection();
       mRightSim = mFrontRight.getSimCollection();
-      mVisionSim.addSimVisionTarget(Constants.Vision.kTarget);
-      mVisionTarget.setPose(Constants.Vision.kTargetPos);
+
+      mVisionSim.addSimVisionTarget(Constants.Vision.kTarget1);
+      mVisionSim.addSimVisionTarget(Constants.Vision.kTarget2);
+      mVisionSim.addSimVisionTarget(Constants.Vision.kTarget3);
+      mVisionSim.addSimVisionTarget(Constants.Vision.kTarget4);
+      
+      mVisionTarget1.setPose(Constants.Vision.kTargetPos1);
+      mVisionTarget2.setPose(Constants.Vision.kTargetPos2);
+      mVisionTarget3.setPose(Constants.Vision.kTargetPos3);
+      mVisionTarget4.setPose(Constants.Vision.kTargetPos4);
     }
 
     //Field Visualization

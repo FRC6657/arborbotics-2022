@@ -136,8 +136,14 @@ public final class Constants {
         public static final double kTargetX = 8.25;
         public static final double kTargetY = 4.125;
         public static final double kTargetWidth = Units.feetToMeters(4);
-        public static final Pose2d kTargetPos = new Pose2d(new Translation2d(kTargetX, kTargetY), new Rotation2d(0.0));
-        public static final SimVisionTarget kTarget = new SimVisionTarget(Constants.Vision.kTargetPos, Constants.Vision.kTargetHeightMeters, Constants.Vision.kTargetWidth, Units.inchesToMeters(2));
+        public static final Pose2d kTargetPos1 = new Pose2d(new Translation2d(kTargetX-0.75, kTargetY), new Rotation2d(0.0));
+        public static final Pose2d kTargetPos2 = new Pose2d(new Translation2d(kTargetX+0.75, kTargetY), new Rotation2d(0.0));
+        public static final Pose2d kTargetPos3 = new Pose2d(new Translation2d(kTargetX, kTargetY-0.75), new Rotation2d(Math.PI/2));
+        public static final Pose2d kTargetPos4 = new Pose2d(new Translation2d(kTargetX, kTargetY+0.75), new Rotation2d(Math.PI/2));
+        public static final SimVisionTarget kTarget1 = new SimVisionTarget(Constants.Vision.kTargetPos1, Constants.Vision.kTargetHeightMeters, Constants.Vision.kTargetWidth, Units.inchesToMeters(2));
+        public static final SimVisionTarget kTarget2 = new SimVisionTarget(Constants.Vision.kTargetPos2, Constants.Vision.kTargetHeightMeters, Constants.Vision.kTargetWidth, Units.inchesToMeters(2));
+        public static final SimVisionTarget kTarget3 = new SimVisionTarget(Constants.Vision.kTargetPos3, Constants.Vision.kTargetHeightMeters, Constants.Vision.kTargetWidth, Units.inchesToMeters(2));
+        public static final SimVisionTarget kTarget4 = new SimVisionTarget(Constants.Vision.kTargetPos4, Constants.Vision.kTargetHeightMeters, Constants.Vision.kTargetWidth, Units.inchesToMeters(2));
 
         public static final SimVisionSystem kSim =
             new SimVisionSystem(

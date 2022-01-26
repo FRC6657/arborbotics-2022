@@ -15,6 +15,9 @@
         "header": {
           "open": true
         }
+      },
+      "window": {
+        "visible": false
       }
     },
     "Solenoids": {
@@ -54,7 +57,7 @@
         },
         "bottom": 900,
         "height": 8.229599952697754,
-        "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
+        "image": "C:\\Users\\Andrew Card\\Desktop\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
         "left": 74,
         "right": 1774,
         "robot-path": {
@@ -93,6 +96,54 @@
           ],
           "length": 0.05079999938607216,
           "style": "Box/Image",
+          "width": 1.2192000150680542
+        },
+        "vision-target-1": {
+          "arrows": false,
+          "color": [
+            0.17777788639068604,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "length": 0.05079999938607216,
+          "weight": 2.0,
+          "width": 1.2192000150680542
+        },
+        "vision-target-2": {
+          "arrows": false,
+          "color": [
+            0.0,
+            1.0,
+            0.022222042083740234,
+            255.0
+          ],
+          "length": 0.05079999938607216,
+          "weight": 2.0,
+          "width": 1.2192000150680542
+        },
+        "vision-target-3": {
+          "arrows": false,
+          "color": [
+            0.35555553436279297,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "length": 0.05079999938607216,
+          "weight": 2.0,
+          "width": 1.2192000150680542
+        },
+        "vision-target-4": {
+          "arrows": false,
+          "color": [
+            0.4222222566604614,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "length": 0.05079999938607216,
+          "weight": 2.0,
           "width": 1.2192000150680542
         },
         "width": 16.459199905395508,
