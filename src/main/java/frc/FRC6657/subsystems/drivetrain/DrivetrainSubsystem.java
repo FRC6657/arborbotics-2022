@@ -14,8 +14,10 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.BasePigeonSimCollection;
+import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
 import org.photonvision.SimVisionSystem;
@@ -173,8 +175,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     // Encoders
     mFrontLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     mFrontRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-    mBackLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-    mBackRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+
+    //More precise encoders
+    mFrontLeft.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
+    mFrontRight.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
+    mFrontLeft.configVelocityMeasurementWindow(1);
+    mFrontRight.configVelocityMeasurementWindow(1);
 
     // Limits the current to prevent breaker tripping
     mFrontLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); // | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
