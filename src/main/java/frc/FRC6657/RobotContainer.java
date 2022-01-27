@@ -9,13 +9,14 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.FRC6657.autonomous.routines.FarTwoBallAuto;
+//import frc.FRC6657.autonomous.routines.FarTwoBallAuto;
+import frc.FRC6657.autonomous.routines.NewAuto;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.subsystems.SuperStructure;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 //import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
-import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
+//import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 //import frc.FRC6657.subsystems.vision.VisionSubsystem;
 
 public class RobotContainer {
@@ -23,7 +24,7 @@ public class RobotContainer {
   private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
   private final PickupSubsystem mPickupSubsystem = new PickupSubsystem();
   //private final ExtensionSubsystem mExtensionSubsystem = new ExtensionSubsystem();
-  private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
+  //private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
   //private final AcceleratorSubsystem mAcceleratorSubsystem = new AcceleratorSubsystem();
   //private final VisionSubsystem mVisionSubsystem = new VisionSubsystem();
   
@@ -31,7 +32,7 @@ public class RobotContainer {
     mDrivetrainSubsystem,
     mPickupSubsystem,
     //mExtensionSubsystem,
-    mFlywheelSubsystem,
+    //mFlywheelSubsystem,
     null,//mAcceleratorSubsystem, 
     null//mVisionSubsystem.visionSupplier
   );
@@ -58,14 +59,14 @@ public class RobotContainer {
       .whenPressed(mSuperStructure.new RunIntakeCommand())
       .whenReleased(new WaitCommand(0.25).andThen(mSuperStructure.new StopIntakeCommand())
     );
-    new JoystickButton(mDriver, XboxController.Button.kY.value)
-      .whenPressed(mSuperStructure.flywheel.new setRPMTarget(1000))
-      .whenReleased(mSuperStructure.flywheel.new setRPMTarget(0)
-    );
+    // new JoystickButton(mDriver, XboxController.Button.kY.value)
+    //   .whenPressed(mSuperStructure.flywheel.new setRPMTarget(1000))
+    //   .whenReleased(mSuperStructure.flywheel.new setRPMTarget(0)
+    // );
   }
 
   public Command getAutonomousCommand() {
-    return new FarTwoBallAuto(mSuperStructure);
-    //return new TestAuto(mDrivetrainSubsystem);
+    //return new FarTwoBallAuto(mSuperStructure);
+    return new NewAuto(mSuperStructure);
   }
 }
