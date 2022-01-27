@@ -11,18 +11,21 @@ import frc.FRC6657.subsystems.SuperStructure;
 public class NewAuto extends SequentialCommandGroup {
 
   public NewAuto(
-    SuperStructure mSuperStructure
-  ) {
+      SuperStructure mSuperStructure) {
     addRequirements(
-      mSuperStructure
-    );
+        mSuperStructure);
     addCommands(
-      mSuperStructure.drivetrain.new TrajectoryFollowerCommand(Trajectories.IntakeTest, true) //Move to Pickup Ball #2
-        .beforeStarting(
-            mSuperStructure.new RunIntakeCommand() //Extend Intake before going to ball #2
-        )
-        .withTimeout(Trajectories.IntakeTest.getTotalTimeSeconds())
-    );
+        mSuperStructure.drivetrain.new TrajectoryFollowerCommand(Trajectories.IntakeTest_1, true)
+          .beforeStarting(mSuperStructure.new RunIntakeCommand())
+          .withTimeout(Trajectories.IntakeTest_1.getTotalTimeSeconds()),
+        mSuperStructure.drivetrain.new TrajectoryFollowerCommand(Trajectories.IntakeTest_2, false)
+          .beforeStarting(mSuperStructure.new StopIntakeCommand())
+          .withTimeout(Trajectories.IntakeTest_2.getTotalTimeSeconds()),
+        mSuperStructure.drivetrain.new TrajectoryFollowerCommand(Trajectories.IntakeTest_3, false)
+          .beforeStarting(mSuperStructure.new RunIntakeCommand())
+          .withTimeout(Trajectories.IntakeTest_3.getTotalTimeSeconds()),
+        mSuperStructure.drivetrain.new TrajectoryFollowerCommand(Trajectories.IntakeTest_4, false)
+          .beforeStarting(mSuperStructure.new StopIntakeCommand())
+          .withTimeout(Trajectories.IntakeTest_4.getTotalTimeSeconds()));
   }
 }
-

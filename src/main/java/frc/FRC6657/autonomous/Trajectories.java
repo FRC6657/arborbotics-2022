@@ -83,32 +83,9 @@ public class Trajectories {
         "2BF2"
     );
 
-    public static Trajectory IntakeTest_3 = generateTrajectory(
-        3,
-        1.5,
-        List.of(
-            new Pose2d(0,0, new Rotation2d(0)),
-            new Pose2d(Units.inchesToMeters(100), Units.inchesToMeters(60), new Rotation2d(0))
-          
-        ),
-        false,
-        "djgshk"
-    );
-
-    public static Trajectory IntakeTest_4 = generateTrajectory(
-        3,
-        1.5,
-        List.of(
-            new Pose2d(Units.inchesToMeters(100), Units.inchesToMeters(58), new Rotation2d(0)),
-            new Pose2d(0,0, new Rotation2d(0))
-        ),
-        true,
-        "djgshk"
-    );
-
     public static Trajectory IntakeTest_1 = generateTrajectory(
-        3,
-        1.5,
+        2,
+        1,
         List.of(
             new Pose2d(0,0, new Rotation2d(0)),
             new Pose2d(Units.inchesToMeters(110), 0, new Rotation2d(0))
@@ -119,30 +96,35 @@ public class Trajectories {
     );
 
     public static Trajectory IntakeTest_2 = generateTrajectory(
-        3,
-        1.5,
+        2,
+        1,
         List.of(
-            new Pose2d(Units.inchesToMeters(100), 0, new Rotation2d(0)),
+            new Pose2d(Units.inchesToMeters(110), 0, new Rotation2d(0)),
             new Pose2d(0,0, new Rotation2d(0))
         ),
         true,
         "djgshk"
     );
 
-    public static Trajectory IntakeTest = IntakeTest_1.concatenate(IntakeTest_2.concatenate(IntakeTest_3.concatenate(IntakeTest_4)));
-
-
-    public static Trajectory IntakeTestEX = generateTrajectory(
-        1,
+    public static Trajectory IntakeTest_3 = generateTrajectory(
+        2,
         1,
         List.of(
             new Pose2d(0,0, new Rotation2d(0)),
-            new Pose2d(Units.inchesToMeters(100), 0, new Rotation2d(0)),
-            
-            new Pose2d(Units.inchesToMeters(100), Units.inchesToMeters(50), new Rotation2d(Math.PI)),
-            new Pose2d(Units.inchesToMeters(35), Units.inchesToMeters(50), new Rotation2d(Math.PI))
+            new Pose2d(Units.inchesToMeters(110), Units.inchesToMeters(60), new Rotation2d(0))
         ),
         false,
+        "djgshk"
+    );
+
+    public static Trajectory IntakeTest_4 = generateTrajectory(
+        2,
+        1,
+        List.of(
+            new Pose2d(Units.inchesToMeters(110), Units.inchesToMeters(60), new Rotation2d(0)),
+            new Pose2d(0,0, new Rotation2d(0))
+        ),
+        true,
         "djgshk"
     );
 

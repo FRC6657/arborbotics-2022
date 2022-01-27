@@ -1,30 +1,10 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "Talon FX[3]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[8]": {
-        "header": {
-          "open": true
-        }
-      },
       "Talon SRX[6]": {
         "header": {
           "open": true
         }
-      }
-    },
-    "Solenoids": {
-      "0": {
-        "header": {
-          "open": true
-        }
-      },
-      "window": {
-        "visible": true
       }
     }
   },
@@ -32,143 +12,31 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/DrivetrainSubsystem": "Subsystem",
-      "/LiveWindow/ExtensionSubsystem": "Subsystem",
-      "/LiveWindow/FlywheelSubsystem": "Subsystem",
       "/LiveWindow/PickupSubsystem": "Subsystem",
-      "/LiveWindow/PivotSubsystem": "Subsystem",
       "/LiveWindow/SuperStructure": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon IMU [5]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
-      "/LiveWindow/VisionSubsystem": "Subsystem",
       "/Shuffleboard/DrivetrainSubsystem/Gyro": "Gyro",
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
       "/SmartDashboard/Field": {
-        "Robot": {
-          "length": 0.9857739806175232,
-          "style": "Box/Image",
-          "width": 0.8508999943733215
-        },
-        "bottom": 900,
-        "height": 8.229599952697754,
-        "image": "C:\\Users\\Andrew Card\\Desktop\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
-        "left": 74,
-        "right": 1774,
         "robot-path": {
-          "arrowSize": 0,
           "arrows": false,
-          "selectable": false,
           "style": "Line",
-          "weight": 2.0
+          "weight": 1.0
         },
-        "tes": {
-          "arrowSize": 5,
-          "style": "Line"
-        },
-        "top": 50,
         "trajectory": {
-          "arrowSize": 3,
-          "arrowWeight": 1.0,
           "arrows": false,
-          "color": [
-            240.00001525878906,
-            255.0,
-            0.0,
-            255.0
-          ],
-          "selectable": false,
           "style": "Line",
           "weight": 2.0
         },
-        "vision-target": {
-          "arrows": false,
-          "color": [
-            0.0,
-            1.0,
-            0.02941155433654785,
-            255.0
-          ],
-          "length": 0.05079999938607216,
-          "style": "Box/Image",
-          "width": 1.2192000150680542
-        },
-        "vision-target-1": {
-          "arrows": false,
-          "color": [
-            0.17777788639068604,
-            1.0,
-            0.0,
-            255.0
-          ],
-          "length": 0.05079999938607216,
-          "weight": 2.0,
-          "width": 1.2192000150680542
-        },
-        "vision-target-2": {
-          "arrows": false,
-          "color": [
-            0.0,
-            1.0,
-            0.022222042083740234,
-            255.0
-          ],
-          "length": 0.05079999938607216,
-          "weight": 2.0,
-          "width": 1.2192000150680542
-        },
-        "vision-target-3": {
-          "arrows": false,
-          "color": [
-            0.35555553436279297,
-            1.0,
-            0.0,
-            255.0
-          ],
-          "length": 0.05079999938607216,
-          "weight": 2.0,
-          "width": 1.2192000150680542
-        },
-        "vision-target-4": {
-          "arrows": false,
-          "color": [
-            0.4222222566604614,
-            1.0,
-            0.0,
-            255.0
-          ],
-          "length": 0.05079999938607216,
-          "weight": 2.0,
-          "width": 1.2192000150680542
-        },
-        "width": 16.459199905395508,
         "window": {
           "visible": true
         }
       }
-    }
-  },
-  "NetworkTables": {
-    "LiveWindow": {
-      "Ungrouped": {
-        "Talon FX [8]": {
-          "open": true
-        },
-        "Talon SRX [6]": {
-          "open": true
-        }
-      }
-    },
-    "Shuffleboard": {
-      "open": true
-    },
-    "photonvision": {
-      "limelight": {
-        "open": true
-      },
-      "open": true
     }
   }
 }
