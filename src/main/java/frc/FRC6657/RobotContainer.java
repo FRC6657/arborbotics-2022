@@ -63,6 +63,8 @@ public class RobotContainer {
       .whenPressed(mSuperStructure.new RunIntakeCommand().andThen(mBlinkinSubsystem.new runIntake()))
       .whenReleased(new WaitCommand(0.25).andThen(mSuperStructure.new StopIntakeCommand().andThen(mBlinkinSubsystem.new runDefault()))
     );
+
+    new JoystickButton(mDriver, XboxController.Button.kB.value).whenPressed(new InstantCommand(mBlinkinSubsystem::setIntakingColor)).whenReleased(new InstantCommand(mBlinkinSubsystem::setIdleColor));
     
     // new JoystickButton(mDriver, XboxController.Button.kY.value)
     //   .whenPressed(mSuperStructure.flywheel.new setRPMTarget(1000))
