@@ -1,6 +1,5 @@
 package frc.FRC6657.subsystems.blinkin;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
 import frc.FRC6657.custom.rev.Blinkin;
@@ -16,30 +15,15 @@ private Blinkin mBlinkin;
   }
 
   public void setIntakingColor() {
-    setBlinkinColor(BlinkinLEDPattern.SOLID_RED);
-
+    setBlinkinColor(BlinkinLEDPattern.SOLID_HOT_PINK);
   }
 
   public void setIdleColor(){
-    setBlinkinColor(BlinkinLEDPattern.SOLID_GREEN);
+    setBlinkinColor(BlinkinLEDPattern.SOLID_BLUE);
   }
 
   private void setBlinkinColor(BlinkinLEDPattern pattern){
     mBlinkin.setLEDMode(pattern);
   }
-
-public class runDefault extends CommandBase { 
-  public void run() {
-    setIdleColor();
-   }
- }
-
-public class runIntake extends CommandBase {
-
-  public void run() {
-    setIntakingColor();
-  }
-}
-
 }
 

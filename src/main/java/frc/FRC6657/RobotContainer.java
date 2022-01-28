@@ -7,6 +7,7 @@ package frc.FRC6657;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 //import frc.FRC6657.autonomous.routines.FarTwoBallAuto;
@@ -59,9 +60,16 @@ public class RobotContainer {
   }
   private void configureButtonBindings() {
     new JoystickButton(mDriver, XboxController.Button.kA.value)
-      .whenPressed(mSuperStructure.new RunIntakeCommand().andThen(mBlinkinSubsystem.new runIntake()))
-      .whenReleased(new WaitCommand(0.25).andThen(mSuperStructure.new StopIntakeCommand().andThen(mBlinkinSubsystem.new runDefault()))
-    );
+      .whenPressed(
+        mSuperStructure.new RunIntakeCommand()
+         .beforeStarting(
+           new InstantCommand(mBlinkinSubsystem::setIntakingColor, mBlinkinSubsystem)
+         )
+      )
+      .whenReleased(
+        mSuperStructure.new StopIntakeCommand().beforeStarting(new InstantCommand(mBlinkinSubsystem::setIdleColor, mBlinkinSubsystem))
+      );
+
     // new JoystickButton(mDriver, XboxController.Button.kY.value)
     //   .whenPressed(mSuperStructure.flywheel.new setRPMTarget(1000))
     //   .whenReleased(mSuperStructure.flywheel.new setRPMTarget(0)
