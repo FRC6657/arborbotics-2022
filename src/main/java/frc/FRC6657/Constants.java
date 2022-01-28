@@ -25,6 +25,9 @@ public final class Constants {
 
     // Drivetrain //
 
+    //PWM IDs
+    public static final int kBlinkinID = 0;
+
     // CAN IDs
     public static final int kFrontLeftID = 1;
     public static final int kFrontRightID = 2;
