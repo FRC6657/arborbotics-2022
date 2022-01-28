@@ -1,16 +1,15 @@
 {
   "HALProvider": {
-    "Other Devices": {
-      "Talon SRX[6]": {
-        "header": {
-          "open": true
-        }
+    "PWM Outputs": {
+      "window": {
+        "visible": true
       }
     }
   },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/BlinkinSubsystem": "Subsystem",
       "/LiveWindow/DrivetrainSubsystem": "Subsystem",
       "/LiveWindow/PickupSubsystem": "Subsystem",
       "/LiveWindow/SuperStructure": "Subsystem",
@@ -37,6 +36,20 @@
           "visible": true
         }
       }
+    }
+  },
+  "NetworkTables": {
+    "LiveWindow": {
+      "BlinkinSubsystem": {
+        "open": true
+      },
+      "Ungrouped": {
+        "Blinkin[0]": {
+          "open": true
+        },
+        "open": true
+      },
+      "open": true
     }
   }
 }

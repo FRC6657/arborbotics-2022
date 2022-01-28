@@ -1,49 +1,43 @@
 package frc.FRC6657.subsystems.blinkin;
 
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
+import frc.FRC6657.custom.rev.Blinkin;
+import frc.FRC6657.custom.rev.Blinkin.BlinkinLEDPattern;
 
 public class BlinkinSubsystem extends SubsystemBase {
   
-private Spark blinkinController;
+private Blinkin mBlinkin;
 
   public BlinkinSubsystem() {
-    blinkinController = new Spark(Constants.kBlinkinID);
+    mBlinkin = new Blinkin(Constants.kBlinkinID);
+    setIdleColor();
+  }
+
+  public void setIntakingColor() {
+    setBlinkinColor(BlinkinLEDPattern.SOLID_RED);
 
   }
 
-  @Override
-  public void periodic() {
-    
-
+  public void setIdleColor(){
+    setBlinkinColor(BlinkinLEDPattern.SOLID_GREEN);
   }
 
-  public void intakeColor() {
-    blinkinController.set(-0.85); // shot red
-
+  private void setBlinkinColor(BlinkinLEDPattern pattern){
+    mBlinkin.setLEDMode(pattern);
   }
-
-  public void defaultColor() {
-    blinkinController.set(0.75); // green 
-
-  }
-
 
 public class runDefault extends CommandBase { 
-
   public void run() {
-  defaultColor();
-
+    setIdleColor();
    }
  }
 
 public class runIntake extends CommandBase {
 
   public void run() {
-    intakeColor();
-
+    setIntakingColor();
   }
 }
 
