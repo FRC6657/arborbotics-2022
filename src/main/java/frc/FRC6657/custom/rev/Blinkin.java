@@ -351,7 +351,6 @@ public class Blinkin extends PWMMotorController {
         builder.setActuator(false);
         builder.setSafeState(this::disable);
         builder.addStringProperty("Pattern", this::getLEDMode, null);
-        builder.addDoubleProperty("set", this::get, null);
     }
 
 }
