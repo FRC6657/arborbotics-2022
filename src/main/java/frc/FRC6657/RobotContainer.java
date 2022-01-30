@@ -7,12 +7,14 @@ package frc.FRC6657;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 //import frc.FRC6657.autonomous.routines.FarTwoBallAuto;
 import frc.FRC6657.autonomous.routines.NewAuto;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.subsystems.SuperStructure;
+import frc.FRC6657.subsystems.blinkin.BlinkinSubsystem;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 //import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
@@ -23,6 +25,8 @@ public class RobotContainer {
   
   private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
   private final PickupSubsystem mPickupSubsystem = new PickupSubsystem();
+  private final BlinkinSubsystem mBlinkinSubsystem = new BlinkinSubsystem();
+
   //private final ExtensionSubsystem mExtensionSubsystem = new ExtensionSubsystem();
   //private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
   //private final AcceleratorSubsystem mAcceleratorSubsystem = new AcceleratorSubsystem();
@@ -56,9 +60,16 @@ public class RobotContainer {
   }
   private void configureButtonBindings() {
     new JoystickButton(mDriver, XboxController.Button.kA.value)
-      .whenPressed(mSuperStructure.new RunIntakeCommand())
-      .whenReleased(new WaitCommand(0.25).andThen(mSuperStructure.new StopIntakeCommand())
-    );
+      .whenPressed(
+        mSuperStructure.new RunIntakeCommand()
+         .beforeStarting(
+           new InstantCommand(mBlinkinSubsystem::setIntakingColor, mBlinkinSubsystem)
+         )
+      )
+      .whenReleased(
+        mSuperStructure.new StopIntakeCommand().beforeStarting(new InstantCommand(mBlinkinSubsystem::setIdleColor, mBlinkinSubsystem))
+      );
+
     // new JoystickButton(mDriver, XboxController.Button.kY.value)
     //   .whenPressed(mSuperStructure.flywheel.new setRPMTarget(1000))
     //   .whenReleased(mSuperStructure.flywheel.new setRPMTarget(0)
