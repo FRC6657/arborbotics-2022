@@ -25,37 +25,6 @@ public class Trajectories {
     );
 
     /**
-     * Part 1 of a simple trajectory test
-     */
-    public static Trajectory TEST_p1 = generateTrajectory(
-        3,
-        2,
-        List.of(
-            new Pose2d(1, 3, Rotation2d.fromDegrees(0)),
-            new Pose2d(3, 5, Rotation2d.fromDegrees(90))
-        ),
-        false,
-        "Test"
-    );
-    /**
-     * Part 2 of a simple trajectory test
-     */
-    public static Trajectory TEST_p2= generateTrajectory(
-        3,
-        2,
-        List.of(
-            new Pose2d(3, 5, Rotation2d.fromDegrees(90)),
-            new Pose2d(5, 3, Rotation2d.fromDegrees(180))
-        ),
-        true,
-        "Test"
-    );
-    /**
-     * Concatenation of the 2 test trajectory parts
-     */
-    public static Trajectory TEST = TEST_p1.concatenate(TEST_p2);
-
-    /**
      * Part 1 of a 2 ball auto starting away from the hangar
      */
     public static Trajectory Two_Ball_Far_1 = generateTrajectory(
