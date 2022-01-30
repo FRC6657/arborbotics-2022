@@ -15,11 +15,11 @@ private Blinkin mBlinkin;
   }
 
   public void setIntakingColor() {
-    setBlinkinColor(BlinkinLEDPattern.SOLID_HOT_PINK);
+    setBlinkinColor(Constants.BlinkinColors.kIdle);
   }
 
   public void setIdleColor(){
-    setBlinkinColor(BlinkinLEDPattern.SOLID_BLUE);
+    setBlinkinColor(Constants.BlinkinColors.kIntake);
   }
 
   private void setBlinkinColor(BlinkinLEDPattern pattern){
