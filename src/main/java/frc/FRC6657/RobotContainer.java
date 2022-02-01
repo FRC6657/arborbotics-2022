@@ -79,7 +79,7 @@ public class RobotContainer {
     new JoystickButton(mDriver, 7)
         .whenPressed(mSuperStructure.flywheel.new setRPMTarget(0));
     new JoystickButton(mDriver, 8)
-        .whenPressed(mSuperStructure.flywheel.new setRPMTarget(1000));
+        .whenPressed(mSuperStructure.flywheel.new setRPMTarget(100));
     new JoystickButton(mDriver, 9)
         .whenPressed(mSuperStructure.flywheel.new setRPMTarget(2000));
     new JoystickButton(mDriver, 10)

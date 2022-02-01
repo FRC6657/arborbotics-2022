@@ -11,6 +11,7 @@
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/BlinkinSubsystem": "Subsystem",
       "/LiveWindow/DrivetrainSubsystem": "Subsystem",
+      "/LiveWindow/FlywheelSubsystem": "Subsystem",
       "/LiveWindow/PickupSubsystem": "Subsystem",
       "/LiveWindow/SuperStructure": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",

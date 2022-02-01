@@ -4,11 +4,8 @@
 
 package frc.FRC6657.subsystems.shooter;
 
-import java.nio.file.DirectoryStream.Filter;
-
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
-import com.ctre.phoenix.motorcontrol.can.FilterConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
@@ -57,9 +54,6 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   private boolean mAtTarget = false;
   private double mRpmTarget = 0;
-
-  private double mMinRPMDelta = 0;
-  private double mMaxRPMDelta = 0;
 
   public FlywheelSubsystem() {
     mProtagonist = new WPI_TalonFX(Constants.kLeftFlywheelID);
@@ -134,6 +128,11 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     return mAtTarget;
   }
 
+  @Config(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name="Set RPM Target", defaultValueNumeric = 0)
+  private void setRPMTarget(double setpoint){
+    mRpmTarget = setpoint;
+  }
+
   public class setRPMTarget extends CommandBase{
     double newTarget;
     public setRPMTarget(double newTarget){
@@ -142,8 +141,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     }
     @Override
     public void initialize() {
-      mRpmTarget = newTarget;
-      System.out.println(mFlywheelController.getK());
+      setRPMTarget(newTarget);
     }
     @Override
     public boolean isFinished() {
