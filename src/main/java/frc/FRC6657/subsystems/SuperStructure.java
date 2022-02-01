@@ -12,7 +12,7 @@ import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 //import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
-//import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
+import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
 public class SuperStructure extends SubsystemBase {
@@ -20,7 +20,7 @@ public class SuperStructure extends SubsystemBase {
   public final DrivetrainSubsystem drivetrain;
   public final PickupSubsystem pickup;
   //public final ExtensionSubsystem intakeExtension;
-  //public final FlywheelSubsystem flywheel;
+  public final FlywheelSubsystem flywheel;
   public final AcceleratorSubsystem accelerator;
   public final VisionSupplier vision;
   
@@ -29,14 +29,14 @@ public class SuperStructure extends SubsystemBase {
     DrivetrainSubsystem drivetrain,
     PickupSubsystem pickup,
     //ExtensionSubsystem intakeExtension,
-    //FlywheelSubsystem flywheel,
+    FlywheelSubsystem flywheel,
     AcceleratorSubsystem accelerator,
     VisionSupplier vision
   ) {
     this.drivetrain = drivetrain;
     this.pickup = pickup;
     //this.intakeExtension = intakeExtension;
-    //this.flywheel = flywheel;
+    this.flywheel = flywheel;
     this.accelerator = accelerator;
     this.vision = vision;
   }
