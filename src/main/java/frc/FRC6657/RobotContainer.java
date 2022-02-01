@@ -19,6 +19,7 @@ import frc.FRC6657.subsystems.blinkin.BlinkinSubsystem;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 //import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
+import frc.FRC6657.subsystems.lift.LiftSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 //import frc.FRC6657.subsystems.vision.VisionSubsystem;
 
@@ -34,6 +35,7 @@ public class RobotContainer {
   // private final AcceleratorSubsystem mAcceleratorSubsystem = new
   // AcceleratorSubsystem();
   // private final VisionSubsystem mVisionSubsystem = new VisionSubsystem();
+  private final LiftSubsystem mLiftSubsystem = new LiftSubsystem();
 
   private final SuperStructure mSuperStructure = new SuperStructure(
       mDrivetrainSubsystem,
@@ -41,7 +43,8 @@ public class RobotContainer {
       // mExtensionSubsystem,
       mFlywheelSubsystem,
       null, // mAcceleratorSubsystem,
-      null// mVisionSubsystem.visionSupplier
+      null, // mVisionSubsystem.visionSupplier
+      null //mLiftSubsystem
   );
 
   private final Joystick mDriver = new Joystick(0);
