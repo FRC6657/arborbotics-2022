@@ -529,7 +529,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     Triangle curTriangle;
     double xOffset; // Meters
     double yOffset; // Meters
-    double angleError; // degrees
+    double angleError; // Degrees
     xOffset = Math.abs(Constants.Drivetrain.kTargetX - mOdometry.getPoseMeters().getX());
     yOffset = Math.abs(Constants.Drivetrain.kTargetY - mOdometry.getPoseMeters().getY());
     curTriangle = new Triangle(xOffset, yOffset);
