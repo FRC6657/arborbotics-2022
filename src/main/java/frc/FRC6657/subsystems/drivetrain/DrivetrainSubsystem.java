@@ -481,6 +481,23 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   }
 
+  public class OdometryAimCommand extends CommandBase {
+
+    public double turnError;
+    public double xOffset;
+    public double yOffset;
+
+    public OdometryAimCommand(){
+      
+    }
+
+    @Override
+    public void execute() {
+        
+    }
+
+  }
+
 
   /*
    *
