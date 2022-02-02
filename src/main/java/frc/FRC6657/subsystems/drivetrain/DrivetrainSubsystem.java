@@ -39,9 +39,11 @@ import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
+import frc.FRC6657.Constants.Triangle;
 import frc.FRC6657.custom.ctre.SendablePigeonIMU;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
@@ -483,9 +485,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   public class OdometryAimCommand extends CommandBase {
 
-    public double turnError;
-    public double xOffset;
-    public double yOffset;
+    public Triangle curTriangle;
+    public double xOffset; //Meters
+    public double yOffset; //Meters
+    public double angleError; //Degrees
 
     public OdometryAimCommand(){
       
@@ -493,7 +496,23 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     @Override
     public void execute() {
-        
+        updateValues();
+    }
+
+    @Override
+    public void initialize() {
+
+    }
+
+    public void updateValues(){
+      xOffset = Math.abs(Constants.Drivetrain.kTargetX - mOdometry.getPoseMeters().getX());
+      yOffset = Math.abs(Constants.Drivetrain.kTargetY - mOdometry.getPoseMeters().getY());
+      curTriangle = new Triangle(xOffset, yOffset);
+      angleError = mOdometry.getPoseMeters().getRotation().getDegrees() - curTriangle.getAngle();
+    }
+
+    public double errorLength(double erAngle){
+      return (Constants.Drivetrain.kTrackWidth / 2) * Units.degreesToRadians(angleError);
     }
 
   }
