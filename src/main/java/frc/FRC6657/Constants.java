@@ -19,7 +19,7 @@ public final class Constants {
 
     // Drivetrain //
 
-    //PWM IDs
+    // PWM IDs
     public static final int kBlinkinID = 0;
 
     // CAN IDs
@@ -45,41 +45,71 @@ public final class Constants {
         public static final double drive_kS = 0.53584;
         public static final double drive_kV = 2.2764;
         public static final double drive_kA = 0.73118;
-        public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(drive_kS, drive_kV, drive_kA);
+        public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(drive_kS, drive_kV,
+                drive_kA);
 
         // Drivetrain PID
-        public static final double drive_linear_kP = 1; //Char P gain 3.1976
+        public static final double drive_linear_kP = 1; // Char P gain 3.1976
         public static final double drive_linear_kI = 0;
         public static final double drive_linear_kD = 0;
 
-        public static final double drive_angular_kP = 0; //TODO Run angular char
+        public static final double drive_angular_kP = 0; // TODO Run angular char
         public static final double drive_angular_kI = 0;
         public static final double drive_angular_kD = 0;
 
-        public static final PIDController kLinearPIDController = new PIDController(drive_linear_kP, drive_linear_kI, drive_linear_kD);
-        public static final PIDController kAngularPIDController = new PIDController(drive_angular_kP, drive_angular_kI, drive_angular_kD);
+        public static final PIDController kLinearPIDController = new PIDController(drive_linear_kP, drive_linear_kI,
+                drive_linear_kD);
+        public static final PIDController kAngularPIDController = new PIDController(drive_angular_kP, drive_angular_kI,
+                drive_angular_kD);
 
         // Drivetrain Values
         public static final double kRobotWeight = Units.lbsToKilograms(40);
         public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides
         public static final double kGearRatio = 75 / 7; // Drive Gearbox Ratio
         public static final double kWheelRadius = Units.inchesToMeters(3); // Drive wheel Radius
-        public static final double kDistancePerPulse = (2 * Math.PI * kWheelRadius) / (kFalconEncoderCPR * kGearRatio); // Conversion between Counts and Meters
+        public static final double kDistancePerPulse = (2 * Math.PI * kWheelRadius) / (kFalconEncoderCPR * kGearRatio); // Conversion
+                                                                                                                        // between
+                                                                                                                        // Counts
+                                                                                                                        // and
+                                                                                                                        // Meters
         public static final double kMaxSpeed = 3.5; // Meters per second
         public static final double kMaxAccel = kMaxSpeed * 3; // Meters per second per second
         public static final double kAimTollerance = 3;
         public static final double kDistanceTollerance = 0.1;
 
+        // Odometry Values
+        public static final double kTargetX = 10; //Field Dimension X in Meters
+        public static final double kTargetY = 10; //Field Dimension Y in Meters
+
         // Default Sim
         public static final DifferentialDrivetrainSim kSim = new DifferentialDrivetrainSim( // Simulation
-            DCMotor.getFalcon500(2),
-            kGearRatio,
-            7.5,
-            kRobotWeight,
-            kWheelRadius,
-            kTrackWidth,
-            null
-        );
+                DCMotor.getFalcon500(2),
+                kGearRatio,
+                7.5,
+                kRobotWeight,
+                kWheelRadius,
+                kTrackWidth,
+                null);
+    }
+
+    public static class Triangle {
+        private double tX;
+        private double tY;
+        private double tAngle;
+
+        public Triangle(double tX, double tY) {
+            this.tX = tX;
+            this.tY = tY;
+            tAngle = Units.radiansToDegrees(Math.atan(tY / tX));
+        }
+
+        /**
+         * @return {number} - An angle in degrees
+         */
+        public double getAngle() {
+            return this.tAngle;
+        }
+
     }
 
     /**
@@ -97,49 +127,44 @@ public final class Constants {
         // General
         public static final double kSpinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500);
         public static final double kRPMTollerance = 50;
-        public static final double kRatio = 1.0/1.0;
+        public static final double kRatio = 1.0 / 1.0;
 
         // Characterization
         public static final double kV = 0.0549; // 0.051151
-        public static final double kA= 0.0024487; //0.0024487 
+        public static final double kA = 0.0024487; // 0.0024487
 
         public static final LinearSystem<N1, N1, N1> kPlant = LinearSystemId.identifyVelocitySystem(kV, kA);
 
         public static final FlywheelSim kSim = new FlywheelSim(
-            kPlant,
-            DCMotor.getFalcon500(1),
-            kRatio
-        );
+                kPlant,
+                DCMotor.getFalcon500(1),
+                kRatio);
 
     }
 
-    
     /**
      * Accelerator Values
      */
-    public static class Accelerator{
+    public static class Accelerator {
         public static final double kSpeed = 1;
     }
 
-    public static class Vision{
+    public static class Vision {
         public static final double kCameraHeightMeters = Units.inchesToMeters(35.111986);// CAD Estimate
         public static final double kTargetHeightMeters = Units.feetToMeters(8 + 8 / 12); // 8` 8" from manual
         public static final double kCameraPitchRadians = Units.degreesToRadians(30); // CAD Estimate
         public static final double kCamDiagFOV = 67.8; // degrees
         public static final int kCamResolutionWidth = 320; // pixels
         public static final int kCamResolutionHeight = 240; // pixels
-        public static final double kTargetWidth = Units.feetToMeters(4);  
+        public static final double kTargetWidth = Units.feetToMeters(4);
     }
 
     /**
      * Pretty Lights
      */
-    public static class BlinkinColors{
+    public static class BlinkinColors {
         public static final BlinkinLEDPattern kIdle = BlinkinLEDPattern.COLOR_WAVES_FOREST_PALETTE;
         public static final BlinkinLEDPattern kIntake = BlinkinLEDPattern.STROBE_BLUE;
     }
-    
-
-
 
 }
