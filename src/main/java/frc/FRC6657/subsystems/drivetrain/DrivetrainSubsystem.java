@@ -29,7 +29,6 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -40,7 +39,6 @@ import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
@@ -106,9 +104,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     // Fancy Stuff
     mKinematics = new DifferentialDriveKinematics(Constants.Drivetrain.kTrackWidth);
     mOdometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getGyroAngle()));
-
-    resetOdometry(new Pose2d(4,4, Rotation2d.fromDegrees(132.47398472)));
-    SmartDashboard.putNumber("RobotAngle", mOdometry.getPoseMeters().getRotation().getDegrees());
 
     // Fancier Stuff
     mFeedForward = Constants.Drivetrain.kFeedForward;
@@ -418,13 +413,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     SmartDashboard.putNumber("yOffset", yOffset);
     SmartDashboard.putNumber("Tri-Angle", curTriangle.getAngle());
 
-    mTrianglePoints.clear();
-
-    mTrianglePoints.add(mOdometry.getPoseMeters());
-    mTrianglePoints.add(new Pose2d(Constants.Drivetrain.kTargetX, mOdometry.getPoseMeters().getY(), new Rotation2d()));
-    mTrianglePoints.add(new Pose2d(Constants.Drivetrain.kTargetX,Constants.Drivetrain.kTargetY, new Rotation2d()));
-
-    mTriangle.setPoses(mTrianglePoints);
+    return 0.0;
   }
 
   public double getOdemetryDegrees(){
@@ -594,6 +583,15 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   public void periodic() {
     mOdometry.update(Rotation2d.fromDegrees(getGyroAngle()), getLeftMeters(), getRightMeters());
     mField.setRobotPose(mOdometry.getPoseMeters());
+
+    mTrianglePoints.clear();
+
+    mTrianglePoints.add(mOdometry.getPoseMeters());
+    mTrianglePoints.add(new Pose2d(Constants.Drivetrain.kTargetX, mOdometry.getPoseMeters().getY(), new Rotation2d()));
+    mTrianglePoints.add(new Pose2d(Constants.Drivetrain.kTargetX,Constants.Drivetrain.kTargetY, new Rotation2d()));
+
+    mTriangle.setPoses(mTrianglePoints);
+
   }
 
   @Override

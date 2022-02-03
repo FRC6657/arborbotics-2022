@@ -1,11 +1,4 @@
 {
-  "HALProvider": {
-    "PWM Outputs": {
-      "window": {
-        "visible": true
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -46,7 +39,8 @@
             0.0,
             255.0
           ],
-          "style": "Line (Closed)"
+          "style": "Line (Closed)",
+          "weight": 2.0
         },
         "window": {
           "visible": true
@@ -67,13 +61,8 @@
       "DrivetrainSubsystem": {
         "Gyro": {
           "open": true
-        },
-        "open": true
-      },
-      "open": true
-    },
-    "SmartDashboard": {
-      "open": true
+        }
+      }
     }
   }
 }
