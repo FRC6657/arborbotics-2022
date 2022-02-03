@@ -44,20 +44,20 @@ public class RobotContainer {
       null// mVisionSubsystem.visionSupplier
   );
 
-  private final Joystick mDriver = new Joystick(0);
+  private final XboxController mDriver = new XboxController(0);
 
   private final SlewRateLimiter mAccelLimit = new SlewRateLimiter(Constants.Drivetrain.kMaxAccel);
 
   public RobotContainer() {
 
-    // mDrivetrainSubsystem.setDefaultCommand(
-    // mDrivetrainSubsystem.new DriveCommand(
-    // () ->
-    // -mAccelLimit.calculate(Deadbander.applyLinearScaledDeadband(mDriver.getLeftY(),0.1)),
-    // () -> Deadbander.applyLinearScaledDeadband(mDriver.getRightX(),0.1),
-    // () -> mDriver.getRightBumper()
-    // )
-    // );
+    mDrivetrainSubsystem.setDefaultCommand(
+      mDrivetrainSubsystem.new DriveCommand(
+      () -> -mAccelLimit.calculate(Deadbander.applyLinearScaledDeadband(mDriver.getLeftY(),0.1)),
+      () -> Deadbander.applyLinearScaledDeadband(mDriver.getRightX(),0.1),
+      () -> mDriver.getRightBumper()
+      )
+    );
+
 
     configureButtonBindings();
 
@@ -76,18 +76,8 @@ public class RobotContainer {
     // InstantCommand(mBlinkinSubsystem::setIdleColor, mBlinkinSubsystem))
     // );
 
-    new JoystickButton(mDriver, 7)
-        .whenPressed(mSuperStructure.flywheel.new setRPMTarget(0));
-    new JoystickButton(mDriver, 8)
-        .whenPressed(mSuperStructure.flywheel.new setRPMTarget(100));
-    new JoystickButton(mDriver, 9)
-        .whenPressed(mSuperStructure.flywheel.new setRPMTarget(2000));
-    new JoystickButton(mDriver, 10)
-        .whenPressed(mSuperStructure.flywheel.new setRPMTarget(3000));
-    new JoystickButton(mDriver, 11)
-        .whenPressed(mSuperStructure.flywheel.new setRPMTarget(4000));
-    new JoystickButton(mDriver, 12)
-        .whenPressed(mSuperStructure.flywheel.new setRPMTarget(5000));
+    new JoystickButton(mDriver, 2)
+        .whenPressed(mDrivetrainSubsystem.new OdometryAimCommand());
 
   }
 

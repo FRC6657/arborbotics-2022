@@ -29,6 +29,7 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -72,6 +73,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   private FieldObject2d mRobotPath = mField.getObject("robot-path");
   private List<Pose2d> mPathPoints = new ArrayList<Pose2d>();
 
+  private FieldObject2d mTarget = mField.getObject("target");
+  private FieldObject2d mTriangle = mField.getObject("triangle");
+  private List<Pose2d> mTrianglePoints = new ArrayList<Pose2d>();
+
   DifferentialDrivetrainSim mDrivetrainSim;
   /*
    * 
@@ -102,6 +107,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     mKinematics = new DifferentialDriveKinematics(Constants.Drivetrain.kTrackWidth);
     mOdometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getGyroAngle()));
 
+    resetOdometry(new Pose2d(4,4, Rotation2d.fromDegrees(132.47398472)));
+    SmartDashboard.putNumber("RobotAngle", mOdometry.getPoseMeters().getRotation().getDegrees());
+
     // Fancier Stuff
     mFeedForward = Constants.Drivetrain.kFeedForward;
     mLinearPIDController = Constants.Drivetrain.kLinearPIDController;
@@ -114,6 +122,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
       mLeftSim = mFrontLeft.getSimCollection();
       mRightSim = mFrontRight.getSimCollection();
     }
+
+    mTarget.setPose(new Pose2d(Constants.Drivetrain.kTargetX,Constants.Drivetrain.kTargetY,new Rotation2d()));
     // Field Visualization
     SmartDashboard.putData(mField);
 
@@ -259,6 +269,21 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
   }
 
+  public void setTurnSpeed(WheelSpeeds speeds) {
+
+    speeds.left *= Constants.Drivetrain.kTurnSpeed*(Math.PI*Constants.Drivetrain.kTrackWidth);
+    speeds.right *= Constants.Drivetrain.kTurnSpeed*(Math.PI*Constants.Drivetrain.kTrackWidth);
+
+    final double leftFeedforward = mFeedForward.calculate(speeds.left);
+    final double rightFeedforward = mFeedForward.calculate(speeds.right);
+
+    final double leftOutput = mLinearPIDController.calculate(getLeftVelocity(), speeds.left);
+    final double rightOutput = mLinearPIDController.calculate(getRightVelocity(), speeds.right);
+
+    mFrontLeft.setVoltage(leftOutput + leftFeedforward);
+    mFrontRight.setVoltage(rightOutput + rightFeedforward);
+  }
+
   /**
    * Stops the Drivetrain
    */
@@ -379,6 +404,36 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
       return mPigeonIMU.getFusedHeading();
     }
     return 0;
+  }
+
+  public double getEstTargetAngleError() {
+    Triangle curTriangle;
+    double xOffset; // Meters
+    double yOffset; // Meters
+    xOffset = Constants.Drivetrain.kTargetX - mOdometry.getPoseMeters().getX();
+    yOffset = Constants.Drivetrain.kTargetY - mOdometry.getPoseMeters().getY();
+    curTriangle = new Triangle(xOffset, yOffset);
+
+    SmartDashboard.putNumber("xOffset", xOffset);
+    SmartDashboard.putNumber("yOffset", yOffset);
+    SmartDashboard.putNumber("Tri-Angle", curTriangle.getAngle());
+
+    mTrianglePoints.clear();
+
+    mTrianglePoints.add(mOdometry.getPoseMeters());
+    mTrianglePoints.add(new Pose2d(Constants.Drivetrain.kTargetX, mOdometry.getPoseMeters().getY(), new Rotation2d()));
+    mTrianglePoints.add(new Pose2d(Constants.Drivetrain.kTargetX,Constants.Drivetrain.kTargetY, new Rotation2d()));
+
+    mTriangle.setPoses(mTrianglePoints);
+  }
+
+  public double getOdemetryDegrees(){
+    if(mOdometry.getPoseMeters().getRotation().getDegrees() < 0){
+      return 180 + (180 + mOdometry.getPoseMeters().getRotation().getDegrees());
+    }
+    else {
+      return mOdometry.getPoseMeters().getRotation().getDegrees();
+    }
   }
 
   /*
@@ -509,36 +564,24 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
   public class OdometryAimCommand extends CommandBase {
 
-    public OdometryAimCommand() {
-
-    }
-
     @Override
     public void execute() {
-      
+      double error = getEstTargetAngleError()/180;
+      setTurnSpeed(new WheelSpeeds(error,-error));
+    }
+
+
+    @Override
+    public void end(boolean interrupted) {
+        stop();
     }
 
     @Override
-    public void initialize() {
-
+    public boolean isFinished() {
+      SmartDashboard.putNumber("Delta Angle", getEstTargetAngleError());
+      return(Math.abs(getEstTargetAngleError())<5);
     }
 
-  }
-
-  public double errorLength(double erAngle) {
-    Triangle curTriangle;
-    double xOffset; // Meters
-    double yOffset; // Meters
-    double angleError; // Degrees
-    xOffset = Math.abs(Constants.Drivetrain.kTargetX - mOdometry.getPoseMeters().getX());
-    yOffset = Math.abs(Constants.Drivetrain.kTargetY - mOdometry.getPoseMeters().getY());
-    curTriangle = new Triangle(xOffset, yOffset);
-    angleError = errorAngle(curTriangle);
-    return (Constants.Drivetrain.kTrackWidth / 2) * Units.degreesToRadians(angleError);
-  }
-
-  public double errorAngle(Triangle triangle){
-    return mOdometry.getPoseMeters().getRotation().getDegrees() - triangle.getAngle();
   }
 
   /*

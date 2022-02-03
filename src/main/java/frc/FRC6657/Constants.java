@@ -73,13 +73,14 @@ public final class Constants {
                                                                                                                         // and
                                                                                                                         // Meters
         public static final double kMaxSpeed = 3.5; // Meters per second
+        public static final double kTurnSpeed = 1; //1rps
         public static final double kMaxAccel = kMaxSpeed * 3; // Meters per second per second
         public static final double kAimTollerance = 3;
         public static final double kDistanceTollerance = 0.1;
 
         // Odometry Values
-        public static final double kTargetX = 10; //Field Dimension X in Meters
-        public static final double kTargetY = 10; //Field Dimension Y in Meters
+        public static final double kTargetX = 1.228347293847; //Field Dimension X in Meters
+        public static final double kTargetY = 2.4928729485704; //Field Dimension Y in Meters
 
         // Default Sim
         public static final DifferentialDrivetrainSim kSim = new DifferentialDrivetrainSim( // Simulation

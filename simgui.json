@@ -28,10 +28,25 @@
           "style": "Line",
           "weight": 1.0
         },
+        "target": {
+          "arrows": false,
+          "length": 0.25,
+          "width": 0.25
+        },
         "trajectory": {
           "arrows": false,
           "style": "Line",
           "weight": 2.0
+        },
+        "triangle": {
+          "arrows": false,
+          "color": [
+            56.666664123535156,
+            255.0,
+            0.0,
+            255.0
+          ],
+          "style": "Line (Closed)"
         },
         "window": {
           "visible": true
@@ -41,15 +56,23 @@
   },
   "NetworkTables": {
     "LiveWindow": {
-      "BlinkinSubsystem": {
-        "open": true
-      },
       "Ungrouped": {
         "Blinkin[0]": {
           "open": true
         },
         "open": true
+      }
+    },
+    "Shuffleboard": {
+      "DrivetrainSubsystem": {
+        "Gyro": {
+          "open": true
+        },
+        "open": true
       },
+      "open": true
+    },
+    "SmartDashboard": {
       "open": true
     }
   }
