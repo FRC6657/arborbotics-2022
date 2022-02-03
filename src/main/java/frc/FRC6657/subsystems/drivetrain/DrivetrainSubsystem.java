@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
@@ -74,6 +75,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   private FieldObject2d mTarget = mField.getObject("target");
   private FieldObject2d mTriangle = mField.getObject("triangle");
   private List<Pose2d> mTrianglePoints = new ArrayList<Pose2d>();
+
+  private FieldObject2d mAngle = mField.getObject("angle");
+  private List<Pose2d> mAnglePoints = new ArrayList<Pose2d>();
 
   DifferentialDrivetrainSim mDrivetrainSim;
   /*
@@ -553,9 +557,14 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
   public class OdometryAimCommand extends CommandBase {
 
+    public OdometryAimCommand(){
+      addRequirements(DrivetrainSubsystem.this);
+    }
+    
     @Override
     public void execute() {
       double error = getEstTargetAngleError()/180;
+      System.out.println(error);
       setTurnSpeed(new WheelSpeeds(error,-error));
     }
 
@@ -567,8 +576,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
     @Override
     public boolean isFinished() {
-      SmartDashboard.putNumber("Delta Angle", getEstTargetAngleError());
-      return(Math.abs(getEstTargetAngleError())<5);
+      //return(Math.abs(getEstTargetAngleError())<5);
+      return false;
     }
 
   }
@@ -591,6 +600,23 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     mTrianglePoints.add(new Pose2d(Constants.Drivetrain.kTargetX,Constants.Drivetrain.kTargetY, new Rotation2d()));
 
     mTriangle.setPoses(mTrianglePoints);
+
+
+    double angleRadius = 4;
+
+    mAnglePoints.clear();
+    mAnglePoints.add(mOdometry.getPoseMeters());
+    mAnglePoints.add(
+      new Pose2d(
+        (mOdometry.getPoseMeters().getX() + angleRadius * Math.cos(Units.degreesToRadians(getOdemetryDegrees()))),
+        (mOdometry.getPoseMeters().getY() + angleRadius * Math.sin(Units.degreesToRadians(getOdemetryDegrees()))),
+        new Rotation2d()
+      )
+    );
+
+    mAngle.setPoses(mAnglePoints);
+
+    SmartDashboard.putNumber("Angle", getOdemetryDegrees());
 
   }
 

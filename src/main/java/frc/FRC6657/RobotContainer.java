@@ -77,7 +77,7 @@ public class RobotContainer {
     // );
 
     new JoystickButton(mDriver, 2)
-        .whenPressed(mDrivetrainSubsystem.new OdometryAimCommand());
+        .whenHeld(mDrivetrainSubsystem.new OdometryAimCommand());
 
   }
 

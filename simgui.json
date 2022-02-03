@@ -16,6 +16,20 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "Robot": {
+          "arrows": false,
+          "style": "Line"
+        },
+        "angle": {
+          "arrows": false,
+          "color": [
+            0.0,
+            0.029412031173706055,
+            1.0,
+            255.0
+          ],
+          "style": "Line"
+        },
         "robot-path": {
           "arrows": false,
           "style": "Line",
@@ -63,6 +77,9 @@
           "open": true
         }
       }
+    },
+    "SmartDashboard": {
+      "open": true
     }
   }
 }

@@ -79,8 +79,8 @@ public final class Constants {
         public static final double kDistanceTollerance = 0.1;
 
         // Odometry Values
-        public static final double kTargetX = 1.228347293847; //Field Dimension X in Meters
-        public static final double kTargetY = 2.4928729485704; //Field Dimension Y in Meters
+        public static final double kTargetX = 7.5; //Field Dimension X in Meters
+        public static final double kTargetY = 4; //Field Dimension Y in Meters
 
         // Default Sim
         public static final DifferentialDrivetrainSim kSim = new DifferentialDrivetrainSim( // Simulation
