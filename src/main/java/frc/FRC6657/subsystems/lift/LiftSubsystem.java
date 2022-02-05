@@ -5,62 +5,49 @@
 package frc.FRC6657.subsystems.lift;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.wpilibj.Encoder;
 
-
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
 
+
 public class LiftSubsystem extends SubsystemBase {
 
-  private final WPI_TalonSRX mMotor;
-  private final Encoder encoder; 
-  private final double encoderCPR = 8192;
-  private final double kP = 1;
-
+  private final WPI_TalonSRX leftMotor;
+  private final WPI_TalonSRX rightMotor;
+  private final DutyCycleEncoder leftEncoder;
+  private final DutyCycleEncoder rightEncoder;  
+  private double leftSetPoint, rightSetPoint;
   
   public LiftSubsystem() {
-    mMotor = new WPI_TalonSRX(Constants.kLiftID);
-    encoder = new Encoder(0,1); 
-
-    double distancePerPulse = Math.PI / encoderCPR;
-
-    encoder.setDistancePerPulse(distancePerPulse);
+    rightMotor = new WPI_TalonSRX(Constants.kRightLiftID);
+    leftMotor = new WPI_TalonSRX(Constants.kLeftLiftID);
+    rightEncoder = new DutyCycleEncoder(0); 
+    leftEncoder = new DutyCycleEncoder(1);
+    
+    leftEncoder.setDistancePerRotation(Math.PI);
+    rightEncoder.setDistancePerRotation(Math.PI);
 
   }
 
   
-  public double calculateError(double setpoint) {
-    double error; 
-
-    error = setpoint - encoder.getDistancePerPulse();
-
-    return error;
-
+  public double getError(double setpoint) {
+    return setpoint - rightEncoder.getDistance();
   }
 
-  public double getX(double error) {
-    double x;
-
-    x = Math.PI / encoderCPR; 
-
-    return x;
-
+  public void setLeftSetPoint(double setpoint) {
+    leftSetPoint = setpoint;
   }
 
+  public void setRightSetPoint(double setpoint) {
+    rightSetPoint = setpoint;
+  }
 
   public void run() {
 
-    double setpoint = encoder.getDistance();
-    encoder.setDistancePerPulse(getX(calculateError(setpoint)));
-    
-    mMotor.set(kP * calculateError(setpoint));
+    leftMotor.set(Constants.Lift.kP * getError(leftSetPoint));
+    rightMotor.set(Constants.Lift.kP * getError(rightSetPoint));
 
   }
 
-  @Override
-  public void periodic() {
-    
-
-  }
 }

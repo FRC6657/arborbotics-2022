@@ -33,7 +33,8 @@ public final class Constants {
     public static final int kLeftFlywheelID = 8;
     public static final int kRightFlywheelID = 9;
     public static final int kAcceleratorID = 10;
-    public static final int kLiftID = 11; 
+    public static final int kRightLiftID = 11; 
+    public static final int kLeftLiftID = 12;
 
     // General Values
     public static final double kFalconEncoderCPR = 2048; // Encoder Counts per Rotation
@@ -88,6 +89,14 @@ public final class Constants {
      */
     public class Intake {
         public static final double kSpeed = 1;
+    }
+
+    public class Lift {
+        public static final double encoderCPR = 8192;
+        public static final double kP = 1;
+        public static final int rightEncoderID = 1;
+        public static final int leftEncoderID = 2;
+
     }
 
     /**
