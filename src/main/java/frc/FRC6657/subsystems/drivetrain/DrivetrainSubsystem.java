@@ -42,7 +42,6 @@ import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
-import frc.FRC6657.custom.ctre.SendablePigeonIMU;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -52,7 +51,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private TalonFXSimCollection mLeftSim, mRightSim;
   
   @Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro")
-  private final SendablePigeonIMU mPigeonIMU;
+  private final WPI_PigeonIMU mPigeonIMU;
   private BasePigeonSimCollection mPigeonIMUSim;
 
   private final DifferentialDriveKinematics mKinematics;
@@ -93,7 +92,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     configureMotors();
 
     //Gyro Stuff
-    mPigeonIMU = new SendablePigeonIMU(Constants.kPigeonID);
+    mPigeonIMU = new WPI_PigeonIMU(Constants.kPigeonID);
     mPigeonIMU.reset();
 
     //Fancy Stuff
