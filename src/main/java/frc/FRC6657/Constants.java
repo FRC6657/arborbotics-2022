@@ -97,7 +97,7 @@ public final class Constants {
         // General
         public static final double kSpinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500);
         public static final double kRPMTollerance = 50;
-        public static final double kRatio = 1.0/1.0;
+        public static final double kRatio = 1.5/1.0;
 
         // Characterization
         public static final double kV = 0.0549; // 0.051151

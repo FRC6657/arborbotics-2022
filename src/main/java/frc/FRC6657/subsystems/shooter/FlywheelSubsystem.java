@@ -73,8 +73,12 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   }
 
   @Config(rowIndex = 2, columnIndex = 0, width = 2, height = 1, name = "Set Motor Percent", defaultValueNumeric = 0)
-  private void set(double percent) {
-    mProtagonist.set(percent);
+  public void set() {
+    mProtagonist.set(-0.6);
+  }
+
+  public void stop(){
+    mProtagonist.set(0);
   }
 
   @Log(rowIndex = 2, columnIndex = 2, width = 2, height = 1, name = "Flywheel Percent")
@@ -161,18 +165,18 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    if(getRPMDelta() < Constants.Flywheel.kRPMTollerance){
-      mAtTarget = true;
-    }
-    else{
-      mAtTarget = false;
-    }
+    // if(getRPMDelta() < Constants.Flywheel.kRPMTollerance){
+    //   mAtTarget = true;
+    // }
+    // else{
+    //   mAtTarget = false;
+    // }
 
-    mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRpmTarget)));
-    mFlywheelLoop.correct(VecBuilder.fill(getRadiansPerSecond()));
-    mFlywheelLoop.predict(0.020);
-    double mNextVolts = mFlywheelLoop.getU(0);
-    mProtagonist.setVoltage(mRpmTarget == 0 ? 0 : mNextVolts);
+    // mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRpmTarget)));
+    // mFlywheelLoop.correct(VecBuilder.fill(getRadiansPerSecond()));
+    // mFlywheelLoop.predict(0.020);
+    // double mNextVolts = mFlywheelLoop.getU(0);
+    // mProtagonist.setVoltage(mRpmTarget == 0 ? 0 : mNextVolts);
   }
 
   @Override

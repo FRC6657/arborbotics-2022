@@ -37,11 +37,8 @@ public class RobotContainer {
 
   private final SuperStructure mSuperStructure = new SuperStructure(
       mDrivetrainSubsystem,
-      null, // mPickupSubsystem,
-      // mExtensionSubsystem,
-      mFlywheelSubsystem,
-      null, // mAcceleratorSubsystem,
-      null// mVisionSubsystem.visionSupplier
+      mPickupSubsystem,
+      mFlywheelSubsystem
   );
 
   private final Joystick mDriver = new Joystick(0);
@@ -64,30 +61,13 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    // new JoystickButton(mDriver, XboxController.Button.kA.value)
-    // .whenPressed(
-    // mSuperStructure.new RunIntakeCommand()
-    // .beforeStarting(
-    // new InstantCommand(mBlinkinSubsystem::setIntakingColor, mBlinkinSubsystem)
-    // )
-    // )
-    // .whenReleased(
-    // mSuperStructure.new StopIntakeCommand().beforeStarting(new
-    // InstantCommand(mBlinkinSubsystem::setIdleColor, mBlinkinSubsystem))
-    // );
+    new JoystickButton(mDriver, XboxController.Button.kA.value)
+        .whenPressed(mSuperStructure.new RunIntakeCommand())
+        .whenReleased(mSuperStructure.new StopIntakeCommand());
 
-    new JoystickButton(mDriver, 7)
-        .whenPressed(mSuperStructure.flywheel.new setRPMTarget(0));
-    new JoystickButton(mDriver, 8)
-        .whenPressed(mSuperStructure.flywheel.new setRPMTarget(100));
-    new JoystickButton(mDriver, 9)
-        .whenPressed(mSuperStructure.flywheel.new setRPMTarget(2000));
-    new JoystickButton(mDriver, 10)
-        .whenPressed(mSuperStructure.flywheel.new setRPMTarget(3000));
-    new JoystickButton(mDriver, 11)
-        .whenPressed(mSuperStructure.flywheel.new setRPMTarget(4000));
-    new JoystickButton(mDriver, 12)
-        .whenPressed(mSuperStructure.flywheel.new setRPMTarget(5000));
+    new JoystickButton(mDriver, XboxController.Button.kB.value)
+      .whenPressed(new InstantCommand(mFlywheelSubsystem::set, mFlywheelSubsystem))
+      .whenReleased(new InstantCommand(mFlywheelSubsystem::stop, mFlywheelSubsystem));
 
   }
 

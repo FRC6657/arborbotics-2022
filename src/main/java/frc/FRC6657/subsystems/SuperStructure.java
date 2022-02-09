@@ -21,24 +21,18 @@ public class SuperStructure extends SubsystemBase {
   public final PickupSubsystem pickup;
   //public final ExtensionSubsystem intakeExtension;
   public final FlywheelSubsystem flywheel;
-  public final AcceleratorSubsystem accelerator;
-  public final VisionSupplier vision;
   
 
   public SuperStructure(
     DrivetrainSubsystem drivetrain,
     PickupSubsystem pickup,
     //ExtensionSubsystem intakeExtension,
-    FlywheelSubsystem flywheel,
-    AcceleratorSubsystem accelerator,
-    VisionSupplier vision
+    FlywheelSubsystem flywheel
   ) {
     this.drivetrain = drivetrain;
     this.pickup = pickup;
     //this.intakeExtension = intakeExtension;
     this.flywheel = flywheel;
-    this.accelerator = accelerator;
-    this.vision = vision;
   }
 
   public class RunIntakeCommand extends SequentialCommandGroup {
@@ -74,14 +68,14 @@ public class SuperStructure extends SubsystemBase {
   //   }
   // }
 
-  public class TrackCommand extends SequentialCommandGroup {
+  // public class TrackCommand extends SequentialCommandGroup {
 
-    public TrackCommand(){
-      addRequirements(SuperStructure.this);
-      addCommands(
-        drivetrain.new VisionAimCommand(vision.getYaw(), vision.getDistance(), vision.hasTarget())
-      );
-    }
+  //   public TrackCommand(){
+  //     addRequirements(SuperStructure.this);
+  //     addCommands(
+  //       drivetrain.new VisionAimCommand(vision.getYaw(), vision.getDistance(), vision.hasTarget())
+  //     );
+  //   }
 
-  }
+  // }
 }
