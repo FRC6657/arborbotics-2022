@@ -17,7 +17,7 @@ import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.subsystems.SuperStructure;
 import frc.FRC6657.subsystems.blinkin.BlinkinSubsystem;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
-//import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
+import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 //import frc.FRC6657.subsystems.vision.VisionSubsystem;
@@ -28,8 +28,7 @@ public class RobotContainer {
   private final PickupSubsystem mPickupSubsystem = new PickupSubsystem();
   private final BlinkinSubsystem mBlinkinSubsystem = new BlinkinSubsystem();
 
-  // private final ExtensionSubsystem mExtensionSubsystem = new
-  // ExtensionSubsystem();
+  private final ExtensionSubsystem mExtensionSubsystem = new ExtensionSubsystem();
   private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
   // private final AcceleratorSubsystem mAcceleratorSubsystem = new
   // AcceleratorSubsystem();
@@ -38,8 +37,8 @@ public class RobotContainer {
   private final SuperStructure mSuperStructure = new SuperStructure(
       mDrivetrainSubsystem,
       mPickupSubsystem,
-      mFlywheelSubsystem
-  );
+      mExtensionSubsystem,
+      mFlywheelSubsystem);
 
   private final XboxController mDriver = new XboxController(0);
 
@@ -48,13 +47,10 @@ public class RobotContainer {
   public RobotContainer() {
 
     mDrivetrainSubsystem.setDefaultCommand(
-    mDrivetrainSubsystem.new DriveCommand(
-    () ->
-    -mAccelLimit.calculate(Deadbander.applyLinearScaledDeadband(mDriver.getLeftY(),0.1)),
-    () -> Deadbander.applyLinearScaledDeadband(mDriver.getRightX(),0.15),
-    () -> mDriver.getRightBumper()
-    )
-    );
+        mDrivetrainSubsystem.new DriveCommand(
+            () -> -mAccelLimit.calculate(Deadbander.applyLinearScaledDeadband(mDriver.getLeftY(), 0.1)),
+            () -> Deadbander.applyLinearScaledDeadband(mDriver.getRightX(), 0.15),
+            () -> mDriver.getRightBumper()));
 
     configureButtonBindings();
 
@@ -66,8 +62,8 @@ public class RobotContainer {
         .whenReleased(mSuperStructure.new StopIntakeCommand());
 
     new JoystickButton(mDriver, XboxController.Button.kB.value)
-      .whenPressed(new InstantCommand(mFlywheelSubsystem::set, mFlywheelSubsystem))
-      .whenReleased(new InstantCommand(mFlywheelSubsystem::stop, mFlywheelSubsystem));
+        .whenPressed(new InstantCommand(mFlywheelSubsystem::set, mFlywheelSubsystem))
+        .whenReleased(new InstantCommand(mFlywheelSubsystem::stop, mFlywheelSubsystem));
 
   }
 
