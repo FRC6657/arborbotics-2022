@@ -86,7 +86,7 @@ public final class Constants {
      * Intake Values
      */
     public class Intake {
-        public static final double kSpeed = 1;
+        public static final double kSpeed = -1;
     }
 
     /**
