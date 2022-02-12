@@ -51,7 +51,7 @@ public class RobotContainer {
     mDrivetrainSubsystem.new DriveCommand(
     () ->
     -mAccelLimit.calculate(Deadbander.applyLinearScaledDeadband(mDriver.getLeftY(),0.1)),
-    () -> Deadbander.applyLinearScaledDeadband(mDriver.getRightX(),0.1),
+    () -> Deadbander.applyLinearScaledDeadband(mDriver.getRightX(),0.15),
     () -> mDriver.getRightBumper()
     )
     );
