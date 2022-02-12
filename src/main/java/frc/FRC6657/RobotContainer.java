@@ -41,20 +41,20 @@ public class RobotContainer {
       mFlywheelSubsystem
   );
 
-  private final Joystick mDriver = new Joystick(0);
+  private final XboxController mDriver = new XboxController(0);
 
   private final SlewRateLimiter mAccelLimit = new SlewRateLimiter(Constants.Drivetrain.kMaxAccel);
 
   public RobotContainer() {
 
-    // mDrivetrainSubsystem.setDefaultCommand(
-    // mDrivetrainSubsystem.new DriveCommand(
-    // () ->
-    // -mAccelLimit.calculate(Deadbander.applyLinearScaledDeadband(mDriver.getLeftY(),0.1)),
-    // () -> Deadbander.applyLinearScaledDeadband(mDriver.getRightX(),0.1),
-    // () -> mDriver.getRightBumper()
-    // )
-    // );
+    mDrivetrainSubsystem.setDefaultCommand(
+    mDrivetrainSubsystem.new DriveCommand(
+    () ->
+    -mAccelLimit.calculate(Deadbander.applyLinearScaledDeadband(mDriver.getLeftY(),0.1)),
+    () -> Deadbander.applyLinearScaledDeadband(mDriver.getRightX(),0.1),
+    () -> mDriver.getRightBumper()
+    )
+    );
 
     configureButtonBindings();
 
