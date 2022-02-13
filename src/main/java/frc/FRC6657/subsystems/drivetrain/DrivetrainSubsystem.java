@@ -12,6 +12,7 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -47,6 +48,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
 import frc.FRC6657.custom.controls.DriverProfile;
+import frc.FRC6657.custom.ctre.IdleMode;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -141,11 +143,30 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mBackLeft.follow(mFrontLeft);
     mBackRight.follow(mFrontRight);
 
-    //Set the neutral modes
-    mFrontLeft.setNeutralMode(NeutralMode.Brake);
-    mFrontRight.setNeutralMode(NeutralMode.Brake);
-    mBackLeft.setNeutralMode(NeutralMode.Coast);
-    mBackRight.setNeutralMode(NeutralMode.Coast);
+    // Set the neutral modes
+    switch (mProfile.kIdleMode.value) {
+      default: //Full Coast
+        mFrontLeft.setNeutralMode(NeutralMode.Coast);
+        mFrontRight.setNeutralMode(NeutralMode.Coast);
+        mBackLeft.setNeutralMode(NeutralMode.Coast);
+        mBackRight.setNeutralMode(NeutralMode.Coast);
+      case 0: // Full Coast
+        mFrontLeft.setNeutralMode(NeutralMode.Coast);
+        mFrontRight.setNeutralMode(NeutralMode.Coast);
+        mBackLeft.setNeutralMode(NeutralMode.Coast);
+        mBackRight.setNeutralMode(NeutralMode.Coast);
+      case 1: //Full Brake
+        mFrontLeft.setNeutralMode(NeutralMode.Brake);
+        mFrontRight.setNeutralMode(NeutralMode.Brake);
+        mBackLeft.setNeutralMode(NeutralMode.Brake);
+        mBackRight.setNeutralMode(NeutralMode.Brake);
+      case 2: //Half Brake
+        mFrontLeft.setNeutralMode(NeutralMode.Brake);
+        mFrontRight.setNeutralMode(NeutralMode.Brake);
+        mBackLeft.setNeutralMode(NeutralMode.Coast);
+        mBackRight.setNeutralMode(NeutralMode.Coast);
+    }
+    
 
     //Makes Green go Forward. Sim is weird so thats what the if statement is for
     if (RobotBase.isReal()) {

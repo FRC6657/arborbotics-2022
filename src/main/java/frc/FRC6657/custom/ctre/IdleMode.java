@@ -1,6 +1,6 @@
 package frc.FRC6657.custom.ctre;
 
-public enum NeutralMode {
+public enum IdleMode {
     
     Coast(0),
     Brake(1),
@@ -14,7 +14,7 @@ public enum NeutralMode {
 	 * Create NeutralMode from specified value
 	 * @param value Value of NeutralMode
 	 */
-	NeutralMode(int value)
+	IdleMode(int value)
 	{
 		this.value = value;
 	}

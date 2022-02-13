@@ -4,8 +4,6 @@
 
 package frc.FRC6657;
 
-import com.revrobotics.CANSparkMax.IdleMode;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -14,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.custom.controls.DriverProfile;
-import frc.FRC6657.custom.ctre.NeutralMode;
+import frc.FRC6657.custom.ctre.IdleMode;
 import frc.FRC6657.subsystems.SuperStructure;
 import frc.FRC6657.subsystems.blinkin.BlinkinSubsystem;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
@@ -35,17 +33,17 @@ public class RobotContainer {
   private Joystick mJoystick2;
   private XboxController mXboxController;
 
-  private String driver = "Andrew";
+  private String driver = "TieuTam";
 
   public RobotContainer() {
 
     switch(driver){
-      case "Default":
+      default:
         mDrivetrainSubsystem = new DrivetrainSubsystem(
           new DriverProfile(
             Constants.Drivetrain.kMaxAttainableSpeed,
             Constants.Drivetrain.kMaxAttainableTurnRate,
-            NeutralMode.Coast
+            IdleMode.Coast
           )
         );
 
@@ -54,7 +52,7 @@ public class RobotContainer {
           new DriverProfile(
             Constants.Drivetrain.kMaxAttainableSpeed * 0.65,
             Constants.Drivetrain.kMaxAttainableTurnRate * 0.55,
-            NeutralMode.Brake
+            IdleMode.Brake
           )
         );
       case "Andrew":
@@ -62,9 +60,9 @@ public class RobotContainer {
           new DriverProfile(
             3,
             360,
-            NeutralMode.HalfBrake
+            IdleMode.HalfBrake
           )
-        );
+       );
     }
 
     configureButtonBindings(driver);
@@ -76,14 +74,6 @@ public class RobotContainer {
       case "Default":
         mJoystick1 = new Joystick(0);
         mXboxController = new XboxController(1);
-        mDrivetrainSubsystem.setDefaultCommand(new RunCommand(() -> {
-          mDrivetrainSubsystem.teleopArcadeDrive(
-            -mJoystick1.getY() * 0.65,
-            mJoystick1.getTwist() * 0.55);
-        }, mDrivetrainSubsystem));
-      case "TieuTam":
-        mJoystick1 = new Joystick(0);
-        mXboxController = new XboxController(1);
       case "Andrew":
         mXboxController = new XboxController(0);
         mJoystick1 = new Joystick(1);
@@ -92,6 +82,15 @@ public class RobotContainer {
             -Deadbander.applyLinearScaledDeadband(mXboxController.getLeftY(), 0.1),
             Deadbander.applyLinearScaledDeadband(mXboxController.getRightX(), 0.1),
             mXboxController.getRightTriggerAxis() != 0
+          );
+        }, mDrivetrainSubsystem));
+      case "TieuTam":
+        mJoystick1 = new Joystick(0);
+        mXboxController = new XboxController(1);
+        mDrivetrainSubsystem.setDefaultCommand(new RunCommand(() -> {
+          mDrivetrainSubsystem.teleopArcadeDrive(
+              -mJoystick1.getY(),
+              mJoystick1.getTwist()
           );
         }, mDrivetrainSubsystem));
     }

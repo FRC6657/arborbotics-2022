@@ -51,20 +51,29 @@
       "Ungrouped": {
         "Blinkin[0]": {
           "open": true
-        }
+        },
+        "Talon FX [1]": {
+          "open": true
+        },
+        "Talon FX [2]": {
+          "open": true
+        },
+        "open": true
       },
       "open": true
     },
     "Shuffleboard": {
       "DrivetrainSubsystem": {
         "open": true
-      },
-      "open": true
+      }
     },
     "SmartDashboard": {
       "Field": {
         "open": true
       }
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
