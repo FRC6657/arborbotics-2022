@@ -11,9 +11,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 //import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
-import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
-import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
-import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
 public class SuperStructure extends SubsystemBase {
   

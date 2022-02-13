@@ -43,6 +43,7 @@ import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
+import frc.FRC6657.custom.controls.DriverProfile;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -71,6 +72,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private List<Pose2d> mPathPoints = new ArrayList<Pose2d>();
 
   DifferentialDrivetrainSim mDrivetrainSim;
+
+  private final DriverProfile mProfile;
+
   /*
    * 
    * Setup Methods
@@ -80,7 +84,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    /**
     * The subsystem that controls the drivetrain
     */
-  public DrivetrainSubsystem() {
+  public DrivetrainSubsystem(DriverProfile profile) {
+
+    this.mProfile = profile;
 
     //Left Stuff
     mFrontLeft = new WPI_TalonFX(Constants.kFrontLeftID);
@@ -205,6 +211,14 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mPigeonIMU.reset();
   }
 
+  public void teleopCurvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn){
+    setCurvatureSpeeds(DifferentialDrive.curvatureDriveIK(xSpeed, zRotation, isQuickTurn), isQuickTurn);
+  }
+
+  public void teleopArcadeDrive(double xSpeed, double zRotation){
+    setSpeeds(DifferentialDrive.arcadeDriveIK(xSpeed, zRotation, false));
+  }
+
   /*
    * 
    * Set Methods
@@ -232,18 +246,38 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   public void setSpeeds(WheelSpeeds speeds) {
 
-    speeds.left *= Constants.Drivetrain.kMaxSpeed;
-    speeds.right *= Constants.Drivetrain.kMaxSpeed;
+    speeds.left *= mProfile.kMaxSpeed;
+    speeds.right *= mProfile.kMaxSpeed;
 
     final double leftFeedforward = mFeedForward.calculate(speeds.left);
     final double rightFeedforward = mFeedForward.calculate(speeds.right);
 
     final double leftOutput = mLinearPIDController.calculate(getLeftVelocity(), speeds.left);
     final double rightOutput = mLinearPIDController.calculate(getRightVelocity(), speeds.right);
-        
+
     mFrontLeft.setVoltage(leftOutput + leftFeedforward);
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
   }
+
+  public void setCurvatureSpeeds(WheelSpeeds speeds, boolean quickturn) {
+    if (quickturn) {
+      speeds.left *= mProfile.kMaxTurn / Constants.Drivetrain.kMaxAttainableTurn;
+      speeds.right *= mProfile.kMaxTurn / Constants.Drivetrain.kMaxAttainableTurn;
+    } else {
+      speeds.left *= mProfile.kMaxSpeed;
+      speeds.right *= mProfile.kMaxSpeed;
+    }
+
+    final double leftFeedforward = mFeedForward.calculate(speeds.left);
+    final double rightFeedforward = mFeedForward.calculate(speeds.right);
+
+    final double leftOutput = mLinearPIDController.calculate(getLeftVelocity(), speeds.left);
+    final double rightOutput = mLinearPIDController.calculate(getRightVelocity(), speeds.right);
+
+    mFrontLeft.setVoltage(leftOutput + leftFeedforward);
+    mFrontRight.setVoltage(rightOutput + rightFeedforward);
+  }
+
 
   /**
    * Stops the Drivetrain
@@ -297,46 +331,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   }
 
   /**
-   * Get temperature of the front left motor in celsius
-   */
-  @Log.Dial(rowIndex = 0, columnIndex = 4, width = 2, height = 2, name = "FL Temp", max = 110, min = 20, showValue = false)
-  public double getFrontLeftTemp() {
-    if(RobotBase.isReal()){return mFrontLeft.getTemperature();}
-    return 0;
-  }
-
-  /**
-   * Get temperature of the front right motor in celsius
-   */
-  @Log.Dial(rowIndex = 0, columnIndex = 6, width = 2, height = 2, name = "FR Temp", max = 110, min = 20, showValue = false)
-  public double getFrontRightTemp() {
-    if(RobotBase.isReal()){return mFrontRight.getTemperature();}
-    return 0;
-  }
-
-  /**
-   * Get temperature of the back left motor in celsius
-   */
-  @Log.Dial(rowIndex = 2, columnIndex = 4, width = 2, height = 2, name = "BL Temp", max = 110, min = 20, showValue = false)
-  public double getBackLeftTemp() {
-    if(RobotBase.isReal()){return mBackLeft.getTemperature();}
-    return 0;
-  }
-
-  /**
-   * Get temperature of the back right motor in celsius
-   */
-  @Log.Dial(rowIndex = 2, columnIndex = 6, width = 2, height = 2, name = "BR Temp", max = 110, min = 20, showValue = false)
-  public double getBackRightTemp() {
-    if(RobotBase.isReal()){return mBackRight.getTemperature();}
-    return 0;
-  }
-
-  /**
    * This is mainly to have a velocity gauge on shuffleboard.
    * @return Same as getLeftVelocity()
    */
-  @Log.Dial(rowIndex = 2, columnIndex = 2, width = 1, height = 1, name = "Left Vel", min = -Constants.Drivetrain.kMaxSpeed, max = Constants.Drivetrain.kMaxSpeed, showValue = false)
+  @Log.Dial(rowIndex = 2, columnIndex = 2, width = 1, height = 1, name = "Left Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false)
   public double leftVelocityGauge(){
     return getLeftVelocity();
   }
@@ -345,9 +343,16 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * This is mainly to have a velocity gauge on shuffleboard.
    * @return Same as getRightVelocity()
    */
-  @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.Drivetrain.kMaxSpeed, max = Constants.Drivetrain.kMaxSpeed, showValue = false)
+  @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false)
   public double rightVelocityGauge(){
     return getRightVelocity();
+  }
+
+  @Log(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name = "Gyro Velocity")
+  public double getHeadingVelocity(){
+    double[] gyroVals = {0,0,0};
+    mPigeonIMU.getRawGyro(gyroVals);
+    return gyroVals[2];
   }
 
   public double getGyroAngle(){

@@ -1,5 +1,12 @@
 {
   "HALProvider": {
+    "Other Devices": {
+      "Talon FX[1]": {
+        "header": {
+          "open": true
+        }
+      }
+    },
     "PWM Outputs": {
       "window": {
         "visible": true
@@ -41,16 +48,17 @@
   },
   "NetworkTables": {
     "LiveWindow": {
-      "BlinkinSubsystem": {
-        "open": true
-      },
       "Ungrouped": {
         "Blinkin[0]": {
           "open": true
-        },
-        "open": true
+        }
       },
       "open": true
+    },
+    "SmartDashboard": {
+      "Field": {
+        "open": true
+      }
     }
   }
 }

@@ -9,66 +9,89 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-//import frc.FRC6657.autonomous.routines.FarTwoBallAuto;
-import frc.FRC6657.autonomous.routines.NewAuto;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.FRC6657.custom.controls.Deadbander;
+import frc.FRC6657.custom.controls.DriverProfile;
 import frc.FRC6657.subsystems.SuperStructure;
 import frc.FRC6657.subsystems.blinkin.BlinkinSubsystem;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
-//import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
-import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
-//import frc.FRC6657.subsystems.vision.VisionSubsystem;
 
 public class RobotContainer {
 
-  private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
+  private DrivetrainSubsystem mDrivetrainSubsystem;
   private final PickupSubsystem mPickupSubsystem = new PickupSubsystem();
   private final BlinkinSubsystem mBlinkinSubsystem = new BlinkinSubsystem();
-
-  // private final ExtensionSubsystem mExtensionSubsystem = new
-  // ExtensionSubsystem();
-  //private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
-  // private final AcceleratorSubsystem mAcceleratorSubsystem = new
-  // AcceleratorSubsystem();
-  // private final VisionSubsystem mVisionSubsystem = new VisionSubsystem();
 
   private final SuperStructure mSuperStructure = new SuperStructure(
       mDrivetrainSubsystem,
       mPickupSubsystem
-      //mFlywheelSubsystem
   );
 
-  private final XboxController mDriver = new XboxController(0);
+  private Joystick mJoystick1;
+  private Joystick mJoystick2;
+  private XboxController mXboxController;
 
-  private final SlewRateLimiter mAccelLimit = new SlewRateLimiter(Constants.Drivetrain.kMaxAccel);
+  private String driver = "Andrew";
 
   public RobotContainer() {
 
-    mDrivetrainSubsystem.setDefaultCommand(
-    mDrivetrainSubsystem.new DriveCommand(
-    () ->
-    -mAccelLimit.calculate(Deadbander.applyLinearScaledDeadband(mDriver.getLeftY(),0.1)),
-    () -> Deadbander.applyLinearScaledDeadband(mDriver.getRightX(),0.15),
-    () -> mDriver.getRightBumper()
-    )
-    );
+    switch(driver){
+      case "Default":
+        mDrivetrainSubsystem = new DrivetrainSubsystem(
+          new DriverProfile(
+            Constants.Drivetrain.kMaxAttainableSpeed,
+            Constants.Drivetrain.kMaxAttainableTurn
+          )
+        );
 
-    configureButtonBindings();
+      case "TieuTam":
+        mDrivetrainSubsystem = new DrivetrainSubsystem(
+          new DriverProfile(
+            Constants.Drivetrain.kMaxAttainableSpeed * 0.65,
+            Constants.Drivetrain.kMaxAttainableTurn * 0.55
+          )
+        );
+      case "Andrew":
+        mDrivetrainSubsystem = new DrivetrainSubsystem(
+          new DriverProfile(
+            2,
+            180
+          )
+        );
+    }
 
+    configureButtonBindings(driver);
   }
 
-  private void configureButtonBindings() {
-    new JoystickButton(mDriver, XboxController.Button.kA.value)
-        .whenPressed(mSuperStructure.new RunIntakeCommand())
-        .whenReleased(mSuperStructure.new StopIntakeCommand());
+  private void configureButtonBindings(String driver) {
 
+    switch(driver){
+      case "Default":
+        mJoystick1 = new Joystick(0);
+        mXboxController = new XboxController(1);
+        mDrivetrainSubsystem.setDefaultCommand(new RunCommand(() -> {
+          mDrivetrainSubsystem.teleopArcadeDrive(
+            -mJoystick1.getY() * 0.65,
+            mJoystick1.getTwist() * 0.55);
+        }, mDrivetrainSubsystem));
+      case "TieuTam":
+        mJoystick1 = new Joystick(0);
+        mXboxController = new XboxController(1);
+      case "Andrew":
+        mXboxController = new XboxController(0);
+        mJoystick1 = new Joystick(1);
+        mDrivetrainSubsystem.setDefaultCommand(new RunCommand(() -> {
+          mDrivetrainSubsystem.teleopCurvatureDrive(
+            -Deadbander.applyLinearScaledDeadband(mXboxController.getLeftY(), 0.1),
+            Deadbander.applyLinearScaledDeadband(mXboxController.getRightX(), 0.1),
+            mXboxController.getRightTriggerAxis() != 0
+          );
+        }, mDrivetrainSubsystem));
+    }
   }
 
   public Command getAutonomousCommand() {
-    // return new FarTwoBallAuto(mSuperStructure);
-    return new NewAuto(mSuperStructure);
+    return null;
   }
 }

@@ -13,6 +13,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+
 import frc.FRC6657.custom.rev.Blinkin.BlinkinLEDPattern;
 
 public final class Constants {
@@ -65,10 +66,13 @@ public final class Constants {
         public static final double kGearRatio = 75 / 7; // Drive Gearbox Ratio
         public static final double kWheelRadius = Units.inchesToMeters(3); // Drive wheel Radius
         public static final double kDistancePerPulse = (2 * Math.PI * kWheelRadius) / (kFalconEncoderCPR * kGearRatio); // Conversion between Counts and Meters
-        public static final double kMaxSpeed = 3.5; // Meters per second
-        public static final double kMaxAccel = kMaxSpeed * 3; // Meters per second per second
         public static final double kAimTollerance = 3;
         public static final double kDistanceTollerance = 0.1;
+
+
+        //TODO Put robot on cart and figure out these values.
+        public static final double kMaxAttainableSpeed = 3.5;
+        public static final double kMaxAttainableTurn = Units.degreesToRadians(kMaxAttainableSpeed * kTrackWidth/2);
 
         // Default Sim
         public static final DifferentialDrivetrainSim kSim = new DifferentialDrivetrainSim( // Simulation
@@ -138,8 +142,10 @@ public final class Constants {
         public static final BlinkinLEDPattern kIdle = BlinkinLEDPattern.COLOR_WAVES_FOREST_PALETTE;
         public static final BlinkinLEDPattern kIntake = BlinkinLEDPattern.STROBE_BLUE;
     }
+
+    public static class DefaultDriverConfigs{
+        public static final double kMaxSpeed = 1.5; // Meters per second
+        public static final double kMaxAccel = kMaxSpeed; // Meters per second per second
+    }
     
-
-
-
 }
