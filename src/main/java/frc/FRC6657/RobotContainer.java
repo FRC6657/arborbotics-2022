@@ -4,6 +4,8 @@
 
 package frc.FRC6657;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -12,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.custom.controls.DriverProfile;
+import frc.FRC6657.custom.ctre.NeutralMode;
 import frc.FRC6657.subsystems.SuperStructure;
 import frc.FRC6657.subsystems.blinkin.BlinkinSubsystem;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
@@ -41,7 +44,8 @@ public class RobotContainer {
         mDrivetrainSubsystem = new DrivetrainSubsystem(
           new DriverProfile(
             Constants.Drivetrain.kMaxAttainableSpeed,
-            Constants.Drivetrain.kMaxAttainableTurnRate
+            Constants.Drivetrain.kMaxAttainableTurnRate,
+            NeutralMode.Coast
           )
         );
 
@@ -49,14 +53,16 @@ public class RobotContainer {
         mDrivetrainSubsystem = new DrivetrainSubsystem(
           new DriverProfile(
             Constants.Drivetrain.kMaxAttainableSpeed * 0.65,
-            Constants.Drivetrain.kMaxAttainableTurnRate * 0.55
+            Constants.Drivetrain.kMaxAttainableTurnRate * 0.55,
+            NeutralMode.Brake
           )
         );
       case "Andrew":
         mDrivetrainSubsystem = new DrivetrainSubsystem(
           new DriverProfile(
             3,
-            360
+            360,
+            NeutralMode.HalfBrake
           )
         );
     }

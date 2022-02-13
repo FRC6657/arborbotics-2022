@@ -215,7 +215,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   }
 
   public void teleopCurvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn){
-    setCurvatureSpeeds(DifferentialDrive.curvatureDriveIK(xSpeed, zRotation, isQuickTurn), isQuickTurn);
+    setCurvatureSpeeds(xSpeed, zRotation, isQuickTurn);
   }
 
   public void teleopArcadeDrive(double xSpeed, double zRotation){
@@ -262,23 +262,21 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
   }
 
-  public void setCurvatureSpeeds(WheelSpeeds speeds, boolean quickturn) {
-    if (quickturn) {
-      speeds.left *= mProfile.kMaxTurn;
-      speeds.right *= mProfile.kMaxTurn;
-    } else {
-      speeds.left *= mProfile.kMaxSpeed;
-      speeds.right *= mProfile.kMaxSpeed;
+  public void setCurvatureSpeeds(double xSpeed, double zRotation, boolean quickturn) {
+
+    DifferentialDriveWheelSpeeds speeds = new DifferentialDriveWheelSpeeds();
+    WheelSpeeds wheelSpeeds = DifferentialDrive.curvatureDriveIK(xSpeed, zRotation, quickturn);
+
+    if(quickturn){
+      speeds.leftMetersPerSecond = zRotation * mProfile.kMaxTurn;
+      speeds.rightMetersPerSecond = -zRotation * mProfile.kMaxTurn;
+    }else{
+      speeds.leftMetersPerSecond = wheelSpeeds.left * mProfile.kMaxSpeed;
+      speeds.rightMetersPerSecond = wheelSpeeds.right * mProfile.kMaxSpeed;
     }
+    
+    setSpeeds(speeds);
 
-    final double leftFeedforward = mFeedForward.calculate(speeds.left);
-    final double rightFeedforward = mFeedForward.calculate(speeds.right);
-
-    final double leftOutput = mLinearPIDController.calculate(getLeftVelocity(), speeds.left);
-    final double rightOutput = mLinearPIDController.calculate(getRightVelocity(), speeds.right);
-
-    mFrontLeft.setVoltage(leftOutput + leftFeedforward);
-    mFrontRight.setVoltage(rightOutput + rightFeedforward);
   }
 
 
