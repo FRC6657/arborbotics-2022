@@ -55,6 +55,12 @@
       },
       "open": true
     },
+    "Shuffleboard": {
+      "DrivetrainSubsystem": {
+        "open": true
+      },
+      "open": true
+    },
     "SmartDashboard": {
       "Field": {
         "open": true

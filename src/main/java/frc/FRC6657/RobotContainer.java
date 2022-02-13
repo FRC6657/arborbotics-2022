@@ -41,7 +41,7 @@ public class RobotContainer {
         mDrivetrainSubsystem = new DrivetrainSubsystem(
           new DriverProfile(
             Constants.Drivetrain.kMaxAttainableSpeed,
-            Constants.Drivetrain.kMaxAttainableTurn
+            Constants.Drivetrain.kMaxAttainableTurnRate
           )
         );
 
@@ -49,13 +49,13 @@ public class RobotContainer {
         mDrivetrainSubsystem = new DrivetrainSubsystem(
           new DriverProfile(
             Constants.Drivetrain.kMaxAttainableSpeed * 0.65,
-            Constants.Drivetrain.kMaxAttainableTurn * 0.55
+            Constants.Drivetrain.kMaxAttainableTurnRate * 0.55
           )
         );
       case "Andrew":
         mDrivetrainSubsystem = new DrivetrainSubsystem(
           new DriverProfile(
-            2,
+            3,
             180
           )
         );

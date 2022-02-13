@@ -19,12 +19,15 @@ import com.ctre.phoenix.sensors.BasePigeonSimCollection;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -261,8 +264,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   public void setCurvatureSpeeds(WheelSpeeds speeds, boolean quickturn) {
     if (quickturn) {
-      speeds.left *= mProfile.kMaxTurn / Constants.Drivetrain.kMaxAttainableTurn;
-      speeds.right *= mProfile.kMaxTurn / Constants.Drivetrain.kMaxAttainableTurn;
+      speeds.left *= speedFromDegrees(mProfile.kMaxTurn);
+      speeds.right *= speedFromDegrees(mProfile.kMaxTurn);
     } else {
       speeds.left *= mProfile.kMaxSpeed;
       speeds.right *= mProfile.kMaxSpeed;
@@ -346,6 +349,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false)
   public double rightVelocityGauge(){
     return getRightVelocity();
+  }
+
+  public double speedFromDegrees(double theta){
+    return (Math.PI*Constants.Drivetrain.kTrackWidth)/(360/theta);
   }
 
   @Log(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name = "Gyro Velocity")
