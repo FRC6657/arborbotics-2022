@@ -264,8 +264,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   public void setCurvatureSpeeds(WheelSpeeds speeds, boolean quickturn) {
     if (quickturn) {
-      speeds.left *= speedFromDegrees(mProfile.kMaxTurn);
-      speeds.right *= speedFromDegrees(mProfile.kMaxTurn);
+      speeds.left *= mProfile.kMaxTurn;
+      speeds.right *= mProfile.kMaxTurn;
     } else {
       speeds.left *= mProfile.kMaxSpeed;
       speeds.right *= mProfile.kMaxSpeed;
@@ -349,10 +349,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false)
   public double rightVelocityGauge(){
     return getRightVelocity();
-  }
-
-  public double speedFromDegrees(double theta){
-    return (Math.PI*Constants.Drivetrain.kTrackWidth)/(360/theta);
   }
 
   @Log(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name = "Gyro Velocity")
