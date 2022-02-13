@@ -90,7 +90,7 @@ public class RobotContainer {
         mDrivetrainSubsystem.setDefaultCommand(new RunCommand(() -> {
           mDrivetrainSubsystem.teleopArcadeDrive(
               -mJoystick1.getY(),
-              mJoystick1.getTwist()
+              mJoystick1.getRawAxis(3)
           );
         }, mDrivetrainSubsystem));
     }

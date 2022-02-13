@@ -240,7 +240,16 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   }
 
   public void teleopArcadeDrive(double xSpeed, double zRotation){
-    setSpeeds(DifferentialDrive.arcadeDriveIK(xSpeed, zRotation, false));
+
+    zRotation *= mProfile.kMaxTurn;
+    xSpeed *= mProfile.kMaxSpeed;
+      
+    setSpeeds(
+      new DifferentialDriveWheelSpeeds(
+        xSpeed + zRotation, 
+        xSpeed - zRotation
+      )
+    );
   }
 
   /*
