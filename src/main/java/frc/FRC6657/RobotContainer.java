@@ -30,15 +30,15 @@ public class RobotContainer {
 
   // private final ExtensionSubsystem mExtensionSubsystem = new
   // ExtensionSubsystem();
-  private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
+  //private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
   // private final AcceleratorSubsystem mAcceleratorSubsystem = new
   // AcceleratorSubsystem();
   // private final VisionSubsystem mVisionSubsystem = new VisionSubsystem();
 
   private final SuperStructure mSuperStructure = new SuperStructure(
       mDrivetrainSubsystem,
-      mPickupSubsystem,
-      mFlywheelSubsystem
+      mPickupSubsystem
+      //mFlywheelSubsystem
   );
 
   private final XboxController mDriver = new XboxController(0);
@@ -64,10 +64,6 @@ public class RobotContainer {
     new JoystickButton(mDriver, XboxController.Button.kA.value)
         .whenPressed(mSuperStructure.new RunIntakeCommand())
         .whenReleased(mSuperStructure.new StopIntakeCommand());
-
-    new JoystickButton(mDriver, XboxController.Button.kB.value)
-      .whenPressed(new InstantCommand(mFlywheelSubsystem::set, mFlywheelSubsystem))
-      .whenReleased(new InstantCommand(mFlywheelSubsystem::stop, mFlywheelSubsystem));
 
   }
 

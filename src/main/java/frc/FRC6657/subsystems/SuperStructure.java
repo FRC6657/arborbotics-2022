@@ -20,19 +20,19 @@ public class SuperStructure extends SubsystemBase {
   public final DrivetrainSubsystem drivetrain;
   public final PickupSubsystem pickup;
   //public final ExtensionSubsystem intakeExtension;
-  public final FlywheelSubsystem flywheel;
+  //public final FlywheelSubsystem flywheel;
   
 
   public SuperStructure(
     DrivetrainSubsystem drivetrain,
-    PickupSubsystem pickup,
+    PickupSubsystem pickup
     //ExtensionSubsystem intakeExtension,
-    FlywheelSubsystem flywheel
+    //FlywheelSubsystem flywheel
   ) {
     this.drivetrain = drivetrain;
     this.pickup = pickup;
     //this.intakeExtension = intakeExtension;
-    this.flywheel = flywheel;
+    //this.flywheel = flywheel;
   }
 
   public class RunIntakeCommand extends SequentialCommandGroup {
