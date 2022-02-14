@@ -35,8 +35,8 @@ public class RobotContainer {
 
   private DriverProfile mProfile;
 
-  private SlewRateLimiter mDriveLimiter = new SlewRateLimiter(2);
-  private SlewRateLimiter mTurnLimiter = new SlewRateLimiter(2);
+  private SlewRateLimiter mDriveLimiter = new SlewRateLimiter(10);
+  private SlewRateLimiter mTurnLimiter = new SlewRateLimiter(10);
 
   public RobotContainer() {
 
@@ -56,14 +56,24 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     if(mProfile.kStyle == ControlStyle.Curvature){
+      // mDrivetrainSubsystem.setDefaultCommand(new RunCommand(() -> {
+      //   mDrivetrainSubsystem.teleopCurvatureDrive(
+      //     -mDriveLimiter.calculate(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kDriveAxis), 0.1)),
+      //     mTurnLimiter.calculate(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1)),
+      //     mProfile.mController.getRawAxis(mProfile.kQuickturnBtn) != 0,
+      //     mProfile.mController.getRawAxis(mProfile.kSpeedModBtn) != 0
+      //   );
+      // }, mDrivetrainSubsystem));
+
       mDrivetrainSubsystem.setDefaultCommand(new RunCommand(() -> {
         mDrivetrainSubsystem.teleopCurvatureDrive(
-          -mDriveLimiter.calculate(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kDriveAxis), 0.1)),
-          mTurnLimiter.calculate(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1)),
+          -keepSign(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kDriveAxis), 0.1),Math.pow(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kDriveAxis), 0.1),2)),
+          keepSign(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1),Math.pow(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1), 2)),
           mProfile.mController.getRawAxis(mProfile.kQuickturnBtn) != 0,
           mProfile.mController.getRawAxis(mProfile.kSpeedModBtn) != 0
         );
       }, mDrivetrainSubsystem));
+
     }
 
     if(mProfile.kStyle == ControlStyle.Arcade){
@@ -99,6 +109,10 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return null;
+  }
+
+  private double keepSign(double start, double end){
+    return (Math.signum(start) * Math.abs(end));
   }
 
   private DriverProfile getDriver() {
