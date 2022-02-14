@@ -4,6 +4,7 @@
 
 package frc.FRC6657;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Joystick.AxisType;
@@ -34,6 +35,9 @@ public class RobotContainer {
 
   private DriverProfile mProfile;
 
+  private SlewRateLimiter mDriveLimiter = new SlewRateLimiter(2);
+  private SlewRateLimiter mTurnLimiter = new SlewRateLimiter(2);
+
   public RobotContainer() {
 
     mProfile = getDriver();
@@ -54,8 +58,8 @@ public class RobotContainer {
     if(mProfile.kStyle == ControlStyle.Curvature){
       mDrivetrainSubsystem.setDefaultCommand(new RunCommand(() -> {
         mDrivetrainSubsystem.teleopCurvatureDrive(
-          -Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kDriveAxis), 0.1),
-          Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1),
+          -mDriveLimiter.calculate(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kDriveAxis), 0.1)),
+          mTurnLimiter.calculate(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1)),
           mProfile.mController.getRawAxis(mProfile.kQuickturnBtn) != 0,
           mProfile.mController.getRawAxis(mProfile.kSpeedModBtn) != 0
         );

@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -80,6 +81,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   DifferentialDrivetrainSim mDrivetrainSim;
 
   private final DriverProfile mProfile;
+
+  private final SlewRateLimiter mSpeedLimiter = new SlewRateLimiter(0);
 
   /*
    * 
@@ -234,6 +237,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   public void resetGyro(){
     mPigeonIMU.reset();
+    mOdometry.resetPosition(mOdometry.getPoseMeters(), mPigeonIMU.getRotation2d());
   }
 
   public void teleopCurvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn, boolean modSpeed){
