@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Joystick.AxisType;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.FRC6657.custom.controls.ControlStyle;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.custom.controls.DriverProfile;
@@ -28,7 +29,9 @@ public class RobotContainer {
   private Joystick mJoystick1 = new Joystick(0);
   private XboxController mXboxController = new XboxController(0);
 
-  private String driver = "TieuTam";
+  //private String driver = "TieuTam";
+  private String driver = "Andrew";
+
   private DriverProfile mProfile;
 
   public RobotContainer() {
@@ -67,6 +70,25 @@ public class RobotContainer {
           mProfile.mController.getRawButton(mProfile.kSpeedModBtn)
         );
       }, mDrivetrainSubsystem));
+    }
+
+    switch(driver){
+      case "TieuTam":
+        new JoystickButton(mXboxController, 6)
+          .whenHeld(
+            mSuperStructure.new RunIntakeCommand()
+          )
+          .whenReleased(
+            mSuperStructure.new StopIntakeCommand()
+          );
+      case "Andrew":
+        new JoystickButton(mJoystick1, 1)
+        .whenHeld(
+          mSuperStructure.new RunIntakeCommand()
+        )
+        .whenReleased(
+          mSuperStructure.new StopIntakeCommand()
+        );
     }
 
   }
