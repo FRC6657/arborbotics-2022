@@ -75,7 +75,7 @@ public class RobotContainer {
     switch(driver){
       case "TieuTam":
         new JoystickButton(mXboxController, 6)
-          .whenHeld(
+          .whenPressed(
             mSuperStructure.new RunIntakeCommand()
           )
           .whenReleased(
@@ -83,7 +83,7 @@ public class RobotContainer {
           );
       case "Andrew":
         new JoystickButton(mJoystick1, 1)
-        .whenHeld(
+        .whenPressed(
           mSuperStructure.new RunIntakeCommand()
         )
         .whenReleased(
