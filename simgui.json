@@ -5,6 +5,11 @@
         "header": {
           "open": true
         }
+      },
+      "Talon FX[3]/Rev Limit": {
+        "header": {
+          "open": true
+        }
       }
     },
     "PWM Outputs": {

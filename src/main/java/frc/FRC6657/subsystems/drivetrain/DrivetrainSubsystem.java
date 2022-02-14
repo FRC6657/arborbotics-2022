@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -235,21 +236,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mPigeonIMU.reset();
   }
 
-  public void teleopCurvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn){
-    setCurvatureSpeeds(xSpeed, zRotation, isQuickTurn);
+  public void teleopCurvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn, boolean modSpeed){
+    setCurvatureSpeeds(xSpeed, zRotation, isQuickTurn, modSpeed);
   }
 
-  public void teleopArcadeDrive(double xSpeed, double zRotation){
-
-    zRotation *= mProfile.kMaxTurn;
-    xSpeed *= mProfile.kMaxSpeed;
-      
-    setSpeeds(
-      new DifferentialDriveWheelSpeeds(
-        xSpeed + zRotation, 
-        xSpeed - zRotation
-      )
-    );
+  public void teleopArcadeDrive(double xSpeed, double zRotation, boolean modSpeed){
+    setArcadeSpeeds(xSpeed, zRotation, modSpeed);
   }
 
   /*
@@ -279,8 +271,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   public void setSpeeds(WheelSpeeds speeds) {
 
-    speeds.left *= mProfile.kMaxSpeed;
-    speeds.right *= mProfile.kMaxSpeed;
+    speeds.left *= Constants.Drivetrain.kMaxAttainableSpeed;
+    speeds.right *= Constants.Drivetrain.kMaxAttainableSpeed;
 
     final double leftFeedforward = mFeedForward.calculate(speeds.left);
     final double rightFeedforward = mFeedForward.calculate(speeds.right);
@@ -292,21 +284,52 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
   }
 
-  public void setCurvatureSpeeds(double xSpeed, double zRotation, boolean quickturn) {
+  public void setCurvatureSpeeds(double xSpeed, double zRotation, boolean quickturn, boolean modSpeed) {
 
     DifferentialDriveWheelSpeeds speeds = new DifferentialDriveWheelSpeeds();
     WheelSpeeds wheelSpeeds = DifferentialDrive.curvatureDriveIK(xSpeed, zRotation, quickturn);
 
-    if(quickturn){
-      speeds.leftMetersPerSecond = zRotation * mProfile.kMaxTurn;
-      speeds.rightMetersPerSecond = -zRotation * mProfile.kMaxTurn;
+    if (modSpeed) {
+      if (quickturn) {
+        speeds.leftMetersPerSecond = zRotation * mProfile.kModTurn;
+        speeds.rightMetersPerSecond = -zRotation * mProfile.kModTurn;
+      } else {
+        speeds.leftMetersPerSecond = wheelSpeeds.left * mProfile.kModSpeed;
+        speeds.rightMetersPerSecond = wheelSpeeds.right * mProfile.kModSpeed;
+      }
     }else{
-      speeds.leftMetersPerSecond = wheelSpeeds.left * mProfile.kMaxSpeed;
-      speeds.rightMetersPerSecond = wheelSpeeds.right * mProfile.kMaxSpeed;
+      if (quickturn) {
+        speeds.leftMetersPerSecond = zRotation * mProfile.kMaxTurn;
+        speeds.rightMetersPerSecond = -zRotation * mProfile.kMaxTurn;
+      } else {
+        speeds.leftMetersPerSecond = wheelSpeeds.left * mProfile.kMaxSpeed;
+        speeds.rightMetersPerSecond = wheelSpeeds.right * mProfile.kMaxSpeed;
+      }
     }
     
     setSpeeds(speeds);
 
+  }
+
+  public void setArcadeSpeeds(double xSpeed, double zRotation, boolean modSpeed) {
+    
+    if(modSpeed){
+      xSpeed *= (mProfile.kModSpeed/Constants.Drivetrain.kMaxAttainableSpeed);
+      zRotation *= mProfile.kModTurn/Constants.Drivetrain.kMaxAttainableTurnRate;
+    }else{
+      xSpeed *= (mProfile.kMaxSpeed/Constants.Drivetrain.kMaxAttainableSpeed);
+      zRotation *= mProfile.kMaxTurnDegrees/Constants.Drivetrain.kMaxAttainableTurnRate;
+    }
+
+    SmartDashboard.putNumber("xSpeed", xSpeed);
+    SmartDashboard.putNumber("zRotation", zRotation);
+
+    setSpeeds(
+      new WheelSpeeds(
+        xSpeed + zRotation,
+        xSpeed - zRotation
+      )
+    );
   }
 
 
