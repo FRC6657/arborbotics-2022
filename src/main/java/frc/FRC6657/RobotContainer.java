@@ -28,10 +28,10 @@ public class RobotContainer {
   private final SuperStructure mSuperStructure; 
 
   private Joystick mJoystick1 = new Joystick(0);
-  private XboxController mXboxController = new XboxController(0);
+  private XboxController mXboxController = new XboxController(1);
 
-  //private String driver = "TieuTam";
-  private String driver = "Andrew";
+  private String driver = "TieuTam";
+  //private String driver = "Andrew";
 
   private DriverProfile mProfile;
 
@@ -68,7 +68,7 @@ public class RobotContainer {
       mDrivetrainSubsystem.setDefaultCommand(new RunCommand(() -> {
         mDrivetrainSubsystem.teleopCurvatureDrive(
           -keepSign(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kDriveAxis), 0.1),Math.pow(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kDriveAxis), 0.1),2)),
-          keepSign(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1),Math.pow(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1), 2)),
+          keepSign(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1),Math.pow(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1), 1)),
           mProfile.mController.getRawAxis(mProfile.kQuickturnBtn) != 0,
           mProfile.mController.getRawAxis(mProfile.kSpeedModBtn) != 0
         );
@@ -79,8 +79,8 @@ public class RobotContainer {
     if(mProfile.kStyle == ControlStyle.Arcade){
       mDrivetrainSubsystem.setDefaultCommand(new RunCommand(() -> {
         mDrivetrainSubsystem.teleopArcadeDrive(
-          -Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kDriveAxis), 0.1),
-          Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1),
+          -Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kDriveAxis), 0.2),
+          Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.2),
           mProfile.mController.getRawButton(mProfile.kSpeedModBtn)
         );
       }, mDrivetrainSubsystem));
@@ -96,13 +96,13 @@ public class RobotContainer {
             mSuperStructure.new StopIntakeCommand()
           );
       case "Andrew":
-        new JoystickButton(mJoystick1, 1)
-        .whenPressed(
-          mSuperStructure.new RunIntakeCommand()
-        )
-        .whenReleased(
-          mSuperStructure.new StopIntakeCommand()
-        );
+        // new JoystickButton(mJoystick1, 1)
+        // .whenPressed(
+        //   mSuperStructure.new RunIntakeCommand()
+        // )
+        // .whenReleased(
+        //   mSuperStructure.new StopIntakeCommand()
+        // );
     }
 
   }
@@ -136,10 +136,10 @@ public class RobotContainer {
           new DriverProfile(
             mJoystick1,//Controller
             AxisType.kY.value,//Drive Axis
-            AxisType.kTwist.value,//Turn Axis
+            2,//Turn Axis
             ControlStyle.Arcade,
-            Constants.Drivetrain.kMaxAttainableSpeed * 0.65, //Max Speed m/s
-            Constants.Drivetrain.kMaxAttainableTurnRate * 0.55, //Max Turn deg/s
+            Constants.Drivetrain.kMaxAttainableSpeed * 0.45, //Max Speed m/s
+            Constants.Drivetrain.kMaxAttainableTurnRate * 0.20, //Max Turn deg/s
             IdleMode.Brake,
             1,//Speed Mod BTN
             Constants.Drivetrain.kMaxAttainableSpeed * 0.8, //Mod Drive Speed m/s
@@ -153,12 +153,12 @@ public class RobotContainer {
             Axis.kLeftY.value, //Drive Axis
             Axis.kRightX.value, //Turn Axis
             ControlStyle.Curvature,
-            3.5, //Max Speed m/s
-            360, //Max Turn deg/s
+            2, //Max Speed m/s
+            90, //Max Turn deg/s
             IdleMode.Coast,
             2, //Speed Mod BTN
-            1.5, //Mod Drive Speed m/s
-            45, //Mod Turn Speed deg/s
+            3, //Mod Drive Speed m/s
+            80, //Mod Turn Speed deg/s
             3 //Quickturn BTN
           );
 
