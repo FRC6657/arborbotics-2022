@@ -4,6 +4,7 @@
 
 package frc.FRC6657.subsystems.shooter;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
@@ -47,7 +48,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   private final LinearSystemLoop<N1, N1, N1> mFlywheelLoop = new LinearSystemLoop<>(Constants.Flywheel.kPlant,
       mFlywheelController, mFlywheelObserver, 12.0, 0.020);
 
-  private final WPI_TalonFX mProtagonist; //, mAntagonist;
+  private final WPI_TalonFX mProtagonist, mAntagonist;
 
   private TalonFXSimCollection mMotorSim;
   private FlywheelSim mFlywheelSim;
@@ -57,11 +58,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   public FlywheelSubsystem() {
     mProtagonist = new WPI_TalonFX(Constants.kLeftFlywheelID);
-    /* mAntagonist = new WPI_TalonFX(Constants.kRightFlywheelID); */
-    
-    TalonFXConfiguration config = new TalonFXConfiguration();
-
-    mProtagonist.configAllSettings(config);
+    mAntagonist = new WPI_TalonFX(Constants.kRightFlywheelID);
 
     configureMotors();
 
@@ -73,7 +70,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   }
 
   @Config(rowIndex = 2, columnIndex = 0, width = 2, height = 1, name = "Set Motor Percent", defaultValueNumeric = 0)
-  public void set() {
+  public void run() {
     mProtagonist.set(-0.6);
   }
 
@@ -87,24 +84,25 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   }
 
   public void configureMotors() {
+
     mProtagonist.configFactoryDefault();
-    if(RobotBase.isReal()){
-      mProtagonist.setInverted(true);
-    }else{
-      mProtagonist.setInverted(false);
-    }
+    mAntagonist.configFactoryDefault();
+
+    mAntagonist.follow(mProtagonist);
+
     mProtagonist.setNeutralMode(NeutralMode.Coast);
+    mAntagonist.setNeutralMode(NeutralMode.Coast);
 
-    /*
-     * mAntagonist.follow(mProtagonist);
-     * mAntagonist.setInverted(InvertType.OpposeMaster);
-     * mAntagonist.setNeutralMode(NeutralMode.Coast);
-     */
+    mProtagonist.setInverted(InvertType.None);
+    mAntagonist.setInverted(InvertType.OpposeMaster);
 
-     mProtagonist.setSelectedSensorPosition(0);
+    mProtagonist.setSelectedSensorPosition(0);
+    mAntagonist.setSelectedSensorPosition(0);
 
-     mProtagonist.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
-     mProtagonist.configVelocityMeasurementWindow(1);
+    mProtagonist.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
+    mProtagonist.configVelocityMeasurementWindow(1);
+
+     
 
   }
 
@@ -159,7 +157,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     }
     @Override
     public boolean isFinished() {
-        return atTarget();
+      return atTarget();
     }
   }
 

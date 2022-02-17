@@ -66,7 +66,7 @@ public class RobotContainer {
         .whenReleased(mSuperStructure.new StopIntakeCommand());
 
     new JoystickButton(mDriver, XboxController.Button.kB.value)
-      .whenPressed(new InstantCommand(mFlywheelSubsystem::set, mFlywheelSubsystem))
+      .whenPressed(new InstantCommand(mFlywheelSubsystem::run, mFlywheelSubsystem))
       .whenReleased(new InstantCommand(mFlywheelSubsystem::stop, mFlywheelSubsystem));
 
   }
