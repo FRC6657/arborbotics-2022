@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -20,15 +21,20 @@ import com.ctre.phoenix.sensors.BasePigeonSimCollection;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -44,6 +50,8 @@ import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
+import frc.FRC6657.custom.controls.DriverProfile;
+import frc.FRC6657.custom.ctre.IdleMode;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -72,6 +80,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private List<Pose2d> mPathPoints = new ArrayList<Pose2d>();
 
   DifferentialDrivetrainSim mDrivetrainSim;
+
+  private final DriverProfile mProfile;
+
+  private final SlewRateLimiter mSpeedLimiter = new SlewRateLimiter(0);
+
   /*
    * 
    * Setup Methods
@@ -81,7 +94,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    /**
     * The subsystem that controls the drivetrain
     */
-  public DrivetrainSubsystem() {
+  public DrivetrainSubsystem(DriverProfile profile) {
+
+    this.mProfile = profile;
 
     //Left Stuff
     mFrontLeft = new WPI_TalonFX(Constants.kFrontLeftID);
@@ -133,11 +148,30 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mBackLeft.follow(mFrontLeft);
     mBackRight.follow(mFrontRight);
 
-    //Set the neutral modes
-    mFrontLeft.setNeutralMode(NeutralMode.Brake);
-    mFrontRight.setNeutralMode(NeutralMode.Brake);
-    mBackLeft.setNeutralMode(NeutralMode.Coast);
-    mBackRight.setNeutralMode(NeutralMode.Coast);
+    // Set the neutral modes
+    switch (mProfile.kIdleMode.value) {
+      default: //Full Coast
+        mFrontLeft.setNeutralMode(NeutralMode.Coast);
+        mFrontRight.setNeutralMode(NeutralMode.Coast);
+        mBackLeft.setNeutralMode(NeutralMode.Coast);
+        mBackRight.setNeutralMode(NeutralMode.Coast);
+      case 0: // Full Coast
+        mFrontLeft.setNeutralMode(NeutralMode.Coast);
+        mFrontRight.setNeutralMode(NeutralMode.Coast);
+        mBackLeft.setNeutralMode(NeutralMode.Coast);
+        mBackRight.setNeutralMode(NeutralMode.Coast);
+      case 1: //Full Brake
+        mFrontLeft.setNeutralMode(NeutralMode.Brake);
+        mFrontRight.setNeutralMode(NeutralMode.Brake);
+        mBackLeft.setNeutralMode(NeutralMode.Brake);
+        mBackRight.setNeutralMode(NeutralMode.Brake);
+      case 2: //Half Brake
+        mFrontLeft.setNeutralMode(NeutralMode.Brake);
+        mFrontRight.setNeutralMode(NeutralMode.Brake);
+        mBackLeft.setNeutralMode(NeutralMode.Coast);
+        mBackRight.setNeutralMode(NeutralMode.Coast);
+    }
+    
 
     //Makes Green go Forward. Sim is weird so thats what the if statement is for
     if (RobotBase.isReal()) {
@@ -211,6 +245,15 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   public void resetGyro(){
     mPigeonIMU.reset();
+    mOdometry.resetPosition(mOdometry.getPoseMeters(), mPigeonIMU.getRotation2d());
+  }
+
+  public void teleopCurvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn, boolean modSpeed){
+    setCurvatureSpeeds(xSpeed, zRotation, isQuickTurn, modSpeed);
+  }
+
+  public void teleopArcadeDrive(double xSpeed, double zRotation, boolean modSpeed){
+    setArcadeSpeeds(xSpeed, zRotation, modSpeed);
   }
 
   /*
@@ -240,18 +283,82 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   public void setSpeeds(WheelSpeeds speeds) {
 
-    speeds.left *= Constants.Drivetrain.kMaxSpeed;
-    speeds.right *= Constants.Drivetrain.kMaxSpeed;
+    speeds.left *= Constants.Drivetrain.kMaxAttainableSpeed;
+    speeds.right *= Constants.Drivetrain.kMaxAttainableSpeed;
 
     final double leftFeedforward = mFeedForward.calculate(speeds.left);
     final double rightFeedforward = mFeedForward.calculate(speeds.right);
 
     final double leftOutput = mLinearPIDController.calculate(getLeftVelocity(), speeds.left);
     final double rightOutput = mLinearPIDController.calculate(getRightVelocity(), speeds.right);
-        
+
     mFrontLeft.setVoltage(leftOutput + leftFeedforward);
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
   }
+
+  public void setCurvatureSpeeds(double xSpeed, double zRotation, boolean quickturn, boolean modSpeed) {
+
+    DifferentialDriveWheelSpeeds speeds = new DifferentialDriveWheelSpeeds();
+    WheelSpeeds wheelSpeeds = DifferentialDrive.curvatureDriveIK(xSpeed, zRotation, quickturn);
+
+    if (modSpeed) {        
+        mFrontLeft.setNeutralMode(NeutralMode.Coast);
+        mFrontRight.setNeutralMode(NeutralMode.Coast);
+        mBackLeft.setNeutralMode(NeutralMode.Coast);
+        mBackRight.setNeutralMode(NeutralMode.Coast);
+      if (quickturn) {
+        speeds.leftMetersPerSecond = zRotation * mProfile.kModTurn;
+        speeds.rightMetersPerSecond = -zRotation * mProfile.kModTurn;
+      } else {
+        speeds.leftMetersPerSecond = wheelSpeeds.left * mProfile.kModSpeed;
+        speeds.rightMetersPerSecond = wheelSpeeds.right * mProfile.kModSpeed;
+      }
+    }else{
+
+      if (quickturn) {
+        mFrontLeft.setNeutralMode(NeutralMode.Brake);
+        mFrontRight.setNeutralMode(NeutralMode.Brake);
+        mBackLeft.setNeutralMode(NeutralMode.Brake);
+        mBackRight.setNeutralMode(NeutralMode.Brake);
+
+        speeds.leftMetersPerSecond = zRotation * mProfile.kMaxTurn;
+        speeds.rightMetersPerSecond = -zRotation * mProfile.kMaxTurn;
+      } else {
+        mFrontLeft.setNeutralMode(NeutralMode.Brake);
+        mFrontRight.setNeutralMode(NeutralMode.Brake);
+        mBackLeft.setNeutralMode(NeutralMode.Brake);
+        mBackRight.setNeutralMode(NeutralMode.Brake);
+
+        speeds.leftMetersPerSecond = wheelSpeeds.left * mProfile.kMaxSpeed;
+        speeds.rightMetersPerSecond = wheelSpeeds.right * mProfile.kMaxSpeed;
+      }
+    }
+    
+    setSpeeds(speeds);
+
+  }
+
+  public void setArcadeSpeeds(double xSpeed, double zRotation, boolean modSpeed) {
+    
+    if(modSpeed){
+      xSpeed *= (mProfile.kModSpeed/Constants.Drivetrain.kMaxAttainableSpeed);
+      zRotation *= mProfile.kModTurn/Constants.Drivetrain.kMaxAttainableTurnRate;
+    }else{
+      xSpeed *= (mProfile.kMaxSpeed/Constants.Drivetrain.kMaxAttainableSpeed);
+      zRotation *= mProfile.kMaxTurnDegrees/Constants.Drivetrain.kMaxAttainableTurnRate;
+    }
+
+    SmartDashboard.putNumber("xSpeed", xSpeed);
+    SmartDashboard.putNumber("zRotation", zRotation);
+
+    setSpeeds(
+      new WheelSpeeds(
+        xSpeed + zRotation,
+        xSpeed - zRotation
+      )
+    );
+  }
+
 
   /**
    * Stops the Drivetrain
@@ -305,46 +412,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   }
 
   /**
-   * Get temperature of the front left motor in celsius
-   */
-  @Log.Dial(rowIndex = 0, columnIndex = 4, width = 2, height = 2, name = "FL Temp", max = 110, min = 20, showValue = false)
-  public double getFrontLeftTemp() {
-    if(RobotBase.isReal()){return mFrontLeft.getTemperature();}
-    return 0;
-  }
-
-  /**
-   * Get temperature of the front right motor in celsius
-   */
-  @Log.Dial(rowIndex = 0, columnIndex = 6, width = 2, height = 2, name = "FR Temp", max = 110, min = 20, showValue = false)
-  public double getFrontRightTemp() {
-    if(RobotBase.isReal()){return mFrontRight.getTemperature();}
-    return 0;
-  }
-
-  /**
-   * Get temperature of the back left motor in celsius
-   */
-  @Log.Dial(rowIndex = 2, columnIndex = 4, width = 2, height = 2, name = "BL Temp", max = 110, min = 20, showValue = false)
-  public double getBackLeftTemp() {
-    if(RobotBase.isReal()){return mBackLeft.getTemperature();}
-    return 0;
-  }
-
-  /**
-   * Get temperature of the back right motor in celsius
-   */
-  @Log.Dial(rowIndex = 2, columnIndex = 6, width = 2, height = 2, name = "BR Temp", max = 110, min = 20, showValue = false)
-  public double getBackRightTemp() {
-    if(RobotBase.isReal()){return mBackRight.getTemperature();}
-    return 0;
-  }
-
-  /**
    * This is mainly to have a velocity gauge on shuffleboard.
    * @return Same as getLeftVelocity()
    */
-  @Log.Dial(rowIndex = 2, columnIndex = 2, width = 1, height = 1, name = "Left Vel", min = -Constants.Drivetrain.kMaxSpeed, max = Constants.Drivetrain.kMaxSpeed, showValue = false)
+  @Log.Dial(rowIndex = 2, columnIndex = 2, width = 1, height = 1, name = "Left Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false)
   public double leftVelocityGauge(){
     return getLeftVelocity();
   }
@@ -353,9 +424,16 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * This is mainly to have a velocity gauge on shuffleboard.
    * @return Same as getRightVelocity()
    */
-  @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.Drivetrain.kMaxSpeed, max = Constants.Drivetrain.kMaxSpeed, showValue = false)
+  @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false)
   public double rightVelocityGauge(){
     return getRightVelocity();
+  }
+
+  @Log(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name = "Gyro Velocity")
+  public double getHeadingVelocity(){
+    double[] gyroVals = {0,0,0};
+    mPigeonIMU.getRawGyro(gyroVals);
+    return gyroVals[2];
   }
 
   public double getGyroAngle(){

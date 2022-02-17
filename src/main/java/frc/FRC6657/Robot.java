@@ -19,9 +19,9 @@ public class Robot extends TimedRobot {
   @Override
   @SuppressWarnings("unused")
   public void robotInit() {
-    Trajectory mGenerate = Trajectories.GENERATE; //Generates all trajectories
+    //Trajectory mGenerate = Trajectories.GENERATE; //Generates all trajectories
     m_robotContainer = new RobotContainer(); //Creates Robot Container
-    Logger.configureLoggingAndConfig(m_robotContainer, false); //Enables Logging
+    //Logger.configureLoggingAndConfig(m_robotContainer, false); //Enables Logging
   }
 
   @Override
