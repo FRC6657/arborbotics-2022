@@ -27,16 +27,10 @@ public class RobotContainer {
   private final PickupSubsystem mPickupSubsystem;
   private final SuperStructure mSuperStructure; 
 
-  private Joystick mJoystick1 = new Joystick(0);
-  private XboxController mXboxController = new XboxController(1);
-
-  private String driver = "TieuTam";
-  //private String driver = "Andrew";
+  private XboxController mXboxController = new XboxController(0);
+  private Joystick mJoystick1 = new Joystick(1);
 
   private DriverProfile mProfile;
-
-  private SlewRateLimiter mDriveLimiter = new SlewRateLimiter(10);
-  private SlewRateLimiter mTurnLimiter = new SlewRateLimiter(10);
 
   public RobotContainer() {
 
@@ -54,56 +48,22 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-
     if(mProfile.kStyle == ControlStyle.Curvature){
-      // mDrivetrainSubsystem.setDefaultCommand(new RunCommand(() -> {
-      //   mDrivetrainSubsystem.teleopCurvatureDrive(
-      //     -mDriveLimiter.calculate(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kDriveAxis), 0.1)),
-      //     mTurnLimiter.calculate(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1)),
-      //     mProfile.mController.getRawAxis(mProfile.kQuickturnBtn) != 0,
-      //     mProfile.mController.getRawAxis(mProfile.kSpeedModBtn) != 0
-      //   );
-      // }, mDrivetrainSubsystem));
-
       mDrivetrainSubsystem.setDefaultCommand(new RunCommand(() -> {
         mDrivetrainSubsystem.teleopCurvatureDrive(
-          -keepSign(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kDriveAxis), 0.1),Math.pow(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kDriveAxis), 0.1),2)),
-          keepSign(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1),Math.pow(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1), 1)),
+          -Math.copySign(mProfile.mController.getRawAxis(mProfile.kDriveAxis), Math.pow(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1), 2)),
+          Math.copySign(mProfile.mController.getRawAxis(mProfile.kTurnAxis),Math.pow(Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.1), 2)),
           mProfile.mController.getRawAxis(mProfile.kQuickturnBtn) != 0,
           mProfile.mController.getRawAxis(mProfile.kSpeedModBtn) != 0
         );
       }, mDrivetrainSubsystem));
-
     }
 
-    if(mProfile.kStyle == ControlStyle.Arcade){
-      mDrivetrainSubsystem.setDefaultCommand(new RunCommand(() -> {
-        mDrivetrainSubsystem.teleopArcadeDrive(
-          -Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kDriveAxis), 0.2),
-          Deadbander.applyLinearScaledDeadband(mProfile.mController.getRawAxis(mProfile.kTurnAxis), 0.2),
-          mProfile.mController.getRawButton(mProfile.kSpeedModBtn)
-        );
-      }, mDrivetrainSubsystem));
-    }
-
-    switch(driver){
-      case "TieuTam":
-        new JoystickButton(mXboxController, 6)
-          .whenPressed(
-            mSuperStructure.new RunIntakeCommand()
-          )
-          .whenReleased(
-            mSuperStructure.new StopIntakeCommand()
-          );
-      case "Andrew":
-        // new JoystickButton(mJoystick1, 1)
-        // .whenPressed(
-        //   mSuperStructure.new RunIntakeCommand()
-        // )
-        // .whenReleased(
-        //   mSuperStructure.new StopIntakeCommand()
-        // );
-    }
+    new JoystickButton(mJoystick1, 1)
+      .whenPressed(
+          mSuperStructure.new RunIntakeCommand())
+      .whenReleased(
+          mSuperStructure.new StopIntakeCommand());
 
   }
 
@@ -111,58 +71,20 @@ public class RobotContainer {
     return null;
   }
 
-  private double keepSign(double start, double end){
-    return (Math.signum(start) * Math.abs(end));
-  }
-
   private DriverProfile getDriver() {
-    switch(driver){
-      default:
-        return
-          new DriverProfile(
-            mJoystick1,
-            AxisType.kY.value,
-            AxisType.kTwist.value,
-            ControlStyle.Arcade,
-            Constants.Drivetrain.kMaxAttainableSpeed,
-            Constants.Drivetrain.kMaxAttainableTurnRate,
-            IdleMode.Coast,
-            1,
-            1d,
-            1d
-          );
-      case "TieuTam":
-        return
-          new DriverProfile(
-            mJoystick1,//Controller
-            AxisType.kY.value,//Drive Axis
-            2,//Turn Axis
-            ControlStyle.Arcade,
-            Constants.Drivetrain.kMaxAttainableSpeed * 0.45, //Max Speed m/s
-            Constants.Drivetrain.kMaxAttainableTurnRate * 0.20, //Max Turn deg/s
-            IdleMode.Brake,
-            1,//Speed Mod BTN
-            Constants.Drivetrain.kMaxAttainableSpeed * 0.8, //Mod Drive Speed m/s
-            Constants.Drivetrain.kMaxAttainableTurnRate * 0.7 //Mod Turn Speed deg/s
-          );
-          
-      case "Andrew":
-        return
-          new DriverProfile(
-            mXboxController,//Controller
-            Axis.kLeftY.value, //Drive Axis
-            Axis.kRightX.value, //Turn Axis
-            ControlStyle.Curvature,
-            2, //Max Speed m/s
-            90, //Max Turn deg/s
-            IdleMode.Coast,
-            2, //Speed Mod BTN
-            3, //Mod Drive Speed m/s
-            80, //Mod Turn Speed deg/s
-            3 //Quickturn BTN
-          );
-
-    }
+    return new DriverProfile(
+        mXboxController, // Controller
+        Axis.kLeftY.value, // Drive Axis
+        Axis.kRightX.value, // Turn Axis
+        ControlStyle.Curvature,
+        2, // Max Speed m/s
+        90, // Max Turn deg/s
+        IdleMode.Coast,
+        2, // Speed Mod BTN
+        3, // Mod Drive Speed m/s
+        80, // Mod Turn Speed deg/s
+        3 // Quickturn BTN
+    );
   }
 
 }

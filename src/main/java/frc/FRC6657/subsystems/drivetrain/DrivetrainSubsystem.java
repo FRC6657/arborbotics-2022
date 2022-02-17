@@ -294,10 +294,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     WheelSpeeds wheelSpeeds = DifferentialDrive.curvatureDriveIK(xSpeed, zRotation, quickturn);
 
     if (modSpeed) {        
-        mFrontLeft.setNeutralMode(NeutralMode.Brake);
-        mFrontRight.setNeutralMode(NeutralMode.Brake);
-        mBackLeft.setNeutralMode(NeutralMode.Brake);
-        mBackRight.setNeutralMode(NeutralMode.Brake);
+        mFrontLeft.setNeutralMode(NeutralMode.Coast);
+        mFrontRight.setNeutralMode(NeutralMode.Coast);
+        mBackLeft.setNeutralMode(NeutralMode.Coast);
+        mBackRight.setNeutralMode(NeutralMode.Coast);
       if (quickturn) {
         speeds.leftMetersPerSecond = zRotation * mProfile.kModTurn;
         speeds.rightMetersPerSecond = -zRotation * mProfile.kModTurn;
@@ -316,10 +316,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
         speeds.leftMetersPerSecond = zRotation * mProfile.kMaxTurn;
         speeds.rightMetersPerSecond = -zRotation * mProfile.kMaxTurn;
       } else {
-        mFrontLeft.setNeutralMode(NeutralMode.Coast);
-        mFrontRight.setNeutralMode(NeutralMode.Coast);
-        mBackLeft.setNeutralMode(NeutralMode.Coast);
-        mBackRight.setNeutralMode(NeutralMode.Coast);
+        mFrontLeft.setNeutralMode(NeutralMode.Brake);
+        mFrontRight.setNeutralMode(NeutralMode.Brake);
+        mBackLeft.setNeutralMode(NeutralMode.Brake);
+        mBackRight.setNeutralMode(NeutralMode.Brake);
 
         speeds.leftMetersPerSecond = wheelSpeeds.left * mProfile.kMaxSpeed;
         speeds.rightMetersPerSecond = wheelSpeeds.right * mProfile.kMaxSpeed;
