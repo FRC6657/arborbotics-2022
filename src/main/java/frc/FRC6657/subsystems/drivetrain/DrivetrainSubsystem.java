@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
@@ -200,6 +201,13 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mFrontRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5));// | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
     mBackLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5));  // | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
     mBackRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); // | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
+
+    mBackLeft.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    mBackRight.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+
+    mBackLeft.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
+    mBackRight.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
+
 
   }
 
