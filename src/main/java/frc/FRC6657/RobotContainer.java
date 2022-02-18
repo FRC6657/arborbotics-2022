@@ -81,11 +81,11 @@ public class RobotContainer {
 
   private DriverProfile getDriver() {
     return new DriverProfile(
-        2d, // Max Speed m/s
+        5d, // Max Speed m/s
         90d, // Max Turn deg/s
         3d, // Mod Drive Speed m/s
         80d, // Mod Turn Speed deg/s
-        IdleMode.Coast
+        IdleMode.Brake
     );
   }
 

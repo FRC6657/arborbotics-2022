@@ -45,6 +45,7 @@ import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
+import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.custom.controls.DriverProfile;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
@@ -288,24 +289,16 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   public void setCurvatureSpeeds(double xSpeed, double zRotation, boolean quickturn, boolean modSpeed) {
 
-    DifferentialDriveWheelSpeeds speeds = new DifferentialDriveWheelSpeeds();
-    WheelSpeeds wheelSpeeds = DifferentialDrive.curvatureDriveIK(xSpeed, zRotation, quickturn);
+    xSpeed = Deadbander.applyLinearScaledDeadband(xSpeed, Constants.DriverConfigs.kDriveDeadband);
+    zRotation = Deadbander.applyLinearScaledDeadband(zRotation, Constants.DriverConfigs.kTurnDeadband);
 
-    System.out.println(xSpeed);
-    System.out.println(zRotation);
+    DifferentialDriveWheelSpeeds speeds = new DifferentialDriveWheelSpeeds();
+    WheelSpeeds wheelSpeeds = DifferentialDrive.curvatureDriveIK(xSpeed, zRotation, quickturn);    
 
     if (modSpeed) {        
-        mFrontLeft.setNeutralMode(NeutralMode.Coast);
-        mFrontRight.setNeutralMode(NeutralMode.Coast);
-        mBackLeft.setNeutralMode(NeutralMode.Coast);
-        mBackRight.setNeutralMode(NeutralMode.Coast);
         speeds.leftMetersPerSecond = wheelSpeeds.left * mProfile.kModSpeed;
         speeds.rightMetersPerSecond = wheelSpeeds.right * mProfile.kModSpeed;
       }else{
-        mFrontLeft.setNeutralMode(NeutralMode.Brake);
-        mFrontRight.setNeutralMode(NeutralMode.Brake);
-        mBackLeft.setNeutralMode(NeutralMode.Brake);
-        mBackRight.setNeutralMode(NeutralMode.Brake);
         speeds.leftMetersPerSecond = wheelSpeeds.left * mProfile.kMaxSpeed;
         speeds.rightMetersPerSecond = wheelSpeeds.right * mProfile.kMaxSpeed;
       }

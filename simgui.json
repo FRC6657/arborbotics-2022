@@ -11,11 +11,6 @@
           "open": true
         }
       }
-    },
-    "PWM Outputs": {
-      "window": {
-        "visible": true
-      }
     }
   },
   "NTProvider": {
@@ -24,6 +19,7 @@
       "/LiveWindow/BlinkinSubsystem": "Subsystem",
       "/LiveWindow/DrivetrainSubsystem": "Subsystem",
       "/LiveWindow/FlywheelSubsystem": "Subsystem",
+      "/LiveWindow/HoodSubsystem": "Subsystem",
       "/LiveWindow/PickupSubsystem": "Subsystem",
       "/LiveWindow/SuperStructure": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
@@ -53,6 +49,9 @@
   },
   "NetworkTables": {
     "LiveWindow": {
+      "DrivetrainSubsystem": {
+        "open": true
+      },
       "Ungrouped": {
         "Blinkin[0]": {
           "open": true
@@ -62,8 +61,7 @@
         },
         "Talon FX [2]": {
           "open": true
-        },
-        "open": true
+        }
       },
       "open": true
     },
@@ -75,10 +73,8 @@
     "SmartDashboard": {
       "Field": {
         "open": true
-      }
+      },
+      "open": true
     }
-  },
-  "NetworkTables View": {
-    "visible": false
   }
 }
