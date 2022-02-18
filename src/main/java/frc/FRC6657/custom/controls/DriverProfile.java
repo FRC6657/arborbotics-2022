@@ -13,68 +13,25 @@ public class DriverProfile {
     public double kMaxTurn;
     public double kMaxTurnDegrees;
     public IdleMode kIdleMode;
-    public int kSpeedModBtn;
     public double kModSpeed;
     public double kModTurn;
-    public int kQuickturnBtn;
-
-    public GenericHID mController;
 
     public int kDriveAxis;
     public int kTurnAxis;
 
-    public ControlStyle kStyle;
-
     public DriverProfile(
-        Joystick joystick,
-        int driveAxis,
-        int turnAxis,
-        ControlStyle style,
         double kMaxSpeed,
         double kMaxTurn,
-        IdleMode kIdleMode,
-        int kSpeedModBtn,
-        double kModSpeed,
-        double kModTurn
-    ){
-        this.mController = joystick;
-        this.kDriveAxis = driveAxis;
-        this.kTurnAxis = turnAxis;
-        this.kStyle = style;
-        this.kMaxSpeed = kMaxSpeed;
-        this.kMaxTurn = (Math.PI*Constants.Drivetrain.kTrackWidth)/(360/kMaxTurn);
-        this.kMaxTurnDegrees = kMaxTurn;
-        this.kIdleMode = kIdleMode;
-        this.kSpeedModBtn = kSpeedModBtn;
-        this.kModSpeed = kModSpeed;
-        this.kModTurn = kModTurn;
-    }
-
-    public DriverProfile(
-        XboxController controller,
-        int driveAxis,
-        int turnAxis,
-        ControlStyle style,
-        double kMaxSpeed,
-        double kMaxTurn,
-        IdleMode kIdleMode,
-        int kSpeedModBtn,
         double kModSpeed,
         double kModTurn,
-        int kQuickturnBtn
+        IdleMode kIdleMode
     ){
-        this.mController = controller;
-        this.kDriveAxis = driveAxis;
-        this.kTurnAxis = turnAxis;
         this.kMaxTurnDegrees = kMaxTurn;
-        this.kStyle = style;
         this.kMaxSpeed = kMaxSpeed;
         this.kMaxTurn = (Math.PI*Constants.Drivetrain.kTrackWidth)/(360/kMaxTurn);
         this.kIdleMode = kIdleMode;
-        this.kSpeedModBtn = kSpeedModBtn;
         this.kModSpeed = kModSpeed;
         this.kModTurn = (Math.PI*Constants.Drivetrain.kTrackWidth)/(360/kModTurn);
-        this.kQuickturnBtn = kQuickturnBtn;
     }
 
 }

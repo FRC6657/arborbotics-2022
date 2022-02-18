@@ -13,7 +13,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -21,16 +20,12 @@ import com.ctre.phoenix.sensors.BasePigeonSimCollection;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -51,7 +46,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
 import frc.FRC6657.custom.controls.DriverProfile;
-import frc.FRC6657.custom.ctre.IdleMode;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -252,10 +246,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     setCurvatureSpeeds(xSpeed, zRotation, isQuickTurn, modSpeed);
   }
 
-  public void teleopArcadeDrive(double xSpeed, double zRotation, boolean modSpeed){
-    setArcadeSpeeds(xSpeed, zRotation, modSpeed);
-  }
-
   /*
    * 
    * Set Methods
@@ -301,62 +291,25 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     DifferentialDriveWheelSpeeds speeds = new DifferentialDriveWheelSpeeds();
     WheelSpeeds wheelSpeeds = DifferentialDrive.curvatureDriveIK(xSpeed, zRotation, quickturn);
 
+    System.out.println(xSpeed);
+    System.out.println(zRotation);
+
     if (modSpeed) {        
         mFrontLeft.setNeutralMode(NeutralMode.Coast);
         mFrontRight.setNeutralMode(NeutralMode.Coast);
         mBackLeft.setNeutralMode(NeutralMode.Coast);
         mBackRight.setNeutralMode(NeutralMode.Coast);
-      if (quickturn) {
-        speeds.leftMetersPerSecond = zRotation * mProfile.kModTurn;
-        speeds.rightMetersPerSecond = -zRotation * mProfile.kModTurn;
-      } else {
         speeds.leftMetersPerSecond = wheelSpeeds.left * mProfile.kModSpeed;
         speeds.rightMetersPerSecond = wheelSpeeds.right * mProfile.kModSpeed;
-      }
-    }else{
-
-      if (quickturn) {
+      }else{
         mFrontLeft.setNeutralMode(NeutralMode.Brake);
         mFrontRight.setNeutralMode(NeutralMode.Brake);
         mBackLeft.setNeutralMode(NeutralMode.Brake);
         mBackRight.setNeutralMode(NeutralMode.Brake);
-
-        speeds.leftMetersPerSecond = zRotation * mProfile.kMaxTurn;
-        speeds.rightMetersPerSecond = -zRotation * mProfile.kMaxTurn;
-      } else {
-        mFrontLeft.setNeutralMode(NeutralMode.Brake);
-        mFrontRight.setNeutralMode(NeutralMode.Brake);
-        mBackLeft.setNeutralMode(NeutralMode.Brake);
-        mBackRight.setNeutralMode(NeutralMode.Brake);
-
         speeds.leftMetersPerSecond = wheelSpeeds.left * mProfile.kMaxSpeed;
         speeds.rightMetersPerSecond = wheelSpeeds.right * mProfile.kMaxSpeed;
       }
-    }
-    
     setSpeeds(speeds);
-
-  }
-
-  public void setArcadeSpeeds(double xSpeed, double zRotation, boolean modSpeed) {
-    
-    if(modSpeed){
-      xSpeed *= (mProfile.kModSpeed/Constants.Drivetrain.kMaxAttainableSpeed);
-      zRotation *= mProfile.kModTurn/Constants.Drivetrain.kMaxAttainableTurnRate;
-    }else{
-      xSpeed *= (mProfile.kMaxSpeed/Constants.Drivetrain.kMaxAttainableSpeed);
-      zRotation *= mProfile.kMaxTurnDegrees/Constants.Drivetrain.kMaxAttainableTurnRate;
-    }
-
-    SmartDashboard.putNumber("xSpeed", xSpeed);
-    SmartDashboard.putNumber("zRotation", zRotation);
-
-    setSpeeds(
-      new WheelSpeeds(
-        xSpeed + zRotation,
-        xSpeed - zRotation
-      )
-    );
   }
 
 
@@ -448,37 +401,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * Commands 
    */
 
-  /**
-   * Command for TeleOp Driving
-   */
-  public class DriveCommand extends CommandBase {
-
-    private DoubleSupplier xSpeed;
-    private DoubleSupplier zRotation;
-    private BooleanSupplier isQuickturn;
-
-    public DriveCommand(DoubleSupplier xSpeed, DoubleSupplier zRotation, BooleanSupplier isQuickturn) {
-      this.xSpeed = xSpeed;
-      this.zRotation = zRotation;
-      this.isQuickturn = isQuickturn;
-      addRequirements(DrivetrainSubsystem.this);
-    }
-
-    @Override
-    public void initialize() {
-      System.out.println("Driver Control Initialized");
-    }
-
-    @Override
-    public void execute() {
-      setSpeeds(DifferentialDrive.curvatureDriveIK(xSpeed.getAsDouble(), zRotation.getAsDouble(), isQuickturn.getAsBoolean()));
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-      stop();
-    }
-  }
   
   /**
    * Command to follow a given trajectory

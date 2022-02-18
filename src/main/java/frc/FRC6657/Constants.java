@@ -144,9 +144,9 @@ public final class Constants {
         public static final BlinkinLEDPattern kIntake = BlinkinLEDPattern.STROBE_BLUE;
     }
 
-    public static class DefaultDriverConfigs{
-        public static final double kMaxSpeed = 1.5; // Meters per second
-        public static final double kMaxAccel = kMaxSpeed; // Meters per second per second
+    public static class DriverConfigs{
+        public static final double kTurnDeadband = 0.1;
+        public static final double kDriveDeadband = 0.1;
     }
     
 }
