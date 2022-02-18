@@ -5,6 +5,8 @@
 package frc.FRC6657.subsystems.intake;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,7 +27,12 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
     mMotor.setInverted(true);
     mMotor.setNeutralMode(NeutralMode.Coast);
 
+    mMotor.configPeakCurrentLimit(31);
+    mMotor.configPeakCurrentDuration(100);
+    mMotor.configContinuousCurrentLimit(30);
+    mMotor.enableCurrentLimit(true);
   }
+
   
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = 0) //Allows for easy intake testing
   private void set(double percent) {
@@ -39,5 +46,6 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
   public void stop() {
     set(0);
   }
+
 }
 
