@@ -21,11 +21,13 @@ import frc.FRC6657.subsystems.SuperStructure;
 import frc.FRC6657.subsystems.blinkin.BlinkinSubsystem;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
+import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 
 public class RobotContainer {
 
   private final DrivetrainSubsystem mDrivetrainSubsystem;
   private final PickupSubsystem mPickupSubsystem;
+  private final HoodSubsystem mHoodSubsystem;
   private final SuperStructure mSuperStructure; 
 
   private CommandXboxController mXboxController = new CommandXboxController(0);
@@ -39,6 +41,7 @@ public class RobotContainer {
 
     mDrivetrainSubsystem = new DrivetrainSubsystem(mProfile);
     mPickupSubsystem = new PickupSubsystem();
+    mHoodSubsystem = new HoodSubsystem();
 
     mSuperStructure = new SuperStructure(
       mDrivetrainSubsystem,
@@ -53,6 +56,10 @@ public class RobotContainer {
           mXboxController.getRightTriggerAxis() != 0,
           mXboxController.getLeftTriggerAxis() != 0);
     }, mDrivetrainSubsystem));
+
+    mHoodSubsystem.setDefaultCommand(new RunCommand(() -> {
+      mHoodSubsystem.run(mXboxController.getRightY());
+    }, mHoodSubsystem));
     
 
     configureButtonBindings();

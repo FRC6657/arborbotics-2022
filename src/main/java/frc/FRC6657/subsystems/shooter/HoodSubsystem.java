@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.FRC6657.subsystems.intake;
+package frc.FRC6657.subsystems.shooter;
 
 import java.util.function.DoubleSupplier;
 
@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
+import frc.FRC6657.custom.controls.Deadbander;
 
 public class HoodSubsystem extends SubsystemBase {
 
@@ -28,37 +29,15 @@ public class HoodSubsystem extends SubsystemBase {
         mMotor.setIdleMode(IdleMode.kBrake);
     }
 
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
-    }
-
     private void set(double percent) {
         mMotor.set(percent);
     }
 
     private void stop() {
-        mMotor.set(0);
+        set(0);
     }
-
-    public class RunCommand extends CommandBase {
-        private DoubleSupplier HoodSpeed;
-
-        public RunCommand(DoubleSupplier HoodSpeed) {
-            this.HoodSpeed = HoodSpeed;
-            addRequirements(HoodSubsystem.this);
-        }
-
-        @Override
-        public void execute() {
-            set(HoodSpeed.getAsDouble());
-        }
-
-        @Override
-        public void end(boolean interrupted) {
-            stop();
-        }
-
+    
+    public void run(double speed){
+        set(Deadbander.applyLinearScaledDeadband(speed, 0.1));
     }
-
 }
