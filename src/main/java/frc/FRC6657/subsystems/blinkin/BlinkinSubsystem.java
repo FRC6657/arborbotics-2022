@@ -22,6 +22,14 @@ private Blinkin mBlinkin;
     setBlinkinColor(Constants.BlinkinColors.kIntake);
   }
 
+  public void setReadyFlywheelColor() {
+    setBlinkinColor(Constants.BlinkinColors.kReadyFlywheel);
+  }
+    
+  public void setNotReadyFlywheelColor() {
+    setBlinkinColor(Constants.BlinkinColors.kNotReadyFlywheel);
+  }
+
   private void setBlinkinColor(BlinkinLEDPattern pattern){
     mBlinkin.setLEDMode(pattern);
   }
