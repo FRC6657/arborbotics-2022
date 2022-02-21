@@ -10,7 +10,9 @@ import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.PWM;
 
-/** Add your docs here. */
+/** 
+ * Author: Andrew Card
+*/
 public class Blinkin extends PWMMotorController {
 
     public Blinkin(final int id) {

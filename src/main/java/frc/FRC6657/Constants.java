@@ -51,15 +51,8 @@ public final class Constants {
 
         // Drivetrain PID
         public static final double drive_linear_kP = 1; //Char P gain 3.1976
-        public static final double drive_linear_kI = 0;
-        public static final double drive_linear_kD = 0;
 
-        public static final double drive_angular_kP = 0; //TODO Run angular char
-        public static final double drive_angular_kI = 0;
-        public static final double drive_angular_kD = 0;
-
-        public static final PIDController kLinearPIDController = new PIDController(drive_linear_kP, drive_linear_kI, drive_linear_kD);
-        public static final PIDController kAngularPIDController = new PIDController(drive_angular_kP, drive_angular_kI, drive_angular_kD);
+        public static final PIDController kLinearPIDController = new PIDController(drive_linear_kP, 0, 0);
 
         // Drivetrain Values
         public static final double kRobotWeight = Units.lbsToKilograms(40);

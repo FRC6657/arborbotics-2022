@@ -1,7 +1,11 @@
 package frc.FRC6657.custom.controls;
 
 public class Deadbander {
+    
     /**
+     * 
+     * Author: Andrew Card
+     * 
      * @param input  Value to be corrected
      * @param thresh Deadband threshold
      * @return Deadbanded value

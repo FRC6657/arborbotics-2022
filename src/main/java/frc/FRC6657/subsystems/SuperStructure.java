@@ -7,9 +7,8 @@ package frc.FRC6657.subsystems;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.FRC6657.Constants;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
-//import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
 
 public class SuperStructure extends SubsystemBase {
@@ -37,7 +36,7 @@ public class SuperStructure extends SubsystemBase {
       addRequirements(pickup, SuperStructure.this);
       addCommands(
         //new InstantCommand(intakeExtension::toggleState),
-        new InstantCommand(pickup::run)
+        new InstantCommand(() -> pickup.set(Constants.Intake.kSpeed))
       );
     }
   }

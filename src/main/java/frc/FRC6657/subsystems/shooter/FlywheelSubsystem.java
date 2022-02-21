@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
+import frc.FRC6657.custom.ArborMath;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
@@ -135,46 +136,16 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     mRpmTarget = setpoint;
   }
 
-  public class setRPMTarget extends CommandBase{
-    double newTarget;
-    public setRPMTarget(double newTarget){
-      this.newTarget = newTarget;
-      addRequirements(FlywheelSubsystem.this);
-    }
-    @Override
-    public void initialize() {
-      setRPMTarget(newTarget);
-    }
-    @Override
-    public boolean isFinished() {
-        return true;
-    }
-  }
-
-  public class WaitForFlywheel extends CommandBase{
-    public WaitForFlywheel(){
-      addRequirements(FlywheelSubsystem.this);
-    }
-    @Override
-    public boolean isFinished() {
-      return atTarget();
-    }
-  }
-
   @Override
   public void periodic() {
-    // if(getRPMDelta() < Constants.Flywheel.kRPMTollerance){
-    //   mAtTarget = true;
-    // }
-    // else{
-    //   mAtTarget = false;
-    // }
 
-    // mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRpmTarget)));
-    // mFlywheelLoop.correct(VecBuilder.fill(getRadiansPerSecond()));
-    // mFlywheelLoop.predict(0.020);
-    // double mNextVolts = mFlywheelLoop.getU(0);
-    // mProtagonist.setVoltage(mRpmTarget == 0 ? 0 : mNextVolts);
+    mAtTarget = ArborMath.inTolerance(getRPM(), Constants.Flywheel.kRPMTollerance);
+
+    mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRpmTarget)));
+    mFlywheelLoop.correct(VecBuilder.fill(getRadiansPerSecond()));
+    mFlywheelLoop.predict(0.020);
+    double mNextVolts = mFlywheelLoop.getU(0);
+    mProtagonist.setVoltage(mRpmTarget == 0 ? 0 : mNextVolts);
   }
 
   @Override

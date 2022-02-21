@@ -24,16 +24,11 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
   private void configMotor() {
     mMotor.setInverted(true);
     mMotor.setNeutralMode(NeutralMode.Coast);
-
   }
   
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = 0) //Allows for easy intake testing
-  private void set(double percent) {
+  public void set(double percent) {
     mMotor.set(percent);
-  }
-
-  public void run(){
-    set(Constants.Intake.kSpeed);
   }
 
   public void stop() {

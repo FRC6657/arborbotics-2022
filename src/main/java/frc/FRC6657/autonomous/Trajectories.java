@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.util.Units;
 
 public class Trajectories {
     
@@ -25,81 +24,10 @@ public class Trajectories {
     );
 
     /**
-     * Part 1 of a 2 ball auto starting away from the hangar
-     */
-    public static Trajectory Two_Ball_Far_1 = generateTrajectory(
-        3,
-        3,
-        List.of(
-            new Pose2d(7.627, 1.929, Rotation2d.fromDegrees(-90)),
-            new Pose2d(7.62, 0.68, Rotation2d.fromDegrees(-90))
-        ),
-        false,
-        "2BF1"
-    );
-
-    /**
-     * Part 2 of a 2 ball auto starting away from the hangar
-     */
-    public static Trajectory Two_Ball_Far_2 = generateTrajectory(
-        3,
-        2,
-        List.of(
-            new Pose2d(7.62, 0.68, Rotation2d.fromDegrees(-90)),
-            new Pose2d(6, 0.88, Rotation2d.fromDegrees(55.3))
-        ),
-        true,
-        "2BF2"
-    );
-
-    public static Trajectory IntakeTest_1 = generateTrajectory(
-        2,
-        1,
-        List.of(
-            new Pose2d(0,0, new Rotation2d(0)),
-            new Pose2d(Units.inchesToMeters(110), 0, new Rotation2d(0))
-           
-        ),
-        false,
-        "djgshk"
-    );
-
-    public static Trajectory IntakeTest_2 = generateTrajectory(
-        2,
-        1,
-        List.of(
-            new Pose2d(Units.inchesToMeters(110), 0, new Rotation2d(0)),
-            new Pose2d(0,0, new Rotation2d(0))
-        ),
-        true,
-        "djgshk"
-    );
-
-    public static Trajectory IntakeTest_3 = generateTrajectory(
-        2,
-        1,
-        List.of(
-            new Pose2d(0,0, new Rotation2d(0)),
-            new Pose2d(Units.inchesToMeters(110), Units.inchesToMeters(60), new Rotation2d(0))
-        ),
-        false,
-        "djgshk"
-    );
-
-    public static Trajectory IntakeTest_4 = generateTrajectory(
-        2,
-        1,
-        List.of(
-            new Pose2d(Units.inchesToMeters(110), Units.inchesToMeters(60), new Rotation2d(0)),
-            new Pose2d(0,0, new Rotation2d(0))
-        ),
-        true,
-        "djgshk"
-    );
-
-    /**
      * 
      * Trajectory Generator Function
+     * 
+     * Author Andrew Card
      * 
      * @param maxVel Max Velocity m/s
      * @param maxAccel Max Accel m/s²

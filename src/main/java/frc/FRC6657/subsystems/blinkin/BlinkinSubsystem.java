@@ -7,22 +7,14 @@ import frc.FRC6657.custom.rev.Blinkin.BlinkinLEDPattern;
 
 public class BlinkinSubsystem extends SubsystemBase {
   
-private Blinkin mBlinkin;
+  private Blinkin mBlinkin;
 
   public BlinkinSubsystem() {
     mBlinkin = new Blinkin(Constants.kBlinkinID);
-    setIdleColor();
+    mBlinkin.setLEDMode(Constants.BlinkinColors.kIdle);
   }
 
-  public void setIntakingColor() {
-    setBlinkinColor(Constants.BlinkinColors.kIdle);
-  }
-
-  public void setIdleColor(){
-    setBlinkinColor(Constants.BlinkinColors.kIntake);
-  }
-
-  private void setBlinkinColor(BlinkinLEDPattern pattern){
+  public void setBlinkinColor(BlinkinLEDPattern pattern){
     mBlinkin.setLEDMode(pattern);
   }
 }
