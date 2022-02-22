@@ -15,19 +15,34 @@ import frc.FRC6657.subsystems.SuperStructure;
 import frc.FRC6657.subsystems.blinkin.BlinkinSubsystem;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
+import frc.FRC6657.subsystems.lift.LiftSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 @SuppressWarnings("unused")
 public class RobotContainer {
 
-  private BlinkinSubsystem mBlinkinSubsystem;
-  private DrivetrainSubsystem mDrivetrainSubsystem;
-  private PickupSubsystem mPickupSubsystem;
-  private AcceleratorSubsystem mAcceleratorSubsystem;
-  private FlywheelSubsystem mFlywheelSubsystem;
-  private HoodSubsystem mHoodSubsystem;
-  private SuperStructure mSuperStructure; 
+  private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
+  private final PickupSubsystem mPickupSubsystem = new PickupSubsystem();
+  private final BlinkinSubsystem mBlinkinSubsystem = new BlinkinSubsystem();
+
+  // private final ExtensionSubsystem mExtensionSubsystem = new
+  // ExtensionSubsystem();
+  private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
+  // private final AcceleratorSubsystem mAcceleratorSubsystem = new
+  // AcceleratorSubsystem();
+  // private final VisionSubsystem mVisionSubsystem = new VisionSubsystem();
+  private final LiftSubsystem mLiftSubsystem = new LiftSubsystem();
+
+  private final SuperStructure mSuperStructure = new SuperStructure(
+      mDrivetrainSubsystem,
+      null, // mPickupSubsystem,
+      // mExtensionSubsystem,
+      mFlywheelSubsystem,
+      null, // mAcceleratorSubsystem,
+      null, // mVisionSubsystem.visionSupplier
+      null //mLiftSubsystem
+  );
 
   private CommandXboxController mXboxController = new CommandXboxController(0);
   private Joystick mJoystick1 = new Joystick(1);
