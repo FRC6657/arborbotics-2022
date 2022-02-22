@@ -4,10 +4,7 @@
 
 package frc.FRC6657.subsystems.shooter;
 
-import java.util.function.DoubleSupplier;
-
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -21,23 +18,20 @@ public class HoodSubsystem extends SubsystemBase {
 
     public HoodSubsystem() {
         mMotor = new CANSparkMax(Constants.kHoodID, MotorType.kBrushless);
-        configMotor();
+        configureMotor();
     }
 
-    private void configMotor() {
+    private void configureMotor() {
         mMotor.setSmartCurrentLimit(20);
         mMotor.setIdleMode(IdleMode.kBrake);
     }
 
-    private void set(double percent) {
+    public void set(double percent) {
         mMotor.set(percent);
     }
 
     private void stop() {
         set(0);
     }
-    
-    public void run(double speed){
-        set(Deadbander.applyLinearScaledDeadband(speed, 0.1));
-    }
+
 }

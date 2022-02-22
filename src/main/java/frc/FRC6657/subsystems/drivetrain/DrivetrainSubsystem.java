@@ -6,9 +6,6 @@ package frc.FRC6657.subsystems.drivetrain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
@@ -29,7 +26,6 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -64,7 +60,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   private final SimpleMotorFeedforward mFeedForward;
   private final PIDController mLinearPIDController;
-  private final PIDController mAngularPIDController;
 
   private RamseteController mRamseteController = new RamseteController();
 
@@ -77,8 +72,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   DifferentialDrivetrainSim mDrivetrainSim;
 
   private final DriverProfile mProfile;
-
-  private final SlewRateLimiter mSpeedLimiter = new SlewRateLimiter(0);
 
   /*
    * 
@@ -114,7 +107,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     //Fancier Stuff
     mFeedForward = Constants.Drivetrain.kFeedForward;
     mLinearPIDController = Constants.Drivetrain.kLinearPIDController;
-    mAngularPIDController = Constants.Drivetrain.kAngularPIDController;
 
     //Simulation Stuff
     if(RobotBase.isSimulation()){
@@ -144,28 +136,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mBackRight.follow(mFrontRight);
 
     // Set the neutral modes
-    switch (mProfile.kIdleMode.value) {
-      default: //Full Coast
-        mFrontLeft.setNeutralMode(NeutralMode.Coast);
-        mFrontRight.setNeutralMode(NeutralMode.Coast);
-        mBackLeft.setNeutralMode(NeutralMode.Coast);
-        mBackRight.setNeutralMode(NeutralMode.Coast);
-      case 0: // Full Coast
-        mFrontLeft.setNeutralMode(NeutralMode.Coast);
-        mFrontRight.setNeutralMode(NeutralMode.Coast);
-        mBackLeft.setNeutralMode(NeutralMode.Coast);
-        mBackRight.setNeutralMode(NeutralMode.Coast);
-      case 1: //Full Brake
-        mFrontLeft.setNeutralMode(NeutralMode.Brake);
-        mFrontRight.setNeutralMode(NeutralMode.Brake);
-        mBackLeft.setNeutralMode(NeutralMode.Brake);
-        mBackRight.setNeutralMode(NeutralMode.Brake);
-      case 2: //Half Brake
-        mFrontLeft.setNeutralMode(NeutralMode.Brake);
-        mFrontRight.setNeutralMode(NeutralMode.Brake);
-        mBackLeft.setNeutralMode(NeutralMode.Coast);
-        mBackRight.setNeutralMode(NeutralMode.Coast);
-    }
+    mFrontLeft.setNeutralMode(NeutralMode.Brake);
+    mFrontRight.setNeutralMode(NeutralMode.Brake);
+    mBackLeft.setNeutralMode(NeutralMode.Brake);
+    mBackRight.setNeutralMode(NeutralMode.Brake);
     
 
     //Makes Green go Forward. Sim is weird so thats what the if statement is for
@@ -448,40 +422,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
       return timer.get() > trajectory.getTotalTimeSeconds();
     }
   }
-
-  public class VisionAimCommand extends CommandBase{
-    
-    public final double turnError;
-    public final double distanceError;
-    public final boolean hasTarget;
-
-    public VisionAimCommand(double turnError, double distanceError, boolean hasTarget){
-      this.turnError = turnError;
-      this.distanceError = distanceError;
-      this.hasTarget = hasTarget;
-    }
-
-    @Override
-    public void execute() {
-      if(hasTarget){
-        WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(distanceError, -mAngularPIDController.calculate(turnError,0), false);
-        mFrontLeft.set(speeds.left);
-        mFrontRight.set(speeds.right);
-      }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-      stop();
-    }
-
-    @Override
-    public boolean isFinished() {
-      return (turnError < Constants.Drivetrain.kAimTollerance && distanceError < Constants.Drivetrain.kDistanceTollerance) || !hasTarget;
-    }
-
-  }
-
 
   /*
    *

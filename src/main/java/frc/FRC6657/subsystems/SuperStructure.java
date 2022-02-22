@@ -20,6 +20,7 @@ public class SuperStructure extends SubsystemBase {
   
   public final DrivetrainSubsystem drivetrain;
   public final PickupSubsystem pickup;
+
   // public final ExtensionSubsystem intakeExtension;
   public final FlywheelSubsystem flywheel;
   public final AcceleratorSubsystem accelerator;
@@ -59,6 +60,37 @@ public class SuperStructure extends SubsystemBase {
         new InstantCommand(() -> blinkin.setBlinkinColor(Constants.BlinkinColors.kNotReadyFlywheel))
       );
     }
+
+  //public final ExtensionSubsystem intakeExtension;
+  public final FlywheelSubsystem flywheel;
+  public final AcceleratorSubsystem accelerator;
+  public final LiftSubsystem lift; 
+  public final VisionSupplier vision;
+  //public final FlywheelSubsystem flywheel;
+
+  
+
+  public SuperStructure(
+    DrivetrainSubsystem drivetrain,
+    PickupSubsystem pickup
+    //ExtensionSubsystem intakeExtension,
+
+    FlywheelSubsystem flywheel,
+    AcceleratorSubsystem accelerator,
+    VisionSupplier vision,
+    LiftSubsystem lift
+
+    //FlywheelSubsystem flywheel
+  ) {
+    this.drivetrain = drivetrain;
+    this.pickup = pickup;
+    //this.intakeExtension = intakeExtension;
+    this.flywheel = flywheel;
+    this.accelerator = accelerator;
+    this.lift = lift;
+    this.vision = vision;
+    //this.flywheel = flywheel;
+
   }
 
   public class RunIntakeCommand extends SequentialCommandGroup {
@@ -66,7 +98,7 @@ public class SuperStructure extends SubsystemBase {
       addRequirements(pickup, SuperStructure.this);
       addCommands(
         //new InstantCommand(intakeExtension::toggleState),
-        new InstantCommand(pickup::run)
+        new InstantCommand(() -> pickup.set(Constants.Intake.kSpeed))
       );
     }
   }

@@ -7,11 +7,11 @@ import frc.FRC6657.custom.rev.Blinkin.BlinkinLEDPattern;
 
 public class BlinkinSubsystem extends SubsystemBase {
   
-private Blinkin mBlinkin;
+  private Blinkin mBlinkin;
 
   public BlinkinSubsystem() {
     mBlinkin = new Blinkin(Constants.kBlinkinID);
-   
+    mBlinkin.setLEDMode(Constants.BlinkinColors.kIdle);
   }
 
   public void setBlinkinColor(BlinkinLEDPattern pattern){
