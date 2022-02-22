@@ -131,7 +131,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   }
 
   @Config(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name="Set RPM Target", defaultValueNumeric = 0)
-  private void setRPMTarget(double setpoint){
+  public void setRPMTarget(double setpoint){
     mRpmTarget = setpoint;
   }
 

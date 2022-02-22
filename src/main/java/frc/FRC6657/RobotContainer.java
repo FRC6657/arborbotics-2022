@@ -13,7 +13,9 @@ import edu.wpi.first.wpilibj.Joystick.AxisType;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
@@ -28,6 +30,7 @@ import frc.FRC6657.subsystems.intake.PickupSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
+import frc.FRC6657.subsystems.shooter.interpolation.ShotParameter;
 import frc.FRC6657.subsystems.vision.VisionSubsystem;
 
 public class RobotContainer {
@@ -59,6 +62,7 @@ public class RobotContainer {
     mAcceleratorSubsystem = new AcceleratorSubsystem();
     mBlinkinSubsystem = new BlinkinSubsystem();
 
+
     mSuperStructure = new SuperStructure(
       mDrivetrainSubsystem,
       mPickupSubsystem,
@@ -89,17 +93,14 @@ public class RobotContainer {
 
     new JoystickButton(mJoystick1, 1)
       .whenPressed(
-          mSuperStructure.new RunIntakeCommand())
-      .whenReleased(
-          mSuperStructure.new StopIntakeCommand());
+          new StartEndCommand(mPickupSubsystem::run, mPickupSubsystem::stop, mPickupSubsystem));
 
-    new JoystickButton(mJoystick1, 2) //button subject to change
-      .whenPressed(mFlywheelSubsystem.new setRPMTarget(1) 
-      //1 literally does not make sense as a number but it's completely arbitrary
-      //this number should be changed to however 
-      .beforeStarting(mSuperStructure.new BlinkinFlywheelNotReady()));
-      
-
+    new JoystickButton(mJoystick1, 2) //button will obviously change
+      .whenPressed(
+        new ParallelCommandGroup(mSuperStructure.new BlinkinFlywheelNotReady(), new InstantCommand(() -> mFlywheelSubsystem.setRPMTarget(1)))
+      ).whenReleased(
+        new ParallelCommandGroup(mSuperStructure.new BlinkinFlywheelReady(), mSuperStructure.new ShootCommand())
+      );
   }
 
   public Command getAutonomousCommand() {

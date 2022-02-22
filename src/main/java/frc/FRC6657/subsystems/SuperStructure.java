@@ -7,6 +7,7 @@ package frc.FRC6657.subsystems;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.FRC6657.Constants;
 import frc.FRC6657.subsystems.blinkin.BlinkinSubsystem;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 // import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
@@ -47,8 +48,7 @@ public class SuperStructure extends SubsystemBase {
     public BlinkinFlywheelReady(){
       addRequirements(blinkin, SuperStructure.this);
       addCommands(
-        new InstantCommand(blinkin::setReadyFlywheelColor)
-      );
+        new InstantCommand(() -> blinkin.setBlinkinColor(Constants.BlinkinColors.kReadyFlywheel)));
     }
   }
   
@@ -56,7 +56,7 @@ public class SuperStructure extends SubsystemBase {
     public BlinkinFlywheelNotReady(){
       addRequirements(blinkin, SuperStructure.this);
       addCommands(
-        new InstantCommand(blinkin::setNotReadyFlywheelColor)
+        new InstantCommand(() -> blinkin.setBlinkinColor(Constants.BlinkinColors.kNotReadyFlywheel))
       );
     }
   }

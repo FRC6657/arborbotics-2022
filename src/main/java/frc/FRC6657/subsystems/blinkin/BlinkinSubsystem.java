@@ -11,26 +11,10 @@ private Blinkin mBlinkin;
 
   public BlinkinSubsystem() {
     mBlinkin = new Blinkin(Constants.kBlinkinID);
-    setIdleColor();
+   
   }
 
-  public void setIntakingColor() {
-    setBlinkinColor(Constants.BlinkinColors.kIdle);
-  }
-
-  public void setIdleColor(){
-    setBlinkinColor(Constants.BlinkinColors.kIntake);
-  }
-
-  public void setReadyFlywheelColor() {
-    setBlinkinColor(Constants.BlinkinColors.kReadyFlywheel);
-  }
-    
-  public void setNotReadyFlywheelColor() {
-    setBlinkinColor(Constants.BlinkinColors.kNotReadyFlywheel);
-  }
-
-  private void setBlinkinColor(BlinkinLEDPattern pattern){
+  public void setBlinkinColor(BlinkinLEDPattern pattern){
     mBlinkin.setLEDMode(pattern);
   }
 }
