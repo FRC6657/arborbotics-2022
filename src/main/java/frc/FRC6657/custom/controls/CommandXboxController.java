@@ -187,6 +187,10 @@ public class CommandXboxController extends GenericHID {
     return getRawAxis(Axis.kLeftTrigger.value);
   }
 
+  public boolean getLeftTrigger(){
+    return getLeftTriggerAxis() != 0;
+  }
+
   /**
    * Get the right trigger (RT) axis value of the controller. Note that this axis is bound to the
    * range of [0, 1] as opposed to the usual [-1, 1].
@@ -195,5 +199,8 @@ public class CommandXboxController extends GenericHID {
    */
   public double getRightTriggerAxis() {
     return getRawAxis(Axis.kRightTrigger.value);
+  }
+  public boolean getRightTrigger(){
+    return getRightTriggerAxis() != 0;
   }
 }

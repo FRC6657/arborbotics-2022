@@ -12,11 +12,11 @@ import frc.FRC6657.Constants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 
-public class PickupSubsystem extends SubsystemBase implements Loggable {
+public class IntakeSubsystem extends SubsystemBase implements Loggable {
 
   private WPI_TalonSRX mMotor;
 
-  public PickupSubsystem() {
+  public IntakeSubsystem() {
     mMotor = new WPI_TalonSRX(Constants.kPickupID);
     configMotor();
   }
