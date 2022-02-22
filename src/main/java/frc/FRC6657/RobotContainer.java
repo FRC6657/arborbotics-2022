@@ -43,7 +43,12 @@ public class RobotContainer {
   private CommandXboxController mXboxController = new CommandXboxController(0);
   private Joystick mJoystick = new Joystick(1);
 
-  private DriverProfile mProfile;
+  private DriverProfile mProfile = new DriverProfile(
+    5d, // Max Speed m/s
+    90d, // Max Turn deg/s
+    3d, // Mod Drive Speed m/s
+    80d // Mod Turn Speed deg/s
+  );
 
   private String Controls = "Testing";
 
@@ -65,8 +70,6 @@ public class RobotContainer {
   SendableChooser<SequentialCommandGroup> mAutoChooser = new SendableChooser<>();
 
   public RobotContainer() {
-
-    mProfile = getDriver();
 
     accelerator = new AcceleratorSubsystem();
     blinkin = new BlinkinSubsystem();
@@ -188,19 +191,7 @@ public class RobotContainer {
 
     }
   }
-  
-
   public SequentialCommandGroup getAutonomousCommand() {
     return mAutoChooser.getSelected();
   }
-
-  private DriverProfile getDriver() {
-    return new DriverProfile(
-        5d, // Max Speed m/s
-        90d, // Max Turn deg/s
-        3d, // Mod Drive Speed m/s
-        80d // Mod Turn Speed deg/s
-    );
-  }
-
 }
