@@ -1,27 +1,5 @@
 {
   "HALProvider": {
-    "Other Devices": {
-      "Talon FX[1]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[3]/Rev Limit": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon SRX[10]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon SRX[6]": {
-        "header": {
-          "open": true
-        }
-      }
-    },
     "PWM Outputs": {
       "window": {
         "visible": true

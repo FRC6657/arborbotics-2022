@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC6657.autonomous.routines.BallDetectionTest;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
+import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.custom.controls.DriverProfile;
 import frc.FRC6657.custom.rev.Blinkin;
 import frc.FRC6657.subsystems.blinkin.BlinkinSubsystem;
@@ -154,9 +155,26 @@ public class RobotContainer {
             flywheel
           )
       );
-    }
 
+      mXboxController.pov.up().whenHeld(
+        new StartEndCommand(
+          () -> hood.set(Constants.Hood.kUpSpeed), 
+          hood::stop,
+          hood
+        )
+      );
+
+      mXboxController.pov.down().whenHeld(
+        new StartEndCommand(
+          () -> hood.set(Constants.Hood.kDownSpeed), 
+          hood::stop,
+          hood
+        )
+      );
+
+    }
   }
+  
 
   public SequentialCommandGroup getAutonomousCommand() {
     return mAutoChooser.getSelected();

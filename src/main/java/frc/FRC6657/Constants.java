@@ -34,10 +34,10 @@ public final class Constants {
     public static final int kLeftFlywheelID = 8;
     public static final int kRightFlywheelID = 9;
     public static final int kAcceleratorID = 10;
-
-    public static final int kRightLiftID = 11; 
-    public static final int kLeftLiftID = 12;
     public static final int kHoodID = 11;
+    public static final int kRightLiftID = 12; 
+    public static final int kLeftLiftID = 13;
+
 
     // General Values
     public static final double kFalconEncoderCPR = 2048; // Encoder Counts per Rotation
@@ -124,6 +124,11 @@ public final class Constants {
             kRatio
         );
 
+    }
+
+    public static class Hood {
+        public static final double kUpSpeed = 0.5;
+        public static final double kDownSpeed = -0.3;
     }
 
     

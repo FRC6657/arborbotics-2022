@@ -29,7 +29,7 @@ public class HoodSubsystem extends SubsystemBase {
         mMotor.set(percent);
     }
 
-    private void stop() {
+    public void stop() {
         set(0);
     }
 
