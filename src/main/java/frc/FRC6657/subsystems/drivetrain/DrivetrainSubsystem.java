@@ -9,11 +9,13 @@ import java.util.List;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.BasePigeonSimCollection;
+import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
@@ -22,7 +24,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -171,11 +172,35 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mBackLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5));  // | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
     mBackRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); // | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
 
+    //Turn off unused things to reduce CAN Utilization
     mBackLeft.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
     mBackRight.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
 
     mBackLeft.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
     mBackRight.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
+
+    mFrontLeft.setStatusFramePeriod(StatusFrame.Status_10_Targets, 250);
+    mFrontRight.setStatusFramePeriod(StatusFrame.Status_10_Targets, 250);
+    mBackLeft.setStatusFramePeriod(StatusFrame.Status_10_Targets, 250);
+    mBackRight.setStatusFramePeriod(StatusFrame.Status_10_Targets, 250);
+
+    mBackLeft.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 250);
+    mBackRight.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 250);
+
+    mFrontLeft.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0, 250);
+    mFrontRight.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0, 250);
+    mBackLeft.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0, 250);
+    mBackRight.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0, 250);
+
+    mFrontLeft.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 250);
+    mFrontRight.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 250);
+    mBackLeft.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 250);
+    mBackRight.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 250);
+
+    mPigeonIMU.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_6_SensorFusion, 250);
+    mPigeonIMU.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_3_GeneralAccel, 250);
+    mPigeonIMU.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 250);
+    mPigeonIMU.setStatusFramePeriod(PigeonIMU_StatusFrame.RawStatus_4_Mag, 250);
 
 
   }

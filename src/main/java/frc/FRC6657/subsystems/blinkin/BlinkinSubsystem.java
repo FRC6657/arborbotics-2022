@@ -11,7 +11,6 @@ public class BlinkinSubsystem extends SubsystemBase {
 
   public BlinkinSubsystem() {
     mBlinkin = new Blinkin(Constants.kBlinkinID);
-    mBlinkin.setLEDMode(Constants.BlinkinColors.kIdle);
   }
 
   public void setBlinkinColor(BlinkinLEDPattern pattern){
