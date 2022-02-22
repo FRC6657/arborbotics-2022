@@ -15,7 +15,6 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer; //Declare Robot Container
 
   @Override
-  @SuppressWarnings("unused")
   public void robotInit() {
     m_robotContainer = new RobotContainer(); //Creates Robot Container
     Logger.configureLoggingAndConfig(m_robotContainer, false); //Enables Logging

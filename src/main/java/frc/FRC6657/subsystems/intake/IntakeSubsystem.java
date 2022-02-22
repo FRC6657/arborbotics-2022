@@ -55,7 +55,5 @@ public class IntakeSubsystem extends SubsystemBase implements Loggable {
     return mMotor.get() != 0 && !BallDetected();
   }
 
-
-
 }
 

@@ -60,7 +60,7 @@ public class RobotContainer {
   public final FlywheelSubsystem flywheel;
   public final HoodSubsystem hood;
   public final IntakeSubsystem intake;
-  public final LiftSubsystem lift;
+  //public final LiftSubsystem lift;
   public final VisionSubsystem vision;
 
   public final Trigger flywheelReady;
@@ -72,6 +72,7 @@ public class RobotContainer {
 
   public RobotContainer() {
 
+    //Subsystem Assignments
     accelerator = new AcceleratorSubsystem();
     blinkin = new BlinkinSubsystem();
     drivetrain = new DrivetrainSubsystem(mProfile);
@@ -79,14 +80,16 @@ public class RobotContainer {
     flywheel = new FlywheelSubsystem();
     hood = new HoodSubsystem();
     intake = new IntakeSubsystem();
-    lift = new LiftSubsystem();
+    //lift = new LiftSubsystem();
     vision = new VisionSubsystem();
 
+    //Triggers
     flywheelReady = new Trigger(flywheel::atTarget);
     flywheelActive = new Trigger(flywheel::active);
     ballDetected = new Trigger(intake::BallDetected);
     intakeActive = new Trigger(intake::Active);
 
+    //Automatically runs the kicker and sets the shooter full speed indicator
     flywheelReady.whileActiveOnce(
       new ParallelCommandGroup(      
         new StartEndCommand(
@@ -102,6 +105,7 @@ public class RobotContainer {
       )
     );
 
+   //Sets Blinkin Color for flywheel spinning up
    flywheelActive.whileActiveOnce(
       new StartEndCommand(
        () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kNotReadyFlywheel),
@@ -110,6 +114,7 @@ public class RobotContainer {
       )
    );
 
+   //Changed blinkin color when the intake detects a ball
    ballDetected.whileActiveOnce(
      new StartEndCommand(
        () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kBallDetected), 
@@ -118,6 +123,7 @@ public class RobotContainer {
      )
    );
 
+   //Changes the blinkin color when the intake is running
    intakeActive.whileActiveOnce(
     new StartEndCommand(
       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIntake), 
@@ -148,7 +154,6 @@ public class RobotContainer {
     
     switch(Controls){
       case "Testing":
-
         //Intake
         mXboxController.a().whenHeld(
           new ParallelCommandGroup(
@@ -165,7 +170,7 @@ public class RobotContainer {
           )
         );
 
-      //Shooter
+      //Flywheel
       mXboxController.b().whenHeld(
           new StartEndCommand(
             () -> flywheel.setRPMTarget(1000),
@@ -174,6 +179,7 @@ public class RobotContainer {
           )
       );
 
+      //Hood
       mXboxController.pov.up().whenHeld(
         new StartEndCommand(
           () -> hood.set(Constants.Hood.kUpSpeed), 
