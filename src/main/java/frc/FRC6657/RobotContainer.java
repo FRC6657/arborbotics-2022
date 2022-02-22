@@ -4,21 +4,26 @@
 
 package frc.FRC6657;
 
+import javax.management.MBeanServerPermission;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
 import frc.FRC6657.custom.controls.DriverProfile;
+import frc.FRC6657.custom.ctre.IdleMode;
+import frc.FRC6657.custom.rev.Blinkin;
 import frc.FRC6657.subsystems.SuperStructure;
 import frc.FRC6657.subsystems.blinkin.BlinkinSubsystem;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
-import frc.FRC6657.subsystems.lift.LiftSubsystem;
-import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
-import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
-import frc.FRC6657.subsystems.shooter.HoodSubsystem;
+
 @SuppressWarnings("unused")
 public class RobotContainer {
 
@@ -56,13 +61,20 @@ public class RobotContainer {
     mBlinkinSubsystem = new BlinkinSubsystem();
     mDrivetrainSubsystem = new DrivetrainSubsystem(mProfile);
     mPickupSubsystem = new PickupSubsystem();
-    mAcceleratorSubsystem = new AcceleratorSubsystem();
     mFlywheelSubsystem = new FlywheelSubsystem();
+    mVisionSubsystem = new VisionSubsystem();
     mHoodSubsystem = new HoodSubsystem();
+    mAcceleratorSubsystem = new AcceleratorSubsystem();
+    mBlinkinSubsystem = new BlinkinSubsystem();
+
 
     mSuperStructure = new SuperStructure(
       mDrivetrainSubsystem,
-      mPickupSubsystem
+      mPickupSubsystem,
+      mFlywheelSubsystem,
+      mAcceleratorSubsystem,
+      mVisionSubsystem,
+      mBlinkinSubsystem
     );
 
 
@@ -79,6 +91,9 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
 
+    new JoystickButton(mJoystick1, 1)
+      .whenPressed(
+          new StartEndCommand(mPickupSubsystem::run, mPickupSubsystem::stop, mPickupSubsystem))
     mXboxController.a().whenHeld(
       new StartEndCommand(
         () -> mPickupSubsystem.set(Constants.Intake.kSpeed),
@@ -87,6 +102,12 @@ public class RobotContainer {
       )
     );
 
+    new JoystickButton(mJoystick1, 2) //button will obviously change
+      .whenPressed(
+        new ParallelCommandGroup(mSuperStructure.new BlinkinFlywheelNotReady(), new InstantCommand(() -> mFlywheelSubsystem.setRPMTarget(1)))
+      ).whenReleased(
+        new ParallelCommandGroup(mSuperStructure.new BlinkinFlywheelReady(), mSuperStructure.new ShootCommand())
+      );
   }
 
   public Command getAutonomousCommand() {
