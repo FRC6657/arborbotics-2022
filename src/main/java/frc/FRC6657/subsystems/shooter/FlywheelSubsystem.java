@@ -4,8 +4,12 @@
 
 package frc.FRC6657.subsystems.shooter;
 
+import java.io.ObjectInputFilter.Status;
+
+import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
@@ -95,7 +99,8 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     mProtagonist.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
     mProtagonist.configVelocityMeasurementWindow(1);
 
-     
+    mAntagonist.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    mAntagonist.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
 
   }
 

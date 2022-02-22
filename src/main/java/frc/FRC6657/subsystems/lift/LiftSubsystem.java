@@ -18,10 +18,6 @@ public class LiftSubsystem extends SubsystemBase {
   public LiftSubsystem() {
     mRightMotor = new WPI_TalonSRX(Constants.kRightLiftID);
     mLeftMotor = new WPI_TalonSRX(Constants.kLeftLiftID);
-
-    mLeftMotor.setControlFramePeriod(ControlFrame.Control_6_MotProfAddTrajPoint, 250);
-    mRightMotor.setControlFramePeriod(ControlFrame.Control_6_MotProfAddTrajPoint, 250);
-
   }
 
   public void setLeft(double percent) {
