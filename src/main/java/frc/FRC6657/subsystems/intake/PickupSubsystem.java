@@ -24,7 +24,13 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
   private void configMotor() {
     mMotor.setInverted(true);
     mMotor.setNeutralMode(NeutralMode.Coast);
+
+    mMotor.configPeakCurrentLimit(31);
+    mMotor.configPeakCurrentDuration(100);
+    mMotor.configContinuousCurrentLimit(30);
+    mMotor.enableCurrentLimit(true);
   }
+
   
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = 0) //Allows for easy intake testing
   public void set(double percent) {
@@ -34,5 +40,6 @@ public class PickupSubsystem extends SubsystemBase implements Loggable {
   public void stop() {
     set(0);
   }
+
 }
 
