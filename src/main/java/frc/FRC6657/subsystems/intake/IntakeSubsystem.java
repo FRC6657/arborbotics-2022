@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
@@ -20,14 +21,14 @@ public class IntakeSubsystem extends SubsystemBase implements Loggable {
 
   private WPI_TalonSRX mMotor = new WPI_TalonSRX(Constants.kPickupID);;
 
-
+  private Timer mTimer = new Timer();
 
   public IntakeSubsystem() {
     configureMotor();
   }
 
   private void configureMotor() {
-    mMotor.setInverted(true);
+    mMotor.setInverted(false);
     mMotor.setNeutralMode(NeutralMode.Coast);
     mMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 35, 0.1));
 
@@ -37,10 +38,17 @@ public class IntakeSubsystem extends SubsystemBase implements Loggable {
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = 0) //Allows for easy intake testing
   public void set(double percent) {
     mMotor.set(percent);
+    mTimer.start();
   }
 
   public void stop() {
     set(0);
+    mTimer.reset();
+    mTimer.stop();
+  }
+
+  public boolean BallDetected(){
+    return mTimer.get() < Constants.Intake.kStartupTime && mMotor.getStatorCurrent() > Constants.Intake.kBallCurrent;
   }
 
 

@@ -87,7 +87,11 @@ public final class Constants {
      * Intake Values
      */
     public class Intake {
-        public static final double kSpeed = -1;
+        public static final double kSpeed = 1;
+
+        public static final double kStartupTime = 0.1; //Sec
+        public static final double kBallCurrent = 20; //Amps
+
     }
 
     public class Lift {

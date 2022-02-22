@@ -76,7 +76,7 @@ public class RobotContainer {
     flywheelReady.whileActiveOnce(
       new ParallelCommandGroup(      
         new StartEndCommand(
-          () -> accelerator.set(0.5),
+          () -> accelerator.set(Constants.Accelerator.kSpeed),
           accelerator::stop,
           accelerator
         ),
@@ -119,7 +119,7 @@ public class RobotContainer {
         mXboxController.a().whenHeld(
           new ParallelCommandGroup(
             new StartEndCommand(
-              () -> intake.set(0.5), 
+              () -> intake.set(Constants.Intake.kSpeed), 
               intake::stop,
               intake
             ),
