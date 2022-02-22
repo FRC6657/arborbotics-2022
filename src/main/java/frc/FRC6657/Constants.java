@@ -154,9 +154,9 @@ public final class Constants {
      */
     public static class BlinkinColors{
         public static final BlinkinLEDPattern kIdle = BlinkinLEDPattern.COLOR_WAVES_FOREST_PALETTE;
-        public static final BlinkinLEDPattern kIntake = BlinkinLEDPattern.STROBE_BLUE;
-        public static final BlinkinLEDPattern kReadyFlywheel = BlinkinLEDPattern.SOLID_GREEN;
-        public static final BlinkinLEDPattern kNotReadyFlywheel = BlinkinLEDPattern.SOLID_RED;
+        public static final BlinkinLEDPattern kIntake = BlinkinLEDPattern.SOLID_WHITE;
+        public static final BlinkinLEDPattern kReadyFlywheel = BlinkinLEDPattern.RAINBOW_PALETTE;
+        public static final BlinkinLEDPattern kNotReadyFlywheel = BlinkinLEDPattern.STROBE_RED;
     }
 
     public static class DriverConfigs{

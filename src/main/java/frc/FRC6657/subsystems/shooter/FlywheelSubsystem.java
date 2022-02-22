@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC6657.Constants;
 import frc.FRC6657.custom.ArborMath;
 import io.github.oblarg.oblog.Loggable;
@@ -66,11 +65,6 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
       mFlywheelSim = Constants.Flywheel.kSim;
     }
 
-  }
-
-  @Config(rowIndex = 2, columnIndex = 0, width = 2, height = 1, name = "Set Motor Percent", defaultValueNumeric = 0)
-  public void run() {
-    mProtagonist.set(-0.6);
   }
 
   public void stop(){
