@@ -23,6 +23,28 @@ public class Trajectories {
         "GENERATE"
     );
 
+    public static Trajectory BALL_TEST_1 = generateTrajectory(
+        1,
+        1,
+        List.of(
+            new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+            new Pose2d(1, 0, Rotation2d.fromDegrees(0))
+        ),
+        false,
+        "GENERATE"
+    );
+
+    public static Trajectory BALL_TEST_2 = generateTrajectory(
+        1,
+        1,
+        List.of(
+            new Pose2d(1, 0, Rotation2d.fromDegrees(0)),
+            new Pose2d(0, 0, Rotation2d.fromDegrees(0))
+        ),
+        true,
+        "GENERATE"
+    );
+
     /**
      * 
      * Trajectory Generator Function

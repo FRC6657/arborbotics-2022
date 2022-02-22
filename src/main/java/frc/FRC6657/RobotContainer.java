@@ -11,14 +11,17 @@ import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.FRC6657.autonomous.routines.BallDetectionTest;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
 import frc.FRC6657.custom.controls.DriverProfile;
@@ -55,6 +58,8 @@ public class RobotContainer {
 
   public final Trigger flywheelReady;
   public final Trigger flywheelActive;
+
+  SendableChooser<SequentialCommandGroup> mAutoChooser = new SendableChooser<>();
 
   public RobotContainer() {
 
@@ -107,7 +112,12 @@ public class RobotContainer {
     }, drivetrain));
     
     configureButtonBindings();
+    configureAutoChooser();
+  }
 
+  private void configureAutoChooser() {
+    mAutoChooser.setDefaultOption("Nothing", null);
+    mAutoChooser.addOption("BallDetectionTest", new BallDetectionTest(drivetrain, intake));
   }
 
   private void configureButtonBindings() {
@@ -148,8 +158,8 @@ public class RobotContainer {
 
   }
 
-  public Command getAutonomousCommand() {
-    return null;
+  public SequentialCommandGroup getAutonomousCommand() {
+    return mAutoChooser.getSelected();
   }
 
   private DriverProfile getDriver() {
