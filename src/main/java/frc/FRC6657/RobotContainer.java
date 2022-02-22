@@ -59,6 +59,8 @@ public class RobotContainer {
 
   public final Trigger flywheelReady;
   public final Trigger flywheelActive;
+  public final Trigger ballDetected;
+  public final Trigger intakeActive;
 
   SendableChooser<SequentialCommandGroup> mAutoChooser = new SendableChooser<>();
 
@@ -78,6 +80,8 @@ public class RobotContainer {
 
     flywheelReady = new Trigger(flywheel::atTarget);
     flywheelActive = new Trigger(flywheel::active);
+    ballDetected = new Trigger(intake::BallDetected);
+    intakeActive = new Trigger(intake::Active);
 
     flywheelReady.whileActiveOnce(
       new ParallelCommandGroup(      
@@ -92,7 +96,6 @@ public class RobotContainer {
           blinkin
          )
       )
-
     );
 
    flywheelActive.whileActiveOnce(
@@ -102,6 +105,22 @@ public class RobotContainer {
        blinkin
       )
    );
+
+   ballDetected.whileActiveOnce(
+     new StartEndCommand(
+       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kBallDetected), 
+       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),
+       blinkin
+     )
+   );
+
+   intakeActive.whileActiveOnce(
+    new StartEndCommand(
+      () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIntake), 
+      () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),
+      blinkin
+    )
+  );
 
 
     drivetrain.setDefaultCommand(new RunCommand(() -> {
@@ -138,11 +157,6 @@ public class RobotContainer {
               extension::extend,
               extension::retract,
               extension
-            ),
-            new StartEndCommand(
-              () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIntake),
-              () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle), 
-              blinkin
             )
           )
         );
