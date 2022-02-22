@@ -28,13 +28,13 @@ public class AcceleratorSubsystem extends SubsystemBase implements Loggable{
     mMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 30, 0.5));
   }
 
-  private void set(double percent){
+  public void set(double percent){
     mMotor.set(percent);
   }
 
 
-  public void run(){
-    set(Constants.Accelerator.kSpeed);
+  public void stop(){
+    set(0);
   }
 
 }

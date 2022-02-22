@@ -52,7 +52,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private TalonFXSimCollection mLeftSim, mRightSim;
   
   @Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro")
-  private final WPI_PigeonIMU mPigeonIMU;
+  private final WPI_PigeonIMU mPigeonIMU = new WPI_PigeonIMU(Constants.kPigeonID);;
   private BasePigeonSimCollection mPigeonIMUSim;
 
   private final DifferentialDriveKinematics mKinematics;
@@ -97,7 +97,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     configureMotors();
 
     //Gyro Stuff
-    mPigeonIMU = new WPI_PigeonIMU(Constants.kPigeonID);
     mPigeonIMU.reset();
 
     //Fancy Stuff
@@ -196,8 +195,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mBackLeft.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 250);
     mBackRight.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 250);
 
-    mPigeonIMU.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_6_SensorFusion, 250);
-    mPigeonIMU.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_3_GeneralAccel, 250);
     mPigeonIMU.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 250);
     mPigeonIMU.setStatusFramePeriod(PigeonIMU_StatusFrame.RawStatus_4_Mag, 250);
 

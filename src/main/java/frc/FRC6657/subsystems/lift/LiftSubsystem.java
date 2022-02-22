@@ -4,50 +4,35 @@
 
 package frc.FRC6657.subsystems.lift;
 
+import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
 
 
 public class LiftSubsystem extends SubsystemBase {
 
-  private final WPI_TalonSRX leftMotor;
-  private final WPI_TalonSRX rightMotor;
-  private final DutyCycleEncoder leftEncoder;
-  private final DutyCycleEncoder rightEncoder;  
-  private double leftSetPoint, rightSetPoint;
+  private final WPI_TalonSRX mLeftMotor;
+  private final WPI_TalonSRX mRightMotor;
   
   public LiftSubsystem() {
-    rightMotor = new WPI_TalonSRX(Constants.kRightLiftID);
-    leftMotor = new WPI_TalonSRX(Constants.kLeftLiftID);
-    rightEncoder = new DutyCycleEncoder(0); 
-    leftEncoder = new DutyCycleEncoder(1);
-    
-    leftEncoder.setDistancePerRotation(Math.PI);
-    rightEncoder.setDistancePerRotation(Math.PI);
+    mRightMotor = new WPI_TalonSRX(Constants.kRightLiftID);
+    mLeftMotor = new WPI_TalonSRX(Constants.kLeftLiftID);
+
+    mLeftMotor.setControlFramePeriod(ControlFrame.Control_6_MotProfAddTrajPoint, 250);
+    mRightMotor.setControlFramePeriod(ControlFrame.Control_6_MotProfAddTrajPoint, 250);
 
   }
 
-  
-  public double getError(double setpoint) {
-    return setpoint - rightEncoder.getDistance();
+  public void setLeft(double percent) {
+    mLeftMotor.set(percent);
   }
-
-  public void setLeftSetPoint(double setpoint) {
-    leftSetPoint = setpoint;
+  public void setRight(double percent) {
+    mRightMotor.set(percent);
   }
-
-  public void setRightSetPoint(double setpoint) {
-    rightSetPoint = setpoint;
-  }
-
-  public void run() {
-
-    leftMotor.set(Constants.Lift.kP * getError(leftSetPoint));
-    rightMotor.set(Constants.Lift.kP * getError(rightSetPoint));
-
+  public void set(double percent) {
+    setLeft(percent);
+    setRight(percent);
   }
 
 }

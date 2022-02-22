@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
-import frc.FRC6657.custom.controls.Deadbander;
 
 public class HoodSubsystem extends SubsystemBase {
 

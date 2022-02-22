@@ -7,10 +7,8 @@ package frc.FRC6657.subsystems.shooter;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
-
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
@@ -21,8 +19,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC6657.Constants;
 import frc.FRC6657.custom.ArborMath;
 import io.github.oblarg.oblog.Loggable;
@@ -76,7 +74,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   }
 
   public void stop(){
-    mProtagonist.set(0);
+    setRPMTarget(0);
   }
 
   @Log(rowIndex = 2, columnIndex = 2, width = 2, height = 1, name = "Flywheel Percent")
@@ -131,6 +129,10 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     return mAtTarget;
   }
 
+  public boolean active(){
+    return mRpmTarget != 0 && !atTarget();
+  }
+
   @Config(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name="Set RPM Target", defaultValueNumeric = 0)
   public void setRPMTarget(double setpoint){
     mRpmTarget = setpoint;
@@ -139,7 +141,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   @Override
   public void periodic() {
 
-    mAtTarget = ArborMath.inTolerance(getRPM(), Constants.Flywheel.kRPMTollerance);
+    mAtTarget = ArborMath.inTolerance(getRPMDelta(), Constants.Flywheel.kRPMTollerance) && getRPMTarget() !=0;
 
     mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRpmTarget)));
     mFlywheelLoop.correct(VecBuilder.fill(getRadiansPerSecond()));

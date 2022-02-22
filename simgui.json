@@ -10,22 +10,47 @@
         "header": {
           "open": true
         }
+      },
+      "Talon SRX[10]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[6]": {
+        "header": {
+          "open": true
+        }
+      }
+    },
+    "PWM Outputs": {
+      "window": {
+        "visible": true
+      }
+    },
+    "Solenoids": {
+      "window": {
+        "visible": true
       }
     }
   },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/AcceleratorSubsystem": "Subsystem",
       "/LiveWindow/BlinkinSubsystem": "Subsystem",
       "/LiveWindow/DrivetrainSubsystem": "Subsystem",
+      "/LiveWindow/ExtensionSubsystem": "Subsystem",
       "/LiveWindow/FlywheelSubsystem": "Subsystem",
       "/LiveWindow/HoodSubsystem": "Subsystem",
+      "/LiveWindow/IntakeSubsystem": "Subsystem",
+      "/LiveWindow/LiftSubsystem": "Subsystem",
       "/LiveWindow/PickupSubsystem": "Subsystem",
       "/LiveWindow/SuperStructure": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon IMU [5]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/VisionSubsystem": "Subsystem",
       "/Shuffleboard/DrivetrainSubsystem/Gyro": "Gyro",
       "/SmartDashboard/Field": "Field2d"
     },
@@ -49,9 +74,6 @@
   },
   "NetworkTables": {
     "LiveWindow": {
-      "DrivetrainSubsystem": {
-        "open": true
-      },
       "Ungrouped": {
         "Blinkin[0]": {
           "open": true
@@ -62,19 +84,48 @@
         "Talon FX [2]": {
           "open": true
         }
-      },
-      "open": true
+      }
     },
     "Shuffleboard": {
-      "DrivetrainSubsystem": {
+      "FlywheelSubsystem": {
         "open": true
-      }
+      },
+      "open": true
     },
     "SmartDashboard": {
       "Field": {
         "open": true
       },
       "open": true
+    }
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true,
+              "logScale": true
+            }
+          ],
+          "height": 338,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/FlywheelSubsystem/RPM"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
     }
   }
 }

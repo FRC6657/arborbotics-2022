@@ -6,20 +6,26 @@ package frc.FRC6657;
 
 import javax.management.MBeanServerPermission;
 
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
 import frc.FRC6657.custom.controls.DriverProfile;
 import frc.FRC6657.custom.rev.Blinkin;
 import frc.FRC6657.subsystems.blinkin.BlinkinSubsystem;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
+import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.IntakeSubsystem;
 import frc.FRC6657.subsystems.lift.LiftSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
@@ -35,14 +41,20 @@ public class RobotContainer {
 
   private DriverProfile mProfile;
 
+  private String Controls = "Testing";
+
   public final AcceleratorSubsystem accelerator;
   public final BlinkinSubsystem blinkin;
   public final DrivetrainSubsystem drivetrain;
+  public final ExtensionSubsystem extension;
   public final FlywheelSubsystem flywheel;
   public final HoodSubsystem hood;
   public final IntakeSubsystem intake;
   public final LiftSubsystem lift;
   public final VisionSubsystem vision;
+
+  public final Trigger flywheelReady;
+  public final Trigger flywheelActive;
 
   public RobotContainer() {
 
@@ -51,11 +63,40 @@ public class RobotContainer {
     accelerator = new AcceleratorSubsystem();
     blinkin = new BlinkinSubsystem();
     drivetrain = new DrivetrainSubsystem(mProfile);
+    extension = new ExtensionSubsystem();
     flywheel = new FlywheelSubsystem();
     hood = new HoodSubsystem();
     intake = new IntakeSubsystem();
     lift = new LiftSubsystem();
     vision = new VisionSubsystem();
+
+    flywheelReady = new Trigger(flywheel::atTarget);
+    flywheelActive = new Trigger(flywheel::active);
+
+    flywheelReady.whileActiveOnce(
+      new ParallelCommandGroup(      
+        new StartEndCommand(
+          () -> accelerator.set(0.5),
+          accelerator::stop,
+          accelerator
+        ),
+        new StartEndCommand(
+          () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kReadyFlywheel),
+          () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),
+          blinkin
+         )
+      )
+
+    );
+
+   flywheelActive.whileActiveOnce(
+      new StartEndCommand(
+       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kNotReadyFlywheel),
+       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),
+       blinkin
+      )
+   );
+
 
     drivetrain.setDefaultCommand(new RunCommand(() -> {
       drivetrain.teleopCurvatureDrive(
@@ -71,6 +112,40 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     
+    switch(Controls){
+      case "Testing":
+
+        //Intake
+        mXboxController.a().whenHeld(
+          new ParallelCommandGroup(
+            new StartEndCommand(
+              () -> intake.set(0.5), 
+              intake::stop,
+              intake
+            ),
+            new StartEndCommand(
+              extension::extend,
+              extension::retract,
+              extension
+            ),
+            new StartEndCommand(
+              () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIntake),
+              () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle), 
+              blinkin
+            )
+          )
+        );
+
+      //Shooter
+      mXboxController.b().whenHeld(
+          new StartEndCommand(
+            () -> flywheel.setRPMTarget(1000),
+            flywheel::stop,
+            flywheel
+          )
+      );
+    }
+
   }
 
   public Command getAutonomousCommand() {

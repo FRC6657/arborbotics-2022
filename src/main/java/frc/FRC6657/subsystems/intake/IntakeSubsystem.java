@@ -8,24 +8,27 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
-
+@SuppressWarnings("unused")
 public class IntakeSubsystem extends SubsystemBase implements Loggable {
 
-  private WPI_TalonSRX mMotor;
+  private WPI_TalonSRX mMotor = new WPI_TalonSRX(Constants.kPickupID);;
+
+
 
   public IntakeSubsystem() {
-    mMotor = new WPI_TalonSRX(Constants.kPickupID);
-    configMotor();
+    configureMotor();
   }
 
-  private void configMotor() {
+  private void configureMotor() {
     mMotor.setInverted(true);
     mMotor.setNeutralMode(NeutralMode.Coast);
-
     mMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 35, 0.1));
 
   }
@@ -39,6 +42,8 @@ public class IntakeSubsystem extends SubsystemBase implements Loggable {
   public void stop() {
     set(0);
   }
+
+
 
 }
 
