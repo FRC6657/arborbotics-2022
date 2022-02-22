@@ -9,20 +9,24 @@ public class ShotParameter {
 
     // Variables
     public final double rpm;
+    public final double hoodAngle;
 
     // Constructor
-    public ShotParameter(double rpm) {
+    public ShotParameter(double hoodAngle, double rpm) {
         this.rpm = rpm;
+        this.hoodAngle = hoodAngle;
     }   
 
     // Method equals
     public boolean equals(ShotParameter other) {
-        return Math.abs(this.rpm - other.rpm) < 0.1;
+        return Math.abs(this.hoodAngle - other.hoodAngle) < 0.1 &&
+        Math.abs(this.rpm - other.rpm) < 0.1;
     }
 
     // Method to interpolate
     public ShotParameter interpolate(ShotParameter end, double t) {
         return new ShotParameter(
+            lerp(hoodAngle, end.hoodAngle, t),
             lerp(rpm, end.rpm, t)
         );
     }

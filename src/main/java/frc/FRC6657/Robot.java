@@ -4,11 +4,9 @@
 
 package frc.FRC6657;
 
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.FRC6657.autonomous.Trajectories;
 import io.github.oblarg.oblog.Logger;
 
 public class Robot extends TimedRobot {
@@ -19,9 +17,8 @@ public class Robot extends TimedRobot {
   @Override
   @SuppressWarnings("unused")
   public void robotInit() {
-    Trajectory mGenerate = Trajectories.GENERATE; //Generates all trajectories
     m_robotContainer = new RobotContainer(); //Creates Robot Container
-    Logger.configureLoggingAndConfig(m_robotContainer, false); //Enables Logging
+    //Logger.configureLoggingAndConfig(m_robotContainer, false); //Enables Logging
   }
 
   @Override

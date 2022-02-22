@@ -13,6 +13,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+
 import frc.FRC6657.custom.rev.Blinkin.BlinkinLEDPattern;
 
 public final class Constants {
@@ -33,8 +34,10 @@ public final class Constants {
     public static final int kLeftFlywheelID = 8;
     public static final int kRightFlywheelID = 9;
     public static final int kAcceleratorID = 10;
+
     public static final int kRightLiftID = 11; 
     public static final int kLeftLiftID = 12;
+    public static final int kHoodID = 11;
 
     // General Values
     public static final double kFalconEncoderCPR = 2048; // Encoder Counts per Rotation
@@ -51,15 +54,8 @@ public final class Constants {
 
         // Drivetrain PID
         public static final double drive_linear_kP = 1; //Char P gain 3.1976
-        public static final double drive_linear_kI = 0;
-        public static final double drive_linear_kD = 0;
 
-        public static final double drive_angular_kP = 0; //TODO Run angular char
-        public static final double drive_angular_kI = 0;
-        public static final double drive_angular_kD = 0;
-
-        public static final PIDController kLinearPIDController = new PIDController(drive_linear_kP, drive_linear_kI, drive_linear_kD);
-        public static final PIDController kAngularPIDController = new PIDController(drive_angular_kP, drive_angular_kI, drive_angular_kD);
+        public static final PIDController kLinearPIDController = new PIDController(drive_linear_kP, 0, 0);
 
         // Drivetrain Values
         public static final double kRobotWeight = Units.lbsToKilograms(40);
@@ -67,10 +63,13 @@ public final class Constants {
         public static final double kGearRatio = 75 / 7; // Drive Gearbox Ratio
         public static final double kWheelRadius = Units.inchesToMeters(3); // Drive wheel Radius
         public static final double kDistancePerPulse = (2 * Math.PI * kWheelRadius) / (kFalconEncoderCPR * kGearRatio); // Conversion between Counts and Meters
-        public static final double kMaxSpeed = 3.5; // Meters per second
-        public static final double kMaxAccel = kMaxSpeed * 3; // Meters per second per second
         public static final double kAimTollerance = 3;
         public static final double kDistanceTollerance = 0.1;
+
+
+        //TODO Put robot on cart and figure out these values.
+        public static final double kMaxAttainableSpeed = 5;
+        public static final double kMaxAttainableTurnRate = Units.radiansToDegrees(kMaxAttainableSpeed * kTrackWidth/2);
 
         // Default Sim
         public static final DifferentialDrivetrainSim kSim = new DifferentialDrivetrainSim( // Simulation
@@ -88,7 +87,7 @@ public final class Constants {
      * Intake Values
      */
     public class Intake {
-        public static final double kSpeed = 1;
+        public static final double kSpeed = -1;
     }
 
     public class Lift {
@@ -107,7 +106,7 @@ public final class Constants {
         // General
         public static final double kSpinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500);
         public static final double kRPMTollerance = 50;
-        public static final double kRatio = 3.0/1.0;
+        public static final double kRatio = 1.5/1.0;
 
         // Characterization
         public static final double kV = 0.0549; // 0.051151
@@ -148,8 +147,10 @@ public final class Constants {
         public static final BlinkinLEDPattern kIdle = BlinkinLEDPattern.COLOR_WAVES_FOREST_PALETTE;
         public static final BlinkinLEDPattern kIntake = BlinkinLEDPattern.STROBE_BLUE;
     }
+
+    public static class DriverConfigs{
+        public static final double kTurnDeadband = 0.1;
+        public static final double kDriveDeadband = 0.1;
+    }
     
-
-
-
 }

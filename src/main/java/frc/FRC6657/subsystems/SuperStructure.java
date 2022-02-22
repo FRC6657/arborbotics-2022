@@ -7,14 +7,14 @@ package frc.FRC6657.subsystems;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.FRC6657.Constants;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
-//import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.PickupSubsystem;
 import frc.FRC6657.subsystems.lift.LiftSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
+
 
 public class SuperStructure extends SubsystemBase {
   
@@ -25,16 +25,21 @@ public class SuperStructure extends SubsystemBase {
   public final AcceleratorSubsystem accelerator;
   public final LiftSubsystem lift; 
   public final VisionSupplier vision;
+  //public final FlywheelSubsystem flywheel;
+
   
 
   public SuperStructure(
     DrivetrainSubsystem drivetrain,
-    PickupSubsystem pickup,
+    PickupSubsystem pickup
     //ExtensionSubsystem intakeExtension,
+
     FlywheelSubsystem flywheel,
     AcceleratorSubsystem accelerator,
     VisionSupplier vision,
     LiftSubsystem lift
+
+    //FlywheelSubsystem flywheel
   ) {
     this.drivetrain = drivetrain;
     this.pickup = pickup;
@@ -43,6 +48,7 @@ public class SuperStructure extends SubsystemBase {
     this.accelerator = accelerator;
     this.lift = lift;
     this.vision = vision;
+    //this.flywheel = flywheel;
   }
 
   public class RunIntakeCommand extends SequentialCommandGroup {
@@ -50,7 +56,7 @@ public class SuperStructure extends SubsystemBase {
       addRequirements(pickup, SuperStructure.this);
       addCommands(
         //new InstantCommand(intakeExtension::toggleState),
-        new InstantCommand(pickup::run)
+        new InstantCommand(() -> pickup.set(Constants.Intake.kSpeed))
       );
     }
   }
@@ -78,14 +84,14 @@ public class SuperStructure extends SubsystemBase {
   //   }
   // }
 
-  public class TrackCommand extends SequentialCommandGroup {
+  // public class TrackCommand extends SequentialCommandGroup {
 
-    public TrackCommand(){
-      addRequirements(SuperStructure.this);
-      addCommands(
-        drivetrain.new VisionAimCommand(vision.getYaw(), vision.getDistance(), vision.hasTarget())
-      );
-    }
+  //   public TrackCommand(){
+  //     addRequirements(SuperStructure.this);
+  //     addCommands(
+  //       drivetrain.new VisionAimCommand(vision.getYaw(), vision.getDistance(), vision.hasTarget())
+  //     );
+  //   }
 
-  }
+  // }
 }

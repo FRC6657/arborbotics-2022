@@ -6,26 +6,23 @@ package frc.FRC6657.subsystems.drivetrain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.BasePigeonSimCollection;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
-
-import org.photonvision.SimVisionSystem;
-
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -44,7 +41,8 @@ import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
-import frc.FRC6657.custom.ctre.SendablePigeonIMU;
+import frc.FRC6657.custom.controls.Deadbander;
+import frc.FRC6657.custom.controls.DriverProfile;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -54,7 +52,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private TalonFXSimCollection mLeftSim, mRightSim;
   
   @Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro")
-  private final SendablePigeonIMU mPigeonIMU;
+  private final WPI_PigeonIMU mPigeonIMU;
   private BasePigeonSimCollection mPigeonIMUSim;
 
   private final DifferentialDriveKinematics mKinematics;
@@ -62,7 +60,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   private final SimpleMotorFeedforward mFeedForward;
   private final PIDController mLinearPIDController;
-  private final PIDController mAngularPIDController;
 
   private RamseteController mRamseteController = new RamseteController();
 
@@ -73,6 +70,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private List<Pose2d> mPathPoints = new ArrayList<Pose2d>();
 
   DifferentialDrivetrainSim mDrivetrainSim;
+
+  private final DriverProfile mProfile;
+
   /*
    * 
    * Setup Methods
@@ -82,7 +82,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    /**
     * The subsystem that controls the drivetrain
     */
-  public DrivetrainSubsystem() {
+  public DrivetrainSubsystem(DriverProfile profile) {
+
+    this.mProfile = profile;
 
     //Left Stuff
     mFrontLeft = new WPI_TalonFX(Constants.kFrontLeftID);
@@ -95,7 +97,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     configureMotors();
 
     //Gyro Stuff
-    mPigeonIMU = new SendablePigeonIMU(Constants.kPigeonID);
+    mPigeonIMU = new WPI_PigeonIMU(Constants.kPigeonID);
     mPigeonIMU.reset();
 
     //Fancy Stuff
@@ -105,7 +107,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     //Fancier Stuff
     mFeedForward = Constants.Drivetrain.kFeedForward;
     mLinearPIDController = Constants.Drivetrain.kLinearPIDController;
-    mAngularPIDController = Constants.Drivetrain.kAngularPIDController;
 
     //Simulation Stuff
     if(RobotBase.isSimulation()){
@@ -134,11 +135,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mBackLeft.follow(mFrontLeft);
     mBackRight.follow(mFrontRight);
 
-    //Set the neutral modes
+    // Set the neutral modes
     mFrontLeft.setNeutralMode(NeutralMode.Brake);
     mFrontRight.setNeutralMode(NeutralMode.Brake);
-    mBackLeft.setNeutralMode(NeutralMode.Coast);
-    mBackRight.setNeutralMode(NeutralMode.Coast);
+    mBackLeft.setNeutralMode(NeutralMode.Brake);
+    mBackRight.setNeutralMode(NeutralMode.Brake);
+    
 
     //Makes Green go Forward. Sim is weird so thats what the if statement is for
     if (RobotBase.isReal()) {
@@ -168,6 +170,13 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mFrontRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5));// | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
     mBackLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5));  // | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
     mBackRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); // | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
+
+    mBackLeft.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    mBackRight.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+
+    mBackLeft.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
+    mBackRight.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
+
 
   }
 
@@ -205,6 +214,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   public void resetGyro(){
     mPigeonIMU.reset();
+    mOdometry.resetPosition(mOdometry.getPoseMeters(), mPigeonIMU.getRotation2d());
+  }
+
+  public void teleopCurvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn, boolean modSpeed){
+    setCurvatureSpeeds(xSpeed, zRotation, isQuickTurn, modSpeed);
   }
 
   /*
@@ -234,18 +248,37 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   public void setSpeeds(WheelSpeeds speeds) {
 
-    speeds.left *= Constants.Drivetrain.kMaxSpeed;
-    speeds.right *= Constants.Drivetrain.kMaxSpeed;
+    speeds.left *= Constants.Drivetrain.kMaxAttainableSpeed;
+    speeds.right *= Constants.Drivetrain.kMaxAttainableSpeed;
 
     final double leftFeedforward = mFeedForward.calculate(speeds.left);
     final double rightFeedforward = mFeedForward.calculate(speeds.right);
 
     final double leftOutput = mLinearPIDController.calculate(getLeftVelocity(), speeds.left);
     final double rightOutput = mLinearPIDController.calculate(getRightVelocity(), speeds.right);
-        
+
     mFrontLeft.setVoltage(leftOutput + leftFeedforward);
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
   }
+
+  public void setCurvatureSpeeds(double xSpeed, double zRotation, boolean quickturn, boolean modSpeed) {
+
+    xSpeed = Deadbander.applyLinearScaledDeadband(xSpeed, Constants.DriverConfigs.kDriveDeadband);
+    zRotation = Deadbander.applyLinearScaledDeadband(zRotation, Constants.DriverConfigs.kTurnDeadband);
+
+    DifferentialDriveWheelSpeeds speeds = new DifferentialDriveWheelSpeeds();
+    WheelSpeeds wheelSpeeds = DifferentialDrive.curvatureDriveIK(xSpeed, zRotation, quickturn);    
+
+    if (modSpeed) {        
+        speeds.leftMetersPerSecond = wheelSpeeds.left * mProfile.kModSpeed;
+        speeds.rightMetersPerSecond = wheelSpeeds.right * mProfile.kModSpeed;
+      }else{
+        speeds.leftMetersPerSecond = wheelSpeeds.left * mProfile.kMaxSpeed;
+        speeds.rightMetersPerSecond = wheelSpeeds.right * mProfile.kMaxSpeed;
+      }
+    setSpeeds(speeds);
+  }
+
 
   /**
    * Stops the Drivetrain
@@ -299,46 +332,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   }
 
   /**
-   * Get temperature of the front left motor in celsius
-   */
-  @Log.Dial(rowIndex = 0, columnIndex = 4, width = 2, height = 2, name = "FL Temp", max = 110, min = 20, showValue = false)
-  public double getFrontLeftTemp() {
-    if(RobotBase.isReal()){return mFrontLeft.getTemperature();}
-    return 0;
-  }
-
-  /**
-   * Get temperature of the front right motor in celsius
-   */
-  @Log.Dial(rowIndex = 0, columnIndex = 6, width = 2, height = 2, name = "FR Temp", max = 110, min = 20, showValue = false)
-  public double getFrontRightTemp() {
-    if(RobotBase.isReal()){return mFrontRight.getTemperature();}
-    return 0;
-  }
-
-  /**
-   * Get temperature of the back left motor in celsius
-   */
-  @Log.Dial(rowIndex = 2, columnIndex = 4, width = 2, height = 2, name = "BL Temp", max = 110, min = 20, showValue = false)
-  public double getBackLeftTemp() {
-    if(RobotBase.isReal()){return mBackLeft.getTemperature();}
-    return 0;
-  }
-
-  /**
-   * Get temperature of the back right motor in celsius
-   */
-  @Log.Dial(rowIndex = 2, columnIndex = 6, width = 2, height = 2, name = "BR Temp", max = 110, min = 20, showValue = false)
-  public double getBackRightTemp() {
-    if(RobotBase.isReal()){return mBackRight.getTemperature();}
-    return 0;
-  }
-
-  /**
    * This is mainly to have a velocity gauge on shuffleboard.
    * @return Same as getLeftVelocity()
    */
-  @Log.Dial(rowIndex = 2, columnIndex = 2, width = 1, height = 1, name = "Left Vel", min = -Constants.Drivetrain.kMaxSpeed, max = Constants.Drivetrain.kMaxSpeed, showValue = false)
+  @Log.Dial(rowIndex = 2, columnIndex = 2, width = 1, height = 1, name = "Left Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false)
   public double leftVelocityGauge(){
     return getLeftVelocity();
   }
@@ -347,9 +344,16 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * This is mainly to have a velocity gauge on shuffleboard.
    * @return Same as getRightVelocity()
    */
-  @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.Drivetrain.kMaxSpeed, max = Constants.Drivetrain.kMaxSpeed, showValue = false)
+  @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false)
   public double rightVelocityGauge(){
     return getRightVelocity();
+  }
+
+  @Log(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name = "Gyro Velocity")
+  public double getHeadingVelocity(){
+    double[] gyroVals = {0,0,0};
+    mPigeonIMU.getRawGyro(gyroVals);
+    return gyroVals[2];
   }
 
   public double getGyroAngle(){
@@ -364,37 +368,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * Commands 
    */
 
-  /**
-   * Command for TeleOp Driving
-   */
-  public class DriveCommand extends CommandBase {
-
-    private DoubleSupplier xSpeed;
-    private DoubleSupplier zRotation;
-    private BooleanSupplier isQuickturn;
-
-    public DriveCommand(DoubleSupplier xSpeed, DoubleSupplier zRotation, BooleanSupplier isQuickturn) {
-      this.xSpeed = xSpeed;
-      this.zRotation = zRotation;
-      this.isQuickturn = isQuickturn;
-      addRequirements(DrivetrainSubsystem.this);
-    }
-
-    @Override
-    public void initialize() {
-      System.out.println("Driver Control Initialized");
-    }
-
-    @Override
-    public void execute() {
-      setSpeeds(DifferentialDrive.curvatureDriveIK(xSpeed.getAsDouble(), zRotation.getAsDouble(), isQuickturn.getAsBoolean()));
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-      stop();
-    }
-  }
   
   /**
    * Command to follow a given trajectory
@@ -449,40 +422,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
       return timer.get() > trajectory.getTotalTimeSeconds();
     }
   }
-
-  public class VisionAimCommand extends CommandBase{
-    
-    public final double turnError;
-    public final double distanceError;
-    public final boolean hasTarget;
-
-    public VisionAimCommand(double turnError, double distanceError, boolean hasTarget){
-      this.turnError = turnError;
-      this.distanceError = distanceError;
-      this.hasTarget = hasTarget;
-    }
-
-    @Override
-    public void execute() {
-      if(hasTarget){
-        WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(distanceError, -mAngularPIDController.calculate(turnError,0), false);
-        mFrontLeft.set(speeds.left);
-        mFrontRight.set(speeds.right);
-      }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-      stop();
-    }
-
-    @Override
-    public boolean isFinished() {
-      return (turnError < Constants.Drivetrain.kAimTollerance && distanceError < Constants.Drivetrain.kDistanceTollerance) || !hasTarget;
-    }
-
-  }
-
 
   /*
    *
