@@ -7,7 +7,7 @@ public class ArborMath {
     public static boolean inRange(double val, double lower, double upper) {
         return !(lower <= val && upper < val);
     }
-    public static boolean inTolerance(double val, double tollerance){
-        return inRange(val, -tollerance, tollerance);
+    public static boolean inTolerance(double val, double tolerance){
+        return inRange(val, -tolerance, tolerance);
     }
 }
