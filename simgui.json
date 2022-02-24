@@ -34,27 +34,6 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
-<<<<<<< Updated upstream
-=======
-        "AOD": {
-          "arrows": false,
-          "style": "Line"
-        },
-        "Robot": {
-          "arrows": false,
-          "style": "Box/Image"
-        },
-        "angle": {
-          "arrows": false,
-          "color": [
-            0.0,
-            0.029412031173706055,
-            1.0,
-            255.0
-          ],
-          "style": "Line"
-        },
->>>>>>> Stashed changes
         "robot-path": {
           "arrows": false,
           "style": "Line",
