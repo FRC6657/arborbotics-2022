@@ -35,19 +35,32 @@
     "windows": {
       "/SmartDashboard/Field": {
         "Robot": {
+<<<<<<< HEAD
           "length": 0.9860000014305115,
           "width": 0.8508999943733215
         },
+=======
+          "length": 0.9857739806175232,
+          "width": 0.7680000066757202
+        },
+        "bottom": 900,
+        "height": 8.229599952697754,
+        "image": "C:\\Code\\arborbotics-2022\\FieldImages\\2022-field.png",
+        "left": 74,
+        "right": 1774,
+>>>>>>> 1bdb0177c6dd788c71ef0ff2451fdf1557228e3c
         "robot-path": {
           "arrows": false,
           "style": "Line",
           "weight": 1.0
         },
+        "top": 50,
         "trajectory": {
           "arrows": false,
           "style": "Line",
           "weight": 2.0
         },
+        "width": 16.459199905395508,
         "window": {
           "visible": true
         }

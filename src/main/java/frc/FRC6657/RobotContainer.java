@@ -136,7 +136,7 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(new RunCommand(() -> {
       drivetrain.teleopCurvatureDrive(
           -ArborMath.signumPow(mXboxController.getLeftY(), 1.2),
-          ArborMath.signumPow(mXboxController.getRightX(), 1.2),
+          (mXboxController.getRightX()),
           mXboxController.getRightTrigger(),
           mXboxController.getLeftTrigger());
     }, drivetrain));

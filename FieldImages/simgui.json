@@ -1,28 +1,11 @@
 {
   "HALProvider": {
-    "Other Devices": {
-      "Talon FX[3]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[8]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon SRX[6]": {
-        "header": {
-          "open": true
-        }
+    "PWM Outputs": {
+      "window": {
+        "visible": true
       }
     },
     "Solenoids": {
-      "0": {
-        "header": {
-          "open": true
-        }
-      },
       "window": {
         "visible": true
       }
@@ -31,11 +14,15 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/AcceleratorSubsystem": "Subsystem",
+      "/LiveWindow/BlinkinSubsystem": "Subsystem",
       "/LiveWindow/DrivetrainSubsystem": "Subsystem",
       "/LiveWindow/ExtensionSubsystem": "Subsystem",
       "/LiveWindow/FlywheelSubsystem": "Subsystem",
+      "/LiveWindow/HoodSubsystem": "Subsystem",
+      "/LiveWindow/IntakeSubsystem": "Subsystem",
+      "/LiveWindow/LiftSubsystem": "Subsystem",
       "/LiveWindow/PickupSubsystem": "Subsystem",
-      "/LiveWindow/PivotSubsystem": "Subsystem",
       "/LiveWindow/SuperStructure": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
@@ -49,32 +36,21 @@
       "/SmartDashboard/Field": {
         "Robot": {
           "length": 0.9857739806175232,
-          "style": "Box/Image",
-          "width": 0.8508999943733215
+          "width": 0.7680000066757202
         },
         "bottom": 900,
         "height": 8.229599952697754,
+        "image": "C:\\Code\\arborbotics-2022\\FieldImages\\2022-field.png",
         "left": 74,
         "right": 1774,
         "robot-path": {
-          "arrowSize": 0,
           "arrows": false,
-          "selectable": false,
           "style": "Line",
-          "weight": 2.0
+          "weight": 1.0
         },
         "top": 50,
         "trajectory": {
-          "arrowSize": 3,
-          "arrowWeight": 1.0,
           "arrows": false,
-          "color": [
-            240.00001525878906,
-            255.0,
-            0.0,
-            255.0
-          ],
-          "selectable": false,
           "style": "Line",
           "weight": 2.0
         },
@@ -88,19 +64,57 @@
   "NetworkTables": {
     "LiveWindow": {
       "Ungrouped": {
-        "Talon FX [8]": {
+        "Blinkin[0]": {
           "open": true
         },
-        "Talon SRX [6]": {
+        "Talon FX [1]": {
+          "open": true
+        },
+        "Talon FX [2]": {
           "open": true
         }
       }
     },
     "Shuffleboard": {
+      "FlywheelSubsystem": {
+        "open": true
+      },
+      "open": true
+    },
+    "SmartDashboard": {
+      "Field": {
+        "open": true
+      },
       "open": true
     }
   },
-  "NetworkTables View": {
-    "visible": false
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true,
+              "logScale": true
+            }
+          ],
+          "height": 338,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/FlywheelSubsystem/RPM"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    }
   }
 }
