@@ -1,25 +1,21 @@
 {
-  "FMS": {
+  "Keyboard 0 Settings": {
     "window": {
-      "visible": false
-    }
-  },
-  "Joysticks": {
-    "window": {
-      "visible": false
+      "visible": true
     }
   },
   "keyboardJoysticks": [
     {
       "axisConfig": [
-        {},
         {
-          "decKey": 87,
-          "incKey": 83
+          "decayRate": 1.0,
+          "keyRate": 1.0
         },
         {
-          "decayRate": 0.0,
-          "keyRate": 0.009999999776482582
+          "decKey": 87,
+          "decayRate": 1.0,
+          "incKey": 83,
+          "keyRate": 1.0
         },
         {},
         {
@@ -27,7 +23,7 @@
           "incKey": 68
         }
       ],
-      "axisCount": 5,
+      "axisCount": 6,
       "buttonCount": 4,
       "buttonKeys": [
         90,
