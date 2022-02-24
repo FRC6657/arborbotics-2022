@@ -34,6 +34,10 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "Robot": {
+          "length": 0.9860000014305115,
+          "width": 0.8508999943733215
+        },
         "robot-path": {
           "arrows": false,
           "style": "Line",
