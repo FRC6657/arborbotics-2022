@@ -4,9 +4,6 @@
 
 package frc.FRC6657.subsystems.shooter;
 
-import java.io.ObjectInputFilter.Status;
-
-import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;

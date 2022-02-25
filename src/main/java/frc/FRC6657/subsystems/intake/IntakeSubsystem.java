@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 @SuppressWarnings("unused")
 public class IntakeSubsystem extends SubsystemBase implements Loggable {
 
@@ -35,7 +36,7 @@ public class IntakeSubsystem extends SubsystemBase implements Loggable {
   }
 
   
-  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Pickup Speed", defaultValueNumeric = 0) //Allows for easy intake testing
+  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Intake Speed", defaultValueNumeric = 0, tabName = "Intake") //Allows for easy intake testing
   public void set(double percent) {
     mMotor.set(percent);
     mTimer.start();
@@ -47,6 +48,7 @@ public class IntakeSubsystem extends SubsystemBase implements Loggable {
     mTimer.stop();
   }
 
+  @Log.BooleanBox(rowIndex = 0, columnIndex = 1, width = 1, height = 1, name = "Ball Detected", tabName = "Intake")
   public boolean BallDetected(){
     return mTimer.get() < Constants.Intake.kStartupTime && mMotor.getStatorCurrent() > Constants.Intake.kBallCurrent;
   }

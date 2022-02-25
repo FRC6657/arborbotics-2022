@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
 public class ExtensionSubsystem extends SubsystemBase {
   
@@ -16,6 +18,20 @@ public class ExtensionSubsystem extends SubsystemBase {
 
   public ExtensionSubsystem() {
     retract();
+  }
+
+  @Log.BooleanBox(rowIndex = 0, columnIndex = 2, width = 1, height = 1, name = "Intake Extended", tabName = "Intake")
+  public boolean getPistonState(){
+    return mLeftPiston.get() == Value.kReverse;
+  }
+
+  @Config.ToggleSwitch(rowIndex = 1, columnIndex = 0, width = 1, height = 1, name = "Extension", tabName = "Intake")
+  private void oblogControl(boolean extended){
+    if(extended){
+      extend();
+    }else{
+      retract();
+    }
   }
 
   public void extend(){

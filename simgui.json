@@ -1,4 +1,11 @@
 {
+  "HALProvider": {
+    "Solenoids": {
+      "window": {
+        "visible": true
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -12,14 +19,32 @@
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/VisionSubsystem": "Subsystem",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/SendableChooser[0]": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "robot-path": {
+          "arrows": false,
+          "style": "Line"
+        },
+        "trajectory": {
+          "arrows": false,
+          "color": [
+            0.2666666507720947,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "style": "Line"
+        },
         "window": {
           "visible": true
         }
       }
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }

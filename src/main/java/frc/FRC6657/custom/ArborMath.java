@@ -1,12 +1,33 @@
 package frc.FRC6657.custom;
 
 public class ArborMath {
+    /**
+     * @param val Input Value
+     * @param power Power to be raised to
+     * @return Output Value
+     * 
+     * Raises a value to a power while maintaining the sign of the original value
+     * 
+     */
     public static double signumPow(double val, double power){
         return Math.signum(val) * Math.pow(Math.abs(val),power);
     }
+
+    /**
+     * @param val Input value
+     * @param lower Low end of the range
+     * @param upper High end of the range
+     * @return If the input value is within the range
+     */
     public static boolean inRange(double val, double lower, double upper) {
         return !(lower <= val && upper < val);
     }
+
+    /**
+     * @param val Input value
+     * @param tolerance tollerance around a 0 point
+     * @return If the inptu is in the tollerance
+     */
     public static boolean inTolerance(double val, double tolerance){
         return inRange(val, -tolerance, tolerance);
     }

@@ -48,29 +48,40 @@ import io.github.oblarg.oblog.annotations.Log;
 
 public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
+  //Drivetrain Motors
   private final WPI_TalonFX mFrontLeft, mFrontRight, mBackLeft, mBackRight; 
+  //Simulated Drivetrain Motors
   private TalonFXSimCollection mLeftSim, mRightSim;
   
-  @Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro")
-  private final WPI_PigeonIMU mPigeonIMU = new WPI_PigeonIMU(Constants.kPigeonID);;
+  //Gyro
+  @Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro", tabName = "Drivetrain")
+  private final WPI_PigeonIMU mPigeonIMU = new WPI_PigeonIMU(Constants.kPigeonID);
+  //Simulated Gyro
   private BasePigeonSimCollection mPigeonIMUSim;
 
+  //Kinematics and Odometry Classes
   private final DifferentialDriveKinematics mKinematics;
   private final DifferentialDriveOdometry mOdometry;
 
+  //Feed forward and PID controller for advanced movement
   private final SimpleMotorFeedforward mFeedForward;
   private final PIDController mLinearPIDController;
 
+  //Ramsete Controller for Path Following
   private RamseteController mRamseteController = new RamseteController();
 
+  //Field2D for odometry visualization
   private Field2d mField = new Field2d();
   
+  //Field objects to display trajectory following accuracy
   private FieldObject2d mTrajectoryPlot = mField.getObject("trajectory");
   private FieldObject2d mRobotPath = mField.getObject("robot-path");
   private List<Pose2d> mPathPoints = new ArrayList<Pose2d>();
 
+  //Drivetrain Simulation
   DifferentialDrivetrainSim mDrivetrainSim;
 
+  //Driver Profile
   private final DriverProfile mProfile;
 
   /*
@@ -84,12 +95,13 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     */
   public DrivetrainSubsystem(DriverProfile profile) {
 
+    //Loads the Driver Profile
     this.mProfile = profile;
 
-    //Left Stuff
+    //Left Motor Assignments
     mFrontLeft = new WPI_TalonFX(Constants.kFrontLeftID);
     mBackLeft = new WPI_TalonFX(Constants.kBackLeftID);
-    //Right Stuff
+    //Right Motor Assignments
     mFrontRight = new WPI_TalonFX(Constants.kFrontRightID);
     mBackRight = new WPI_TalonFX(Constants.kBackRightID);
 
@@ -158,7 +170,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mFrontLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     mFrontRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-    //More precise encoders
+    //Reduce the encoder delay
     mFrontLeft.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
     mFrontRight.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
     mFrontLeft.configVelocityMeasurementWindow(1);
@@ -212,13 +224,13 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * @param pose New Position
    */
   public void resetOdometry(Pose2d pose) {
-    
+    //Reset Simulation entirely if we are in simulation
     if (RobotBase.isSimulation()) {
       mDrivetrainSim = Constants.Drivetrain.kSim;
     }
 
-    resetEncoders();
-    mOdometry.resetPosition(pose, Rotation2d.fromDegrees(getGyroAngle()));
+    resetEncoders();//Reset the encoders
+    mOdometry.resetPosition(pose, Rotation2d.fromDegrees(getGyroAngle())); //Reset the odometry to the inputed position
     
   }
 
@@ -238,6 +250,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mOdometry.resetPosition(mOdometry.getPoseMeters(), mPigeonIMU.getRotation2d());
   }
 
+  /**
+   * @param xSpeed Forward Input
+   * @param zRotation Turning Input
+   * @param isQuickTurn Allow Quickturn?
+   * @param modSpeed Modify Speed?
+   */
   public void teleopCurvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn, boolean modSpeed){
     setCurvatureSpeeds(xSpeed, zRotation, isQuickTurn, modSpeed);
   }
@@ -282,6 +300,16 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mFrontRight.setVoltage(rightOutput + rightFeedforward);
   }
 
+
+  /**
+   * @param xSpeed Forward Signal
+   * @param zRotation Turn Signal
+   * @param quickturn Allow Quickturn?
+   * @param modSpeed Modify Speed?
+   * 
+   * Sets drivetrain speeds in m/s from inputed controls that follow the curvature drive structure
+   * 
+   */
   public void setCurvatureSpeeds(double xSpeed, double zRotation, boolean quickturn, boolean modSpeed) {
 
     xSpeed = Deadbander.applyLinearScaledDeadband(xSpeed, Constants.DriverConfigs.kDriveDeadband);
@@ -305,8 +333,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * Stops the Drivetrain
    */
   public void stop(){
-    mFrontLeft.set(0);
-    mFrontRight.set(0);
+    mFrontLeft.stopMotor();
+    mFrontRight.stopMotor();
   }
 
   /*
@@ -323,7 +351,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   /**
    * Get left drivetrain encoder distance in meters
    */
-  @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Left Distance")
+  @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Left Distance", tabName = "Drivetrain")
   public double getLeftMeters() {
     return mFrontLeft.getSelectedSensorPosition() * Constants.Drivetrain.kDistancePerPulse;
   }
@@ -331,7 +359,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   /**
    * Get right drivetrain encoder distance in meters
    */
-  @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Right Distance")
+  @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Right Distance", tabName = "Drivetrain")
   public double getRightMeters() {
     return mFrontRight.getSelectedSensorPosition() * Constants.Drivetrain.kDistancePerPulse;
   }
@@ -339,7 +367,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   /**
    * Get left drivetrain motor velocity in m/s²
    */
-  @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Left Velocity")
+  @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Left Velocity", tabName = "Drivetrain")
   public double getLeftVelocity() {
     return mFrontLeft.getSelectedSensorVelocity() * 10 * Constants.Drivetrain.kDistancePerPulse;
   }
@@ -347,7 +375,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   /**
    * Get right drivetrain motor velocity in m/s²
    */
-  @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity")
+  @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity", tabName = "Drivetrain")
   public double getRightVelocity() {
     return mFrontRight.getSelectedSensorVelocity() * 10 * Constants.Drivetrain.kDistancePerPulse;
   }
@@ -356,7 +384,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * This is mainly to have a velocity gauge on shuffleboard.
    * @return Same as getLeftVelocity()
    */
-  @Log.Dial(rowIndex = 2, columnIndex = 2, width = 1, height = 1, name = "Left Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false)
+  @Log.Dial(rowIndex = 2, columnIndex = 2, width = 1, height = 1, name = "Left Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false, tabName = "Drivetrain")
   public double leftVelocityGauge(){
     return getLeftVelocity();
   }
@@ -365,18 +393,21 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * This is mainly to have a velocity gauge on shuffleboard.
    * @return Same as getRightVelocity()
    */
-  @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false)
+  @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false, tabName = "Drivetrain")
   public double rightVelocityGauge(){
     return getRightVelocity();
   }
 
-  @Log(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name = "Gyro Velocity")
+  @Log(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name = "Gyro Velocity", tabName = "Drivetrain")
   public double getHeadingVelocity(){
     double[] gyroVals = {0,0,0};
     mPigeonIMU.getRawGyro(gyroVals);
     return gyroVals[2];
   }
 
+  /**
+   * @return Gyro accumulated angle if it is ready to give accurate data
+   */
   public double getGyroAngle(){
     if(mPigeonIMU.getState() == PigeonState.Ready){
       return mPigeonIMU.getFusedHeading();

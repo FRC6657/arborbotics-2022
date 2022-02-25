@@ -12,6 +12,7 @@ import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -36,9 +37,12 @@ import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
 @SuppressWarnings("unused")
-public class RobotContainer {
+public class RobotContainer implements Loggable{
 
   private CommandXboxController mXboxController = new CommandXboxController(0);
   private Joystick mJoystick = new Joystick(1);
@@ -148,6 +152,7 @@ public class RobotContainer {
   private void configureAutoChooser() {
     mAutoChooser.setDefaultOption("Nothing", null);
     mAutoChooser.addOption("BallDetectionTest", new BallDetectionTest(drivetrain, intake));
+    SmartDashboard.putData(mAutoChooser);
   }
 
   private void configureButtonBindings() {
