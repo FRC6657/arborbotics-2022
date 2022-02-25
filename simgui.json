@@ -1,4 +1,23 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "Talon FX[8]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX[9]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[10]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -10,8 +29,10 @@
       "/LiveWindow/HoodSubsystem": "Subsystem",
       "/LiveWindow/IntakeSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/Pigeon IMU [5]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/VisionSubsystem": "Subsystem",
+      "/Shuffleboard/DrivetrainSubsystem/Gyro": "Gyro",
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {

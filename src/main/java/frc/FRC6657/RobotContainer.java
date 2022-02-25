@@ -90,7 +90,7 @@ public class RobotContainer {
     intakeActive = new Trigger(intake::Active);
 
     //Automatically runs the kicker and sets the shooter full speed indicator
-    flywheelReady.whileActiveOnce(
+    flywheelReady.whileActiveContinuous(
       new ParallelCommandGroup(      
         new StartEndCommand(
           () -> accelerator.set(Constants.Accelerator.kSpeed),
@@ -106,7 +106,7 @@ public class RobotContainer {
     );
 
    //Sets Blinkin Color for flywheel spinning up
-   flywheelActive.whileActiveOnce(
+   flywheelActive.whileActiveContinuous(
       new StartEndCommand(
        () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kNotReadyFlywheel, Constants.flywheelActivePriority),
        () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),
@@ -115,7 +115,7 @@ public class RobotContainer {
    );
 
    //Changed blinkin color when the intake detects a ball
-   ballDetected.whileActiveOnce(
+   ballDetected.whileActiveContinuous(
      new StartEndCommand(
        () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kBallDetected, Constants.ballDetectedPriority), 
        () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),
@@ -124,7 +124,7 @@ public class RobotContainer {
    );
 
    //Changes the blinkin color when the intake is running
-   intakeActive.whileActiveOnce(
+   intakeActive.whileActiveContinuous(
     new StartEndCommand(
       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIntake, Constants.intakeActivePriority), 
       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),

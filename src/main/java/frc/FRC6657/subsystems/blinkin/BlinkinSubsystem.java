@@ -17,12 +17,17 @@ public class BlinkinSubsystem extends SubsystemBase {
 
   public void setBlinkinColor(BlinkinLEDPattern pattern){
     mBlinkin.setLEDMode(pattern);
+    if(pattern.toString() == BlinkinLEDPattern.COLOR_WAVES_FOREST_PALETTE.toString()){
+      System.out.println("Blink Set to Idle");
+    }
     currentPriority = -1;
   }
 
   public void setBlinkinColor(BlinkinLEDPattern pattern, int priority){
+    System.out.println("Current Color:" + mBlinkin.getLEDMode() + "|||||Incoming Color: " + pattern.toString());
     if(priority > currentPriority){
       setBlinkinColor(pattern);
+      System.out.println("Output: " + mBlinkin.getLEDMode());
       currentPriority = priority;
     }
   }
