@@ -98,7 +98,7 @@ public class RobotContainer {
           accelerator
         ),
         new StartEndCommand(
-          () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kReadyFlywheel),
+          () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kReadyFlywheel, 3),
           () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),
           blinkin
          )
@@ -108,7 +108,7 @@ public class RobotContainer {
    //Sets Blinkin Color for flywheel spinning up
    flywheelActive.whileActiveOnce(
       new StartEndCommand(
-       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kNotReadyFlywheel),
+       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kNotReadyFlywheel, 2),
        () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),
        blinkin
       )
@@ -117,7 +117,7 @@ public class RobotContainer {
    //Changed blinkin color when the intake detects a ball
    ballDetected.whileActiveOnce(
      new StartEndCommand(
-       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kBallDetected), 
+       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kBallDetected, 1), 
        () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),
        blinkin
      )
@@ -126,7 +126,7 @@ public class RobotContainer {
    //Changes the blinkin color when the intake is running
    intakeActive.whileActiveOnce(
     new StartEndCommand(
-      () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIntake), 
+      () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIntake, 0), 
       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),
       blinkin
     )
