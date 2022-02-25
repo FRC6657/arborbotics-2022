@@ -8,7 +8,7 @@ import frc.FRC6657.custom.rev.Blinkin.BlinkinLEDPattern;
 public class BlinkinSubsystem extends SubsystemBase {
   
   private Blinkin mBlinkin;
-  private int currentPriority = 0;
+  private int currentPriority = -1;
 
   public BlinkinSubsystem() {
     mBlinkin = new Blinkin(Constants.kBlinkinID);
@@ -17,6 +17,7 @@ public class BlinkinSubsystem extends SubsystemBase {
 
   public void setBlinkinColor(BlinkinLEDPattern pattern){
     mBlinkin.setLEDMode(pattern);
+    currentPriority = -1;
   }
 
   public void setBlinkinColor(BlinkinLEDPattern pattern, int priority){
