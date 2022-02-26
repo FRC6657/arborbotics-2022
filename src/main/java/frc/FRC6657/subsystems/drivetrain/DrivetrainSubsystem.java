@@ -23,11 +23,15 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -44,6 +48,8 @@ import frc.FRC6657.Constants;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.custom.controls.DriverProfile;
+import frc.FRC6657.subsystems.vision.VisionSubsystem;
+import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -60,9 +66,24 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   //Simulated Gyro
   private BasePigeonSimCollection mPigeonIMUSim;
 
-  //Kinematics and Odometry Classes
+  //Kinematics and PoseEstimator Classes
   private final DifferentialDriveKinematics mKinematics;
-  private final DifferentialDriveOdometry mOdometry;
+  private final DifferentialDrivePoseEstimator mEstimator = new DifferentialDrivePoseEstimator(
+    new Rotation2d(), 
+    new Pose2d(), 
+    new MatBuilder<>(
+      Nat.N5(), 
+      Nat.N1()
+    ).fill(0.02, 0.02, 0.01, 0.02, 0.02), 
+    new MatBuilder<>(
+        Nat.N3(), 
+        Nat.N1()
+    ).fill(0.02, 0.02, 0.01), 
+    new MatBuilder<>(
+      Nat.N3(), 
+      Nat.N1()
+    ).fill(0.1, 0.1, 0.01)
+  );
 
   //Feed forward and PID controller for advanced movement
   private final SimpleMotorFeedforward mFeedForward;
@@ -85,6 +106,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   //Driver Profile
   private final DriverProfile mProfile;
 
+  private VisionSubsystem mVision;
+
   /*
    * 
    * Setup Methods
@@ -94,10 +117,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    /**
     * The subsystem that controls the drivetrain
     */
-  public DrivetrainSubsystem(DriverProfile profile) {
+  public DrivetrainSubsystem(DriverProfile profile, VisionSubsystem vision) {
 
     //Loads the Driver Profile
     this.mProfile = profile;
+    this.mVision = vision;
 
     //Left Motor Assignments
     mFrontLeft = new WPI_TalonFX(Constants.kFrontLeftID);
@@ -114,7 +138,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     //Fancy Stuff
     mKinematics = new DifferentialDriveKinematics(Constants.Drivetrain.kTrackWidth);
-    mOdometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getGyroAngle()));
 
     //Fancier Stuff
     mFeedForward = Constants.Drivetrain.kFeedForward;
@@ -219,22 +242,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * Reset Methods
    * 
    */
-
-  /**
-   * Resets the odometry
-   * @param pose New Position
-   */
-  public void resetOdometry(Pose2d pose) {
-    //Reset Simulation entirely if we are in simulation
-    if (RobotBase.isSimulation()) {
-      mDrivetrainSim = Constants.Drivetrain.kSim;
-    }
-
-    resetEncoders();//Reset the encoders
-    mOdometry.resetPosition(pose, Rotation2d.fromDegrees(getGyroAngle())); //Reset the odometry to the inputed position
-    
-  }
-
   /**
    * Resets the encoders
    */
@@ -248,7 +255,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   public void resetGyro(){
     mPigeonIMU.reset();
-    mOdometry.resetPosition(mOdometry.getPoseMeters(), mPigeonIMU.getRotation2d());
   }
 
   /**
@@ -338,32 +344,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mFrontRight.stopMotor();
   }
 
-  /*
-   * Get Methods 
-   */
-
-  /**
-   * @return Robot Position
-   */
-  public Pose2d getPose() {
-    return mOdometry.getPoseMeters();
-  }
-
-  @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Odometry Angle", tabName = "Scott Gyro Stuff")
-  public double OdemetryAngle() {
-    return mOdometry.getPoseMeters().getRotation().getDegrees();
-  }
-
-  @Log(rowIndex = 0, columnIndex = 1, width = 2, height = 1, name = "Odometry Angle Corrected", tabName = "Scott Gyro Stuff")
-  public double CorrectedOdometryAngle() {
-    if(mOdometry.getPoseMeters().getRotation().getDegrees() >= 0) {
-      return mOdometry.getPoseMeters().getRotation().getDegrees();
-    } else {
-      return mOdometry.getPoseMeters().getRotation().getDegrees() + 360;
-    }
-  }
-
-
 
   /**
    * Get left drivetrain encoder distance in meters
@@ -441,6 +421,17 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     return 0;
   }
 
+  public void updatePoseEstimator(DifferentialDriveWheelSpeeds actWheelSpeeds, double leftDist, double rightDist) {
+    mEstimator.update(mPigeonIMU.getRotation2d(), actWheelSpeeds, leftDist, rightDist);
+    var res = mVision.visionSupplier.getResult();
+    if(res.hasTargets()){
+      double imageCaptureTime = Timer.getFPGATimestamp() - res.getLatencyMillis();
+      Transform2d camToTargetTrans = res.getBestTarget().getCameraToTarget();
+      Pose2d camPose = Constants.Vision.kTargetPos.transformBy(camToTargetTrans.inverse());
+      mEstimator.addVisionMeasurement(camPose.transformBy(Constants.Vision.kCameraToRobot), imageCaptureTime);
+    }
+  }
+
   /*
    * Commands 
    */
@@ -464,13 +455,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     @Override
     public void initialize() {
       
-      if(resetPose){
-        resetOdometry(trajectory.getInitialPose());
-        mField.setRobotPose(trajectory.getInitialPose());
-      }
 
       mPathPoints.clear();
-      mPathPoints.add(mOdometry.getPoseMeters());
+      //mPathPoints.add(mOdometry.getPoseMeters());
       mRobotPath.setPoses(mPathPoints);
       mTrajectoryPlot.setTrajectory(trajectory);
 
@@ -479,14 +466,14 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     @Override
     public void execute() {
-        mPathPoints.add(mOdometry.getPoseMeters());
+        //mPathPoints.add(mOdometry.getPoseMeters());
         mRobotPath.setPoses(mPathPoints);
 
         State desiredPose = trajectory.sample(timer.get());
-        ChassisSpeeds refChassisSpeeds = mRamseteController.calculate(mOdometry.getPoseMeters(), desiredPose);
-        DifferentialDriveWheelSpeeds wheelSpeeds = mKinematics.toWheelSpeeds(refChassisSpeeds);
+        //ChassisSpeeds refChassisSpeeds = mRamseteController.calculate(mOdometry.getPoseMeters(), desiredPose);
+        //DifferentialDriveWheelSpeeds wheelSpeeds = mKinematics.toWheelSpeeds(refChassisSpeeds);
 
-        setSpeeds(wheelSpeeds);
+        //setSpeeds(wheelSpeeds);
     }
 
     @Override
@@ -508,8 +495,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   @Override
   public void periodic() {
-    mOdometry.update(Rotation2d.fromDegrees(getGyroAngle()), getLeftMeters(), getRightMeters());
-    mField.setRobotPose(mOdometry.getPoseMeters());
+    //mOdometry.update(Rotation2d.fromDegrees(getGyroAngle()), getLeftMeters(), getRightMeters());
+    //mField.setRobotPose(mOdometry.getPoseMeters());
   }
 
   @Override

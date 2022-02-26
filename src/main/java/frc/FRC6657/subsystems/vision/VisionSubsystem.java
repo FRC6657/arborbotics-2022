@@ -24,9 +24,11 @@ public class VisionSubsystem extends SubsystemBase {
   private boolean hasTargets;
   public final VisionSupplier visionSupplier = new VisionSupplier();
 
+  private PhotonPipelineResult result;
+
   @Override
   public void periodic() {
-    PhotonPipelineResult result = mLimelight.getLatestResult();
+    result = mLimelight.getLatestResult();
     if (result.hasTargets()) {
       hasTargets = true;
       PhotonTrackedTarget target = result.getBestTarget();
@@ -62,6 +64,10 @@ public class VisionSubsystem extends SubsystemBase {
     // Method to check whether vision has targets
     public boolean hasTarget() {
       return hasTargets;
+    }
+
+    public PhotonPipelineResult getResult() {
+      return result;
     }
 
     // Toggles the LL LEDs

@@ -6,6 +6,10 @@ package frc.FRC6657;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -147,6 +151,11 @@ public final class Constants {
         public static final int kCamResolutionWidth = 320; // pixels
         public static final int kCamResolutionHeight = 240; // pixels
         public static final double kTargetWidth = Units.feetToMeters(4);  
+        public static final Pose2d kTargetPos = new Pose2d(54/2, 27/2, Rotation2d.fromDegrees(0));
+        public static final Transform2d kCameraToRobot = new Transform2d(
+            new Translation2d(Units.feetToMeters(13/12), 0),
+            new Rotation2d()
+        );
     }
 
     /**

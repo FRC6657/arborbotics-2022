@@ -71,7 +71,7 @@ public class RobotContainer implements Loggable{
   public final HoodSubsystem hood;
   public final IntakeSubsystem intake;
   //public final LiftSubsystem lift;
-  //public final VisionSubsystem vision;
+  public final VisionSubsystem vision;
 
   public final Trigger flywheelReady,flywheelActive,ballDetected,intakeActive;
 
@@ -82,13 +82,13 @@ public class RobotContainer implements Loggable{
     //Subsystem Assignments
     accelerator = new AcceleratorSubsystem();
     blinkin = new BlinkinSubsystem();
-    drivetrain = new DrivetrainSubsystem(mProfile);
     extension = new ExtensionSubsystem();
     flywheel = new FlywheelSubsystem();
     hood = new HoodSubsystem();
     intake = new IntakeSubsystem();
     //lift = new LiftSubsystem();
-    //vision = new VisionSubsystem();
+    vision = new VisionSubsystem();
+    drivetrain = new DrivetrainSubsystem(mProfile, vision);
 
     //Triggers
     flywheelReady = new Trigger(flywheel::atTarget);
