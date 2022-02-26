@@ -1,5 +1,6 @@
 {
   "HALProvider": {
+    "Solenoids": {
       "window": {
         "visible": true
       }
@@ -15,29 +16,50 @@
       "/LiveWindow/FlywheelSubsystem": "Subsystem",
       "/LiveWindow/HoodSubsystem": "Subsystem",
       "/LiveWindow/IntakeSubsystem": "Subsystem",
+      "/LiveWindow/Ungrouped/Blinkin[0]": "Motor Controller",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon IMU [5]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
-      "/LiveWindow/VisionSubsystem": "Subsystem",
+      "/LiveWindow/Ungrouped/Talon FX [1]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [2]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [3]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [4]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [8]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [9]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon SRX [10]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon SRX [6]": "Motor Controller",
+      "/Shuffleboard/Drivetrain/Gyro": "Gyro",
+      "/Shuffleboard/DrivetrainSubsystem/Gyro": "Gyro",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/SendableChooser[0]": "String Chooser"
     },
     "windows": {
+      "/Shuffleboard/Drivetrain/Gyro": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field": {
+        "bottom": 900,
+        "height": 8.229599952697754,
+        "image": "C:\\Code\\arborbotics-2022\\FieldImages\\2022-field.png",
+        "left": 74,
+        "right": 1774,
         "robot-path": {
           "arrows": false,
           "style": "Line"
         },
+        "top": 50,
         "trajectory": {
           "arrows": false,
-          "color": [
-            0.2666666507720947,
-            1.0,
-            0.0,
-            255.0
-          ],
           "style": "Line"
         },
+        "width": 16.459199905395508,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/SendableChooser[0]": {
         "window": {
           "visible": true
         }
@@ -45,14 +67,17 @@
     }
   },
   "NetworkTables": {
-    "LiveWindow": {
-      "Ungrouped": {
+    "Shuffleboard": {
+      "FlywheelSubsystem": {
+        "open": true
+      },
+      "Intake": {
         "open": true
       },
       "open": true
     },
     "SmartDashboard": {
-      "SendableChooser[0]": {
+      "Field": {
         "open": true
       },
       "open": true
