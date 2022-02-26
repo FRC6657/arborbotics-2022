@@ -49,7 +49,7 @@ public class IntakeSubsystem extends SubsystemBase implements Loggable {
   }
 
   @Log.BooleanBox(rowIndex = 0, columnIndex = 1, width = 1, height = 1, name = "Ball Detected", tabName = "Intake")
-  public boolean BallDetected(){
+  public boolean ballDetected(){
     return mTimer.get() < Constants.Intake.kStartupTime && mMotor.getStatorCurrent() > Constants.Intake.kBallCurrent;
   }
 
