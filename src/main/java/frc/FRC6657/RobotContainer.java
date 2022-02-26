@@ -41,9 +41,12 @@ import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
 @SuppressWarnings("unused")
-public class RobotContainer {
+public class RobotContainer implements Loggable{
 
   private CommandXboxController mXboxController = new CommandXboxController(0);
   private Joystick mJoystick = new Joystick(1);

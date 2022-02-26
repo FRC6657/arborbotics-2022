@@ -1,40 +1,5 @@
 {
   "HALProvider": {
-    "Other Devices": {
-      "Talon FX[8]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[9]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon SRX[10]": {
-        "header": {
-          "open": true
-        }
-      }
-    },
-    "PWM Outputs": {
-      "window": {
-        "visible": true
-      }
-    },
-    "RoboRIO": {
-      "3.3V Rail": {
-        "open": true
-      },
-      "5V Rail": {
-        "open": true
-      },
-      "6V Rail": {
-        "open": true
-      },
-      "RoboRIO Input": {
-        "open": true
-      },
       "window": {
         "visible": true
       }
@@ -54,7 +19,6 @@
       "/LiveWindow/Ungrouped/Pigeon IMU [5]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/VisionSubsystem": "Subsystem",
-      "/Shuffleboard/DrivetrainSubsystem/Gyro": "Gyro",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/SendableChooser[0]": "String Chooser"
     },
@@ -66,6 +30,12 @@
         },
         "trajectory": {
           "arrows": false,
+          "color": [
+            0.2666666507720947,
+            1.0,
+            0.0,
+            255.0
+          ],
           "style": "Line"
         },
         "window": {
