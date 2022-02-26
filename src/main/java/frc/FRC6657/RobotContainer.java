@@ -4,6 +4,8 @@
 
 package frc.FRC6657;
 
+import java.util.Arrays;
+
 import javax.management.MBeanServerPermission;
 
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
@@ -14,6 +16,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -28,6 +31,7 @@ import frc.FRC6657.custom.controls.CommandXboxController;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.custom.controls.DriverProfile;
 import frc.FRC6657.custom.rev.Blinkin;
+import frc.FRC6657.custom.rev.BlinkinIndicator;
 import frc.FRC6657.subsystems.blinkin.BlinkinSubsystem;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
@@ -65,12 +69,9 @@ public class RobotContainer implements Loggable{
   public final HoodSubsystem hood;
   public final IntakeSubsystem intake;
   //public final LiftSubsystem lift;
-  public final VisionSubsystem vision;
+  //public final VisionSubsystem vision;
 
-  public final Trigger flywheelReady;
-  public final Trigger flywheelActive;
-  public final Trigger ballDetected;
-  public final Trigger intakeActive;
+  public final Trigger flywheelReady,flywheelActive,ballDetected,intakeActive;
 
   SendableChooser<SequentialCommandGroup> mAutoChooser = new SendableChooser<>();
 
@@ -85,56 +86,29 @@ public class RobotContainer implements Loggable{
     hood = new HoodSubsystem();
     intake = new IntakeSubsystem();
     //lift = new LiftSubsystem();
-    vision = new VisionSubsystem();
+    //vision = new VisionSubsystem();
 
     //Triggers
     flywheelReady = new Trigger(flywheel::atTarget);
     flywheelActive = new Trigger(flywheel::active);
-    ballDetected = new Trigger(intake::BallDetected);
-    intakeActive = new Trigger(intake::Active);
+    ballDetected = new Trigger(intake::ballDetected);
+    intakeActive = new Trigger(intake::active);
 
-    //Automatically runs the kicker and sets the shooter full speed indicator
-    flywheelReady.whileActiveOnce(
-      new ParallelCommandGroup(      
-        new StartEndCommand(
-          () -> accelerator.set(Constants.Accelerator.kSpeed),
-          accelerator::stop,
-          accelerator
-        ),
-        new StartEndCommand(
-          () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kReadyFlywheel),
-          () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),
-          blinkin
-         )
-      )
+    flywheelReady.or(flywheelActive).or(ballDetected).or(intakeActive).whileActiveContinuous(
+      () -> blinkin.setIndicator(new BlinkinIndicator[] {
+        new BlinkinIndicator("Idle", Constants.BlinkinPriorities.kIdle, Constants.BlinkinColors.kIdle),
+        new BlinkinIndicator("FlywheelReady", (flywheelReady.get() ? 1 : 0) * Constants.BlinkinPriorities.kFlywheelReady, Constants.BlinkinColors.kReadyFlywheel),
+        new BlinkinIndicator("FlywheelActive", (flywheelActive.get() ? 1 : 0) * Constants.BlinkinPriorities.kFlywheelActive, Constants.BlinkinColors.kNotReadyFlywheel),
+        new BlinkinIndicator("BallDetected", (ballDetected.get() ? 1 : 0) * Constants.BlinkinPriorities.kBallDetected, Constants.BlinkinColors.kBallDetected),
+        new BlinkinIndicator("IntakeActive", (intakeActive.get() ? 1 : 0) * Constants.BlinkinPriorities.kIntakeActive, Constants.BlinkinColors.kIntake)
+      })
     );
 
-   //Sets Blinkin Color for flywheel spinning up
-   flywheelActive.whileActiveOnce(
-      new StartEndCommand(
-       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kNotReadyFlywheel),
-       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),
-       blinkin
-      )
-   );
-
-   //Changed blinkin color when the intake detects a ball
-   ballDetected.whileActiveOnce(
-     new StartEndCommand(
-       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kBallDetected), 
-       () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),
-       blinkin
-     )
-   );
-
-   //Changes the blinkin color when the intake is running
-   intakeActive.whileActiveOnce(
-    new StartEndCommand(
-      () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIntake), 
-      () -> blinkin.setBlinkinColor(Constants.BlinkinColors.kIdle),
-      blinkin
-    )
-  );
+    flywheelReady.or(flywheelActive).or(ballDetected).or(intakeActive).whenInactive(
+      () -> blinkin.setIndicator(new BlinkinIndicator[] {
+        new BlinkinIndicator("Idle", Constants.BlinkinPriorities.kIdle, Constants.BlinkinColors.kIdle)
+      })
+    );
 
 
     drivetrain.setDefaultCommand(new RunCommand(() -> {
@@ -203,7 +177,20 @@ public class RobotContainer implements Loggable{
 
     }
   }
+
+  public void setBlinkinTriggers(){
+    
+  }
+
   public SequentialCommandGroup getAutonomousCommand() {
     return mAutoChooser.getSelected();
   }
+  // blinkin.new BlinkinManager(
+  //   new BlinkinIndicator[]{
+  //     new BlinkinIndicator("FlywheelReady", flywheelReady.get() ? 1:0 * Constants.BlinkinPriorities.kFlywheelReady, Constants.BlinkinColors.kReadyFlywheel),
+  //     new BlinkinIndicator("FlywheelActive", flywheelActive.get() ? 1:0 * Constants.BlinkinPriorities.kFlywheelActive, Constants.BlinkinColors.kNotReadyFlywheel),
+  //     new BlinkinIndicator("BallDetected", ballDetected.get() ? 1:0 * Constants.BlinkinPriorities.kBallDetected, Constants.BlinkinColors.kBallDetected),
+  //     new BlinkinIndicator("IntakeActive", intakeActive.get() ? 1:0 * Constants.BlinkinPriorities.kIntakeActive, Constants.BlinkinColors.kIntake)
+  //   }
+  // )
 }

@@ -415,7 +415,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     return 0;
   }
 
-
   /*
    * Commands 
    */

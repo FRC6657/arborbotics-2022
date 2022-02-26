@@ -18,7 +18,7 @@ public class BallDetectionTest extends SequentialCommandGroup {
   ) {
     addCommands(
       new ParallelRaceGroup(
-        new WaitUntilCommand(intake::BallDetected),
+        new WaitUntilCommand(intake::ballDetected),
         drivetrain.new TrajectoryFollowerCommand(Trajectories.BALL_TEST_1, true)
       ),
       drivetrain.new TrajectoryFollowerCommand(Trajectories.BALL_TEST_2, false)
