@@ -26,6 +26,8 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC6657.autonomous.routines.BallDetectionTest;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueBottomTarmacTwoBall;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedTopTarmacTwoBall;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
 import frc.FRC6657.custom.controls.Deadbander;
@@ -125,7 +127,8 @@ public class RobotContainer implements Loggable{
 
   private void configureAutoChooser() {
     mAutoChooser.setDefaultOption("Nothing", null);
-    mAutoChooser.addOption("BallDetectionTest", new BallDetectionTest(drivetrain, intake));
+    mAutoChooser.addOption("BlueBottomTwo", new BlueBottomTarmacTwoBall(drivetrain, intake, extension, flywheel, accelerator));
+    mAutoChooser.addOption("RedTopTwo", new RedTopTarmacTwoBall(drivetrain, intake, extension, flywheel, accelerator));
     SmartDashboard.putData(mAutoChooser);
   }
 
@@ -185,12 +188,4 @@ public class RobotContainer implements Loggable{
   public SequentialCommandGroup getAutonomousCommand() {
     return mAutoChooser.getSelected();
   }
-  // blinkin.new BlinkinManager(
-  //   new BlinkinIndicator[]{
-  //     new BlinkinIndicator("FlywheelReady", flywheelReady.get() ? 1:0 * Constants.BlinkinPriorities.kFlywheelReady, Constants.BlinkinColors.kReadyFlywheel),
-  //     new BlinkinIndicator("FlywheelActive", flywheelActive.get() ? 1:0 * Constants.BlinkinPriorities.kFlywheelActive, Constants.BlinkinColors.kNotReadyFlywheel),
-  //     new BlinkinIndicator("BallDetected", ballDetected.get() ? 1:0 * Constants.BlinkinPriorities.kBallDetected, Constants.BlinkinColors.kBallDetected),
-  //     new BlinkinIndicator("IntakeActive", intakeActive.get() ? 1:0 * Constants.BlinkinPriorities.kIntakeActive, Constants.BlinkinColors.kIntake)
-  //   }
-  // )
 }
