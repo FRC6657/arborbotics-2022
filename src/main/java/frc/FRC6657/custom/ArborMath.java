@@ -13,6 +13,17 @@ public class ArborMath {
         return Math.signum(val) * Math.pow(Math.abs(val),power);
     }
 
+    public static double normalizeFusedHeading(double inHeading) {
+        if(inHeading > 360){
+          inHeading -= 360;
+          return normalizeFusedHeading(inHeading);
+        } else if (inHeading < 0){
+          inHeading += 360;
+          return normalizeFusedHeading(inHeading);
+        }
+        else return inHeading;
+      }
+
     /**
      * @param val Input value
      * @param lower Low end of the range
