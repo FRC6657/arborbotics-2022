@@ -58,7 +58,7 @@ public class Trajectories {
      * @param name Label for print purposes
      * @return A Trajectory
      */
-    private static Trajectory generateTrajectory(double maxVel, double maxAccel, List<Pose2d> waypoints, boolean reversed, String name) {
+    public static Trajectory generateTrajectory(double maxVel, double maxAccel, List<Pose2d> waypoints, boolean reversed, String name) {
         TrajectoryConfig config = new TrajectoryConfig(maxVel, maxAccel);
         config.setReversed(reversed);
         System.out.println("Trajectory '" + name + "' Generated");
