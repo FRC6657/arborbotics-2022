@@ -33,9 +33,7 @@ public class BlinkinSubsystem extends SubsystemBase {
         selectedPattern = states[i].pattern;
       }
     }
-
-    System.out.println(selectedPattern);
-
+    mBlinkin.setLEDMode(selectedPattern);
   }
 }
 
