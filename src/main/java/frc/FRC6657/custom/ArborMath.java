@@ -26,7 +26,7 @@ public class ArborMath {
     /**
      * @param val Input value
      * @param tolerance tollerance around a 0 point
-     * @return If the inptu is in the tollerance
+     * @return If the input is in the tollerance
      */
     public static boolean inTolerance(double val, double tolerance){
         return inRange(val, -tolerance, tolerance);
