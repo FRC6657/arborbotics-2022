@@ -36,10 +36,15 @@ public class IntakeSubsystem extends SubsystemBase implements Loggable {
   }
 
   
-  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Intake Speed", defaultValueNumeric = 0, tabName = "Intake") //Allows for easy intake testing
+  //@Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Intake Speed", defaultValueNumeric = 0, tabName = "Intake") //Allows for easy intake testing
   public void set(double percent) {
     mMotor.set(percent);
     mTimer.start();
+  }
+
+  @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Intake Speed", tabName = "IntakeSubsystem")
+  public double getSpeed(){
+    return mMotor.get();
   }
 
   public void stop() {
@@ -48,7 +53,7 @@ public class IntakeSubsystem extends SubsystemBase implements Loggable {
     mTimer.stop();
   }
 
-  @Log.BooleanBox(rowIndex = 0, columnIndex = 1, width = 1, height = 1, name = "Ball Detected", tabName = "Intake")
+  @Log.BooleanBox(rowIndex = 0, columnIndex = 1, width = 1, height = 1, name = "Ball Detected", tabName = "IntakeSubsystem")
   public boolean ballDetected(){
     return mTimer.get() < Constants.Intake.kStartupTime && mMotor.getStatorCurrent() > Constants.Intake.kBallCurrent;
   }

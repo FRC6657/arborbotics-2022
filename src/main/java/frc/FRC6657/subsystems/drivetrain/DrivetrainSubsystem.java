@@ -54,7 +54,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   private TalonFXSimCollection mLeftSim, mRightSim;
   
   //Gyro
-  @Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro", tabName = "Drivetrain")
+  @Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro", tabName = "DrivetrainSubsystem")
   private final WPI_PigeonIMU mPigeonIMU = new WPI_PigeonIMU(Constants.kPigeonID);
   //Simulated Gyro
   private BasePigeonSimCollection mPigeonIMUSim;
@@ -351,7 +351,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   /**
    * Get left drivetrain encoder distance in meters
    */
-  @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Left Distance", tabName = "Drivetrain")
+  @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Left Distance", tabName = "DrivetrainSubsystem")
   public double getLeftMeters() {
     return mFrontLeft.getSelectedSensorPosition() * Constants.Drivetrain.kDistancePerPulse;
   }
@@ -359,7 +359,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   /**
    * Get right drivetrain encoder distance in meters
    */
-  @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Right Distance", tabName = "Drivetrain")
+  @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Right Distance", tabName = "DrivetrainSubsystem")
   public double getRightMeters() {
     return mFrontRight.getSelectedSensorPosition() * Constants.Drivetrain.kDistancePerPulse;
   }
@@ -367,7 +367,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   /**
    * Get left drivetrain motor velocity in m/s²
    */
-  @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Left Velocity", tabName = "Drivetrain")
+  @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Left Velocity", tabName = "DrivetrainSubsystem")
   public double getLeftVelocity() {
     return mFrontLeft.getSelectedSensorVelocity() * 10 * Constants.Drivetrain.kDistancePerPulse;
   }
@@ -375,7 +375,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   /**
    * Get right drivetrain motor velocity in m/s²
    */
-  @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity", tabName = "Drivetrain")
+  @Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "Right Velocity", tabName = "DrivetrainSubsystem")
   public double getRightVelocity() {
     return mFrontRight.getSelectedSensorVelocity() * 10 * Constants.Drivetrain.kDistancePerPulse;
   }
@@ -384,7 +384,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * This is mainly to have a velocity gauge on shuffleboard.
    * @return Same as getLeftVelocity()
    */
-  @Log.Dial(rowIndex = 2, columnIndex = 2, width = 1, height = 1, name = "Left Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false, tabName = "Drivetrain")
+  @Log.Dial(rowIndex = 2, columnIndex = 2, width = 1, height = 1, name = "Left Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false, tabName = "DrivetrainSubsystem")
   public double leftVelocityGauge(){
     return getLeftVelocity();
   }
@@ -393,12 +393,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * This is mainly to have a velocity gauge on shuffleboard.
    * @return Same as getRightVelocity()
    */
-  @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false, tabName = "Drivetrain")
+  @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false, tabName = "DrivetrainSubsystem")
   public double rightVelocityGauge(){
     return getRightVelocity();
   }
 
-  @Log(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name = "Gyro Velocity", tabName = "Drivetrain")
+  @Log(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name = "Gyro Velocity", tabName = "DrivetrainSubsystem")
   public double getHeadingVelocity(){
     double[] gyroVals = {0,0,0};
     mPigeonIMU.getRawGyro(gyroVals);
