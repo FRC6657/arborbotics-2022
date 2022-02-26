@@ -160,11 +160,15 @@ public final class Constants {
         public static final BlinkinLEDPattern kNotReadyFlywheel = BlinkinLEDPattern.STROBE_RED;
     }
 
-    public static int flywheelReadyPriority = 3;
-    public static int flywheelActivePriority = 2;
-    public static int ballDetectedPriority = 1;
-    public static int intakeActivePriority = 0;
+    public static class BlinkinPriorities{
 
+        public static int kFlywheelReady = 5;
+        public static int kFlywheelActive = 4;
+        public static int kBallDetected = 3;
+        public static int kIntakeActive = 2;
+        public static int kIdle = 1;
+    
+    }
     public static class DriverConfigs{
         public static final double kTurnDeadband = 0.1;
         public static final double kDriveDeadband = 0.1;

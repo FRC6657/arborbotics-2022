@@ -29,7 +29,6 @@ public class AcceleratorSubsystem extends SubsystemBase implements Loggable{
   }
 
   public void set(double percent){
-    System.out.println("Flywheel Ready");
     mMotor.set(percent);
   }
 

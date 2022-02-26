@@ -16,6 +16,28 @@
           "open": true
         }
       }
+    },
+    "PWM Outputs": {
+      "window": {
+        "visible": true
+      }
+    },
+    "RoboRIO": {
+      "3.3V Rail": {
+        "open": true
+      },
+      "5V Rail": {
+        "open": true
+      },
+      "6V Rail": {
+        "open": true
+      },
+      "RoboRIO Input": {
+        "open": true
+      },
+      "window": {
+        "visible": true
+      }
     }
   },
   "NTProvider": {
@@ -33,14 +55,31 @@
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/VisionSubsystem": "Subsystem",
       "/Shuffleboard/DrivetrainSubsystem/Gyro": "Gyro",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/SendableChooser[0]": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "robot-path": {
+          "arrows": false,
+          "style": "Line"
+        },
+        "trajectory": {
+          "arrows": false,
+          "style": "Line"
+        },
         "window": {
           "visible": true
         }
       }
+    }
+  },
+  "NetworkTables": {
+    "SmartDashboard": {
+      "SendableChooser[0]": {
+        "open": true
+      },
+      "open": true
     }
   }
 }

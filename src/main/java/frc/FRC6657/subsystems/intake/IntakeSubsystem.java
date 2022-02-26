@@ -47,12 +47,12 @@ public class IntakeSubsystem extends SubsystemBase implements Loggable {
     mTimer.stop();
   }
 
-  public boolean BallDetected(){
+  public boolean ballDetected(){
     return mTimer.get() < Constants.Intake.kStartupTime && mMotor.getStatorCurrent() > Constants.Intake.kBallCurrent;
   }
 
-  public boolean Active(){
-    return mMotor.get() != 0 && !BallDetected();
+  public boolean active(){
+    return mMotor.get() != 0;
   }
 
 }
