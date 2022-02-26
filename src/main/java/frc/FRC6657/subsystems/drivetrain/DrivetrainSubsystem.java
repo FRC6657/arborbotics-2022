@@ -41,6 +41,7 @@ import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
+import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.custom.controls.DriverProfile;
 import io.github.oblarg.oblog.Loggable;
@@ -348,6 +349,22 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     return mOdometry.getPoseMeters();
   }
 
+  @Log(rowIndex = 0, columnIndex = 0, width = 2, height = 1, name = "Odometry Angle", tabName = "Scott Gyro Stuff")
+  public double OdemetryAngle() {
+    return mOdometry.getPoseMeters().getRotation().getDegrees();
+  }
+
+  @Log(rowIndex = 0, columnIndex = 1, width = 2, height = 1, name = "Odometry Angle Corrected", tabName = "Scott Gyro Stuff")
+  public double CorrectedOdometryAngle() {
+    if(mOdometry.getPoseMeters().getRotation().getDegrees() >= 0) {
+      return mOdometry.getPoseMeters().getRotation().getDegrees();
+    } else {
+      return mOdometry.getPoseMeters().getRotation().getDegrees() + 360;
+    }
+  }
+
+
+
   /**
    * Get left drivetrain encoder distance in meters
    */
@@ -408,9 +425,18 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   /**
    * @return Gyro accumulated angle if it is ready to give accurate data
    */
+  @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Gyro Raw", tabName = "Scott Gyro Stuff")
   public double getGyroAngle(){
     if(mPigeonIMU.getState() == PigeonState.Ready){
       return mPigeonIMU.getFusedHeading();
+    }
+    return 0;
+  }
+
+  @Log(rowIndex = 0, columnIndex = 3, width = 2, height = 1, name = "Gyro Normalized", tabName = "Scott Gyro Stuff")
+  public double getGyroCorrected() {
+    if(mPigeonIMU.getState() == PigeonState.Ready){
+      return ArborMath.normalizeFusedHeading(mPigeonIMU.getFusedHeading());
     }
     return 0;
   }
