@@ -20,8 +20,18 @@ public class BlinkinSubsystem extends SubsystemBase {
   }
 
   public void setIndicator(BlinkinIndicator[] states){
-    
-  }
+    int i;
+    int largest = 0;
+    BlinkinLEDPattern selectedPattern = Constants.BlinkinColors.kIdle;
+    for(i=0; i<states.length; i++){
+      if (states[i].priority > largest){
+        largest = states[i].priority;
+        selectedPattern = states[i].pattern;
+      }
+    }
 
+    System.out.println(largest);
+
+  }
 }
 
