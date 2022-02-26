@@ -30,7 +30,7 @@ public class BlinkinSubsystem extends SubsystemBase {
       }
     }
 
-    System.out.println(largest);
+    System.out.println(selectedPattern);
 
   }
 }

@@ -94,12 +94,23 @@ public class RobotContainer {
     flywheelReady.or(flywheelActive).or(ballDetected).or(intakeActive).whileActiveContinuous(
       () -> blinkin.setIndicator(new BlinkinIndicator[] {
         new BlinkinIndicator("Idle", Constants.BlinkinPriorities.kIdle, Constants.BlinkinColors.kIdle),
-        new BlinkinIndicator("FlywheelReady", flywheelReady.get() ? 0 : 1 * Constants.BlinkinPriorities.kFlywheelReady, Constants.BlinkinColors.kReadyFlywheel),
-        new BlinkinIndicator("FlywheelActive", flywheelActive.get() ? 0 : 1 * Constants.BlinkinPriorities.kFlywheelActive, Constants.BlinkinColors.kNotReadyFlywheel),
-        new BlinkinIndicator("BallDetected", ballDetected.get() ? 0 : 1 * Constants.BlinkinPriorities.kBallDetected, Constants.BlinkinColors.kBallDetected),
-        new BlinkinIndicator("IntakeActive", intakeActive.get() ? 0 : 1 * Constants.BlinkinPriorities.kIntakeActive, Constants.BlinkinColors.kIntake)
+        new BlinkinIndicator("FlywheelReady", (flywheelReady.get() ? 1 : 0) * Constants.BlinkinPriorities.kFlywheelReady, Constants.BlinkinColors.kReadyFlywheel),
+        new BlinkinIndicator("FlywheelActive", (flywheelActive.get() ? 1 : 0) * Constants.BlinkinPriorities.kFlywheelActive, Constants.BlinkinColors.kNotReadyFlywheel),
+        new BlinkinIndicator("BallDetected", (ballDetected.get() ? 1 : 0) * Constants.BlinkinPriorities.kBallDetected, Constants.BlinkinColors.kBallDetected),
+        new BlinkinIndicator("IntakeActive", (intakeActive.get() ? 1 : 0) * Constants.BlinkinPriorities.kIntakeActive, Constants.BlinkinColors.kIntake)
       })
     );
+
+    flywheelReady.or(flywheelActive).or(ballDetected).or(intakeActive).whenInactive(
+      () -> blinkin.setIndicator(new BlinkinIndicator[] {
+        new BlinkinIndicator("Idle", Constants.BlinkinPriorities.kIdle, Constants.BlinkinColors.kIdle),
+        new BlinkinIndicator("FlywheelReady", (flywheelReady.get() ? 1 : 0) * Constants.BlinkinPriorities.kFlywheelReady, Constants.BlinkinColors.kReadyFlywheel),
+        new BlinkinIndicator("FlywheelActive", (flywheelActive.get() ? 1 : 0) * Constants.BlinkinPriorities.kFlywheelActive, Constants.BlinkinColors.kNotReadyFlywheel),
+        new BlinkinIndicator("BallDetected", (ballDetected.get() ? 1 : 0) * Constants.BlinkinPriorities.kBallDetected, Constants.BlinkinColors.kBallDetected),
+        new BlinkinIndicator("IntakeActive", (intakeActive.get() ? 1 : 0) * Constants.BlinkinPriorities.kIntakeActive, Constants.BlinkinColors.kIntake)
+      })
+    );
+
 
     drivetrain.setDefaultCommand(new RunCommand(() -> {
       drivetrain.teleopCurvatureDrive(
