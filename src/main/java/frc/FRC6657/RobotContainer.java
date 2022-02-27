@@ -12,7 +12,9 @@ import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,10 +27,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.FRC6657.autonomous.routines.BallDetectionTest;
-import frc.FRC6657.autonomous.routines.PoseTest;
-import frc.FRC6657.autonomous.routines.BlueAllience.BlueBottomTarmacTwoBall;
-import frc.FRC6657.autonomous.routines.RedAlliance.RedTopTarmacTwoBall;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
+import frc.FRC6657.autonomous.routines.Tests.BallDetectionTest;
+import frc.FRC6657.autonomous.routines.Tests.PoseTest;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
 import frc.FRC6657.custom.controls.Deadbander;
@@ -124,12 +126,21 @@ public class RobotContainer implements Loggable{
     
     configureButtonBindings();
     configureAutoChooser();
+
+    if(RobotBase.isSimulation()){
+      spoofVision();
+    }
+
+  }
+
+  private void spoofVision() {
+    NetworkTableInstance.getDefault().getTable("photonvision").getEntry("version").setValue("v2022.1.4");
   }
 
   private void configureAutoChooser() {
     mAutoChooser.setDefaultOption("Nothing", null);
-    mAutoChooser.addOption("BlueBottomTwo", new BlueBottomTarmacTwoBall(drivetrain, intake, extension, flywheel, accelerator));
-    mAutoChooser.addOption("RedTopTwo", new RedTopTarmacTwoBall(drivetrain, intake, extension, flywheel, accelerator));
+    mAutoChooser.addOption("BlueMidTwo", new BlueMidTwo(drivetrain, intake, extension, flywheel, accelerator));
+    mAutoChooser.addOption("RedMidTwo", new RedMidTwo(drivetrain, intake, extension, flywheel, accelerator));
     mAutoChooser.addOption("PoseTest", new PoseTest(drivetrain));
     SmartDashboard.putData(mAutoChooser);
   }
@@ -181,10 +192,6 @@ public class RobotContainer implements Loggable{
       );
 
     }
-  }
-
-  public void setBlinkinTriggers(){
-    
   }
 
   public SequentialCommandGroup getAutonomousCommand() {

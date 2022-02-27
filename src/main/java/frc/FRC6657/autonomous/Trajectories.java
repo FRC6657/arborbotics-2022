@@ -23,39 +23,6 @@ public class Trajectories {
         "GENERATE"
     );
 
-    public static Trajectory BALL_TEST_1 = generateTrajectory(
-        1,
-        1,
-        List.of(
-            new Pose2d(4, 4, Rotation2d.fromDegrees(0)),
-            new Pose2d(5, 4, Rotation2d.fromDegrees(0))
-        ),
-        false,
-        "Ball Detection 1"
-    );
-
-    public static Trajectory BALL_TEST_2 = generateTrajectory(
-        1,
-        1,
-        List.of(
-            new Pose2d(5, 4, Rotation2d.fromDegrees(0)),
-            new Pose2d(4, 4, Rotation2d.fromDegrees(0))
-        ),
-        true,
-        "Ball Detection 2"
-    );
-
-    public static Trajectory PoseTest = generateTrajectory(
-        1,
-        1,
-        List.of(
-            new Pose2d(5, 5, Rotation2d.fromDegrees(90)),
-            new Pose2d(10, 5, Rotation2d.fromDegrees(90))
-        ),
-        false,
-        "Pose Test"
-    );
-
     /**
      * 
      * Trajectory Generator Function
