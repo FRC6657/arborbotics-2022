@@ -45,6 +45,17 @@ public class Trajectories {
         "Ball Detection 2"
     );
 
+    public static Trajectory PoseTest = generateTrajectory(
+        1,
+        1,
+        List.of(
+            new Pose2d(5, 5, Rotation2d.fromDegrees(90)),
+            new Pose2d(10, 5, Rotation2d.fromDegrees(90))
+        ),
+        false,
+        "Pose Test"
+    );
+
     /**
      * 
      * Trajectory Generator Function

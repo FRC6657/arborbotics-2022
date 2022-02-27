@@ -1,5 +1,17 @@
 {
   "HALProvider": {
+    "Other Devices": {
+      "Talon FX[2]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[10]": {
+        "header": {
+          "open": true
+        }
+      }
+    },
     "Solenoids": {
       "window": {
         "visible": true
@@ -28,30 +40,33 @@
       "/LiveWindow/Ungrouped/Talon FX [9]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [10]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [6]": "Motor Controller",
+      "/LiveWindow/VisionSubsystem": "Subsystem",
       "/Shuffleboard/Drivetrain/Gyro": "Gyro",
       "/Shuffleboard/DrivetrainSubsystem/Gyro": "Gyro",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/SendableChooser[0]": "String Chooser"
     },
     "windows": {
-      "/Shuffleboard/Drivetrain/Gyro": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Field": {
         "bottom": 900,
         "height": 8.229599952697754,
-        "image": "C:\\Code\\arborbotics-2022\\FieldImages\\2022-field.png",
+        "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
         "left": 74,
         "right": 1774,
         "robot-path": {
           "arrows": false,
-          "style": "Line"
+          "style": "Line",
+          "weight": 2.0
         },
         "top": 50,
         "trajectory": {
           "arrows": false,
+          "color": [
+            0.22520188987255096,
+            0.6960784196853638,
+            0.0,
+            255.0
+          ],
           "style": "Line"
         },
         "width": 16.459199905395508,
@@ -73,8 +88,7 @@
       },
       "Intake": {
         "open": true
-      },
-      "open": true
+      }
     },
     "SmartDashboard": {
       "Field": {

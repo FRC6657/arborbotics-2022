@@ -49,7 +49,6 @@ import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.custom.controls.DriverProfile;
 import frc.FRC6657.subsystems.vision.VisionSubsystem;
-import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -68,7 +67,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   //Kinematics and PoseEstimator Classes
   private final DifferentialDriveKinematics mKinematics;
-  private final DifferentialDrivePoseEstimator mEstimator = new DifferentialDrivePoseEstimator(
+  private final DifferentialDrivePoseEstimator mPoseEstimator = new DifferentialDrivePoseEstimator(
     new Rotation2d(), 
     new Pose2d(), 
     new MatBuilder<>(
@@ -78,11 +77,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     new MatBuilder<>(
         Nat.N3(), 
         Nat.N1()
-    ).fill(0.02, 0.02, 0.01), 
+    ).fill(0.02, 0.02, 0.01), //Sensor Deviation Left, Right, Gyro
     new MatBuilder<>(
       Nat.N3(), 
       Nat.N1()
-    ).fill(0.1, 0.1, 0.01)
+    ).fill(0.1, 0.1, 0.01) //Measurement Deviation X, Y, Theta
   );
 
   //Feed forward and PID controller for advanced movement
@@ -92,7 +91,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   //Ramsete Controller for Path Following
   private RamseteController mRamseteController = new RamseteController();
 
-  //Field2D for odometry visualization
+  //Field2D for position visualization
   private Field2d mField = new Field2d();
   
   //Field objects to display trajectory following accuracy
@@ -255,6 +254,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   public void resetGyro(){
     mPigeonIMU.reset();
+  }
+
+  public void resetPoseEstimator(Pose2d newPose){
+    mPigeonIMU.setFusedHeading(newPose.getRotation().getDegrees());
+    mPoseEstimator.resetPosition(newPose, mPigeonIMU.getRotation2d());
   }
 
   /**
@@ -422,13 +426,13 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   }
 
   public void updatePoseEstimator(DifferentialDriveWheelSpeeds actWheelSpeeds, double leftDist, double rightDist) {
-    mEstimator.update(mPigeonIMU.getRotation2d(), actWheelSpeeds, leftDist, rightDist);
+    mPoseEstimator.update(mPigeonIMU.getRotation2d(), actWheelSpeeds, leftDist, rightDist);
     var res = mVision.visionSupplier.getResult();
     if(res.hasTargets()){
       double imageCaptureTime = Timer.getFPGATimestamp() - res.getLatencyMillis();
       Transform2d camToTargetTrans = res.getBestTarget().getCameraToTarget();
       Pose2d camPose = Constants.Vision.kTargetPos.transformBy(camToTargetTrans.inverse());
-      mEstimator.addVisionMeasurement(camPose.transformBy(Constants.Vision.kCameraToRobot), imageCaptureTime);
+      mPoseEstimator.addVisionMeasurement(camPose.transformBy(Constants.Vision.kCameraToRobot), imageCaptureTime);
     }
   }
 
@@ -454,10 +458,13 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     @Override
     public void initialize() {
-      
 
+      if(resetPose){
+        resetPoseEstimator(trajectory.getInitialPose());
+      }
+    
       mPathPoints.clear();
-      //mPathPoints.add(mOdometry.getPoseMeters());
+      mPathPoints.add(mPoseEstimator.getEstimatedPosition());
       mRobotPath.setPoses(mPathPoints);
       mTrajectoryPlot.setTrajectory(trajectory);
 
@@ -466,14 +473,14 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
     @Override
     public void execute() {
-        //mPathPoints.add(mOdometry.getPoseMeters());
+        mPathPoints.add(mPoseEstimator.getEstimatedPosition());
         mRobotPath.setPoses(mPathPoints);
 
         State desiredPose = trajectory.sample(timer.get());
-        //ChassisSpeeds refChassisSpeeds = mRamseteController.calculate(mOdometry.getPoseMeters(), desiredPose);
-        //DifferentialDriveWheelSpeeds wheelSpeeds = mKinematics.toWheelSpeeds(refChassisSpeeds);
+        ChassisSpeeds refChassisSpeeds = mRamseteController.calculate(mPoseEstimator.getEstimatedPosition(), desiredPose);
+        DifferentialDriveWheelSpeeds wheelSpeeds = mKinematics.toWheelSpeeds(refChassisSpeeds);
 
-        //setSpeeds(wheelSpeeds);
+        setSpeeds(wheelSpeeds);
     }
 
     @Override
@@ -495,8 +502,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
 
   @Override
   public void periodic() {
-    //mOdometry.update(Rotation2d.fromDegrees(getGyroAngle()), getLeftMeters(), getRightMeters());
-    //mField.setRobotPose(mOdometry.getPoseMeters());
+    updatePoseEstimator(new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity()), getLeftMeters(), getRightMeters());
+    mField.setRobotPose(mPoseEstimator.getEstimatedPosition());
   }
 
   @Override
