@@ -448,6 +448,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
       mRobotPath.setPoses(mPathPoints);
       mTrajectoryPlot.setTrajectory(trajectory);
 
+      timer.reset();
       timer.start();
     }
 

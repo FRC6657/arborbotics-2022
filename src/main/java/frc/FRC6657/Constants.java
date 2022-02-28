@@ -112,6 +112,8 @@ public final class Constants {
         public static final double kRPMTollerance = 50;
         public static final double kRatio = 1.5/1.0;
 
+        public static final double kSpeed = 0.5;
+
         // Characterization
         public static final double kV = 0.0549; // 0.051151
         public static final double kA= 0.0024487; //0.0024487 
