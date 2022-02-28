@@ -57,7 +57,7 @@ public final class Constants {
         public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(drive_kS, drive_kV, drive_kA);
 
         // Drivetrain PID
-        public static final double drive_linear_kP = 1; //Char P gain 3.1976
+        public static final double drive_linear_kP = 0.64132; //Char P gain 0.64132
 
         public static final PIDController kLinearPIDController = new PIDController(drive_linear_kP, 0, 0);
 

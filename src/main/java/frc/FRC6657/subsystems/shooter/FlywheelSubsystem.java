@@ -40,7 +40,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   private final LinearQuadraticRegulator<N1, N1, N1> mFlywheelController = new LinearQuadraticRegulator<>(
       Constants.Flywheel.kPlant,
-      VecBuilder.fill(500.0), // Velocity error tolerance 8.0
+      VecBuilder.fill(500.0), // Velocity error tolerance
       VecBuilder.fill(12.0), // Control effort (voltage) tolerance
       0.020);
 

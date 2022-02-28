@@ -26,8 +26,8 @@ public class PoseTest extends SequentialCommandGroup {
     1,
     1,
     List.of(
-        new Pose2d(5, 5, Rotation2d.fromDegrees(90)),
-        new Pose2d(5.01, 5, Rotation2d.fromDegrees(90))
+        new Pose2d(5, 5, Rotation2d.fromDegrees(0)),
+        new Pose2d(5, 7, Rotation2d.fromDegrees(180))
     ),
     false,
     "PoseTest SAMPLE"

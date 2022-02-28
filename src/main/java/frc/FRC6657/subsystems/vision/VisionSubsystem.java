@@ -4,12 +4,18 @@
 
 package frc.FRC6657.subsystems.vision;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,6 +38,15 @@ public class VisionSubsystem extends SubsystemBase {
   public static final int camResolutionWidth = 320; // pixels
   public static final int camResolutionHeight = 240; // pixels
   public static final double minTargetArea = 10; // square pixels
+
+  public static final Translation2d kFieldCenterX = new Translation2d(8.2295, 4.115);
+
+  private List<Pose2d> mVisionTargets = new ArrayList<Pose2d>();
+
+  public VisionSubsystem(){
+    mVisionTargets.add(new Pose2d(kFieldCenterX, new Rotation2d()));
+  }
+
 
   @Override
   public void periodic() {
@@ -75,6 +90,10 @@ public class VisionSubsystem extends SubsystemBase {
 
     public PhotonPipelineResult getResult() {
       return result;
+    }
+
+    public List<Pose2d> getVisionTarget() {
+      return mVisionTargets;
     }
 
     // Toggles the LL LEDs

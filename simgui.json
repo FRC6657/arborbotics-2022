@@ -48,6 +48,20 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "VisionTargets": {
+          "arrows": false,
+          "color": [
+            1.0,
+            0.0,
+            1.0,
+            255.0
+          ],
+          "length": 0.11999999731779099,
+          "selectable": false,
+          "style": "Box/Image",
+          "weight": 5.0,
+          "width": 0.11999999731779099
+        },
         "bottom": 900,
         "height": 8.229599952697754,
         "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",

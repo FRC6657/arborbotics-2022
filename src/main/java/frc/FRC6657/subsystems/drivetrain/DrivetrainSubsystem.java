@@ -49,6 +49,7 @@ import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.custom.controls.DriverProfile;
 import frc.FRC6657.subsystems.vision.VisionSubsystem;
+import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -97,6 +98,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   //Field objects to display trajectory following accuracy
   private FieldObject2d mTrajectoryPlot = mField.getObject("trajectory");
   private FieldObject2d mRobotPath = mField.getObject("robot-path");
+  private FieldObject2d mVisionTargets = mField.getObject("VisionTargets");
   private List<Pose2d> mPathPoints = new ArrayList<Pose2d>();
 
   //Drivetrain Simulation
@@ -149,6 +151,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
       mLeftSim = mFrontLeft.getSimCollection();
       mRightSim = mFrontRight.getSimCollection();
     }
+
+    mVisionTargets.setPoses(vision.visionSupplier.getVisionTarget());
+
     //Field Visualization
     SmartDashboard.putData(mField);
 
