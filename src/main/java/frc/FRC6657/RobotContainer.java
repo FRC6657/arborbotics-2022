@@ -5,14 +5,18 @@
 package frc.FRC6657;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.management.MBeanServerPermission;
 
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
+import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -75,7 +79,9 @@ public class RobotContainer implements Loggable{
 
   public final Trigger flywheelReady,flywheelActive,ballDetected,intakeActive;
 
-  SendableChooser<SequentialCommandGroup> mAutoChooser = new SendableChooser<>();
+  HashMap<Alliance, HashMap<String, SequentialCommandGroup>> mAutoList;
+
+  SendableChooser<String> mAutoChooser = new SendableChooser<>();
 
   public RobotContainer() {
 
@@ -126,9 +132,13 @@ public class RobotContainer implements Loggable{
   }
 
   private void configureAutoChooser() {
+    // mAutoList.put(Alliance.Red, null);
+    // mAutoList.put(Alliance.Blue, null);
+    // mAutoList.get(Alliance.Red).put("Top Tarmac Two Ball", new RedTopTarmacTwoBall(drivetrain, intake, extension, flywheel, accelerator));
+    System.out.println(DriverStation.getAlliance());
     mAutoChooser.setDefaultOption("Nothing", null);
-    mAutoChooser.addOption("BlueBottomTwo", new BlueBottomTarmacTwoBall(drivetrain, intake, extension, flywheel, accelerator));
-    mAutoChooser.addOption("RedTopTwo", new RedTopTarmacTwoBall(drivetrain, intake, extension, flywheel, accelerator));
+    mAutoChooser.addOption("Bottom Two", "Bottom Two");
+    mAutoChooser.addOption("Top Two", "Top Two");
     SmartDashboard.putData(mAutoChooser);
   }
 
@@ -186,6 +196,6 @@ public class RobotContainer implements Loggable{
   }
 
   public SequentialCommandGroup getAutonomousCommand() {
-    return mAutoChooser.getSelected();
+    return null;
   }
 }
