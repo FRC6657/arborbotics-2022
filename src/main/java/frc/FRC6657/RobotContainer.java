@@ -79,9 +79,7 @@ public class RobotContainer implements Loggable{
 
   public final Trigger flywheelReady,flywheelActive,ballDetected,intakeActive;
 
-  HashMap<Alliance, HashMap<String, SequentialCommandGroup>> mAutoList;
-
-  SendableChooser<String> mAutoChooser = new SendableChooser<>();
+  SendableChooser<SequentialCommandGroup[]> mAutoChooser = new SendableChooser<>();
 
   public RobotContainer() {
 
@@ -132,15 +130,14 @@ public class RobotContainer implements Loggable{
   }
 
   private void configureAutoChooser() {
-    // HashMap<String, SequentialCommandGroup> mRedAutos = new HashMap<>();
-    // HashMap<String, SequentialCommandGroup> mBlueAutos = new HashMap<>();
-    // mAutoList.put(Alliance.Red, mRedAutos);
-    // mAutoList.put(Alliance.Blue, mBlueAutos);
     System.out.println("*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n");
-    System.out.println(DriverStation.getAlliance());
     mAutoChooser.setDefaultOption("Nothing", null);
-    mAutoChooser.addOption("Bottom Two", "Bottom Two");
-    mAutoChooser.addOption("Top Two", "Top Two");
+    mAutoChooser.addOption("AllianceTest",
+      new SequentialCommandGroup[]{
+        new RedTopTarmacTwoBall(drivetrain, intake, extension, flywheel, accelerator),
+        new BlueBottomTarmacTwoBall(drivetrain, intake, extension, flywheel, accelerator)
+      }
+    );
     SmartDashboard.putData(mAutoChooser);
   }
 
@@ -198,6 +195,15 @@ public class RobotContainer implements Loggable{
   }
 
   public SequentialCommandGroup getAutonomousCommand() {
-    return null;
+    
+    int alliance = 0;
+
+    if(DriverStation.getAlliance() == Alliance.Red){
+      alliance = 0;
+    }else{
+      alliance = 1;
+    }
+    
+    return mAutoChooser.getSelected()[alliance];
   }
 }
