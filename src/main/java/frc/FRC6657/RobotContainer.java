@@ -152,7 +152,7 @@ public class RobotContainer implements Loggable{
       //Flywheel
       mXboxController.b().whenHeld(
           new StartEndCommand(
-            () -> flywheel.setRPMTarget(1000),
+            () -> flywheel.set(Constants.Flywheel.kSpeed),
             flywheel::stop,
             flywheel
           )
