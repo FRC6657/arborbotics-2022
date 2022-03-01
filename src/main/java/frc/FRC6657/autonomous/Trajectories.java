@@ -23,28 +23,6 @@ public class Trajectories {
         "GENERATE"
     );
 
-    public static Trajectory BALL_TEST_1 = generateTrajectory(
-        1,
-        1,
-        List.of(
-            new Pose2d(4, 4, Rotation2d.fromDegrees(0)),
-            new Pose2d(5, 4, Rotation2d.fromDegrees(0))
-        ),
-        false,
-        "Ball Detection 1"
-    );
-
-    public static Trajectory BALL_TEST_2 = generateTrajectory(
-        1,
-        1,
-        List.of(
-            new Pose2d(5, 4, Rotation2d.fromDegrees(0)),
-            new Pose2d(4, 4, Rotation2d.fromDegrees(0))
-        ),
-        true,
-        "Ball Detection 2"
-    );
-
     /**
      * 
      * Trajectory Generator Function
@@ -58,7 +36,7 @@ public class Trajectories {
      * @param name Label for print purposes
      * @return A Trajectory
      */
-    private static Trajectory generateTrajectory(double maxVel, double maxAccel, List<Pose2d> waypoints, boolean reversed, String name) {
+    public static Trajectory generateTrajectory(double maxVel, double maxAccel, List<Pose2d> waypoints, boolean reversed, String name) {
         TrajectoryConfig config = new TrajectoryConfig(maxVel, maxAccel);
         config.setReversed(reversed);
         System.out.println("Trajectory '" + name + "' Generated");
