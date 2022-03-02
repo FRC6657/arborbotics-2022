@@ -130,8 +130,7 @@ public class RobotContainer implements Loggable{
   }
 
   private void configureAutoChooser() {
-    System.out.println("*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n");
-    mAutoChooser.setDefaultOption("Nothing", null);
+    mAutoChooser.setDefaultOption("Nothing", new SequentialCommandGroup[]{null,null});
     mAutoChooser.addOption("AllianceTest",
       new SequentialCommandGroup[]{
         new RedTopTarmacTwoBall(drivetrain, intake, extension, flywheel, accelerator),
