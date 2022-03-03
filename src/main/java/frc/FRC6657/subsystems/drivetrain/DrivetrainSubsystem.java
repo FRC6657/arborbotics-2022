@@ -343,8 +343,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
    * Stops the Drivetrain
    */
   public void stop() {
-    mFrontLeft.stopMotor();
-    mFrontRight.stopMotor();
+    mFrontLeft.set(0);
+    mFrontRight.set(0);
   }
 
   /*

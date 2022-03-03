@@ -27,14 +27,17 @@ public class BlueMidTwo extends SequentialCommandGroup{
         AcceleratorSubsystem accelerator
     ) {
         addCommands(
-            new ParallelCommandGroup(
-                new InstantCommand(pistons::extend),
-                new InstantCommand(intake::start),
-                new ParallelRaceGroup(
-                    new WaitUntilCommand(intake::ballDetected),
-                    drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL, true)
+            new ParallelRaceGroup(
+                new WaitUntilCommand(intake::ballDetected),
+                drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL, true)
+            )
+            .beforeStarting(
+                new ParallelCommandGroup(
+                    new InstantCommand(pistons::extend),
+                    new InstantCommand(intake::start)
                 )
-            ).andThen(
+            )
+            .andThen(
                 new ParallelCommandGroup(
                     new InstantCommand(pistons::retract),
                     new InstantCommand(intake::stop)
@@ -45,8 +48,7 @@ public class BlueMidTwo extends SequentialCommandGroup{
                 new InstantCommand(() -> flywheel.setRPMTarget(1000))
             )
             .andThen(
-                new SequentialCommandGroup(
-                    new InstantCommand(drivetrain::stop),
+                new SequentialCommandGroup( //TODO This seems course, fix later.
                     new WaitUntilCommand(flywheel::atTarget),
                     new InstantCommand(accelerator::start),
                     new WaitCommand(0.5)
