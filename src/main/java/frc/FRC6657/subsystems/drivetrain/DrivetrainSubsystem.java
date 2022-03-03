@@ -130,7 +130,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     }
     // Field Visualization
     SmartDashboard.putData(mField);
-
   }
 
   /**
@@ -483,6 +482,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
       mRobotPath.setPoses(mPathPoints);
       mTrajectoryPlot.setTrajectory(trajectory);
 
+      timer.reset();
       timer.start();
     }
 

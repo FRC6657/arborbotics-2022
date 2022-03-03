@@ -30,8 +30,8 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC6657.autonomous.routines.BallDetectionTest;
-import frc.FRC6657.autonomous.routines.BlueAllience.BlueBottomTarmacTwoBall;
-import frc.FRC6657.autonomous.routines.RedAlliance.RedTopTarmacTwoBall;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
 import frc.FRC6657.custom.controls.Deadbander;
@@ -131,10 +131,10 @@ public class RobotContainer implements Loggable{
 
   private void configureAutoChooser() {
     mAutoChooser.setDefaultOption("Nothing", new SequentialCommandGroup[]{null,null});
-    mAutoChooser.addOption("AllianceTest",
+    mAutoChooser.addOption("Middle 2",
       new SequentialCommandGroup[]{
-        new RedTopTarmacTwoBall(drivetrain, intake, extension, flywheel, accelerator),
-        new BlueBottomTarmacTwoBall(drivetrain, intake, extension, flywheel, accelerator)
+        new RedMidTwo(drivetrain, intake, extension, flywheel, accelerator),
+        new BlueMidTwo(drivetrain, intake, extension, flywheel, accelerator)
       }
     );
     SmartDashboard.putData(mAutoChooser);
@@ -189,20 +189,13 @@ public class RobotContainer implements Loggable{
     }
   }
 
-  public void setBlinkinTriggers(){
-    
-  }
-
   public SequentialCommandGroup getAutonomousCommand() {
-    
     int alliance = 0;
-
     if(DriverStation.getAlliance() == Alliance.Red){
       alliance = 0;
     }else{
       alliance = 1;
     }
-    
     return mAutoChooser.getSelected()[alliance];
   }
 }
