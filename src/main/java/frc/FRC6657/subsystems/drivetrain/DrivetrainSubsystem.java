@@ -293,16 +293,13 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
 
-    
-
-    final double leftFeedforward = mFeedForward.calculate(speeds.leftMetersPerSecond);
-    //final double rightFeedforward = mFeedForward.calculate(right);
+    var feedForward = mFeedForward.calculate(new MatBuilder<>(Nat.N2(), Nat.N1()).fill(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond));
 
     final double leftOutput = mLinearPIDController.calculate(getLeftVelocity(), speeds.leftMetersPerSecond);
     final double rightOutput = mLinearPIDController.calculate(getRightVelocity(), speeds.rightMetersPerSecond);
 
-    mFrontLeft.setVoltage(leftOutput + leftFeedforward);
-    //mFrontRight.setVoltage(rightOutput + rightFeedforward);
+    mFrontLeft.setVoltage(leftOutput + feedForward.get(0, 0));
+    mFrontRight.setVoltage(rightOutput + feedForward.get(1, 0));
   }
 
   /**
@@ -310,18 +307,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * @param speeds Left and Right speeds input -1 to 1
    */
   public void setSpeeds(WheelSpeeds speeds) {
-
-    speeds.left *= Constants.Drivetrain.kMaxAttainableSpeed;
-    speeds.right *= Constants.Drivetrain.kMaxAttainableSpeed;
-
-    //final double leftFeedforward = mFeedForward.calculate(speeds.left);
-    //final double rightFeedforward = mFeedForward.calculate(speeds.right);
-
-    final double leftOutput = mLinearPIDController.calculate(getLeftVelocity(), speeds.left);
-    final double rightOutput = mLinearPIDController.calculate(getRightVelocity(), speeds.right);
-
-    // mFrontLeft.setVoltage(leftOutput + leftFeedforward);
-    // mFrontRight.setVoltage(rightOutput + rightFeedforward);
+    setSpeeds(
+      new DifferentialDriveWheelSpeeds(
+        speeds.left * Constants.Drivetrain.kMaxAttainableSpeed,
+        speeds.right * Constants.Drivetrain.kMaxAttainableSpeed
+      )
+    );
   }
 
 
