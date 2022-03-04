@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC6657.autonomous.routines.BallDetectionTest;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedFive;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
@@ -137,6 +138,15 @@ public class RobotContainer implements Loggable{
         new BlueMidTwo(drivetrain, intake, extension, flywheel, accelerator)
       }
     );
+
+    mAutoChooser.addOption("5",
+      new SequentialCommandGroup[]{
+        new RedFive(drivetrain, intake, extension, flywheel, accelerator),
+        new BlueMidTwo(drivetrain, intake, extension, flywheel, accelerator)
+      }
+    );
+
+
     SmartDashboard.putData(mAutoChooser);
   }
 

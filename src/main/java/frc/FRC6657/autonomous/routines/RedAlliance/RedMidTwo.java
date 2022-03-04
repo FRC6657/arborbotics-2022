@@ -66,7 +66,7 @@ public class RedMidTwo extends SequentialCommandGroup{
 
     private Trajectory PATH_TO_BALL = Trajectories.generateTrajectory(3,2,List.of(
         new Pose2d(8.713, 6.191, Rotation2d.fromDegrees(1.410)),
-        new Pose2d(11.146, 6.191, Rotation2d.fromDegrees(-20.1))
+        new Pose2d(11.5, 6.375, Rotation2d.fromDegrees(-20.1))
     ),
     false,
     "Red Mid TWO PATH_TO_BALL"

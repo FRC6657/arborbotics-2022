@@ -475,9 +475,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
       if (resetPose) {
         resetOdometry(trajectory.getInitialPose());
         mField.setRobotPose(trajectory.getInitialPose());
+        mPathPoints.clear();
       }
 
-      mPathPoints.clear();
+      //mPathPoints.clear();
       mPathPoints.add(mOdometry.getPoseMeters());
       mRobotPath.setPoses(mPathPoints);
       mTrajectoryPlot.setTrajectory(trajectory);
