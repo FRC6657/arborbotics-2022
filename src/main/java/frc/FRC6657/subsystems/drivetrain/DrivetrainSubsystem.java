@@ -293,7 +293,16 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    */
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
 
-    var feedForward = mFeedForward.calculate(new MatBuilder<>(Nat.N2(), Nat.N1()).fill(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond));
+    var feedForward = mFeedForward.calculate(
+      new MatBuilder<>(
+        Nat.N2(), 
+        Nat.N1()
+      )
+      .fill(
+        speeds.leftMetersPerSecond, 
+        speeds.rightMetersPerSecond
+      )
+    );
 
     final double leftOutput = mLinearPIDController.calculate(getLeftVelocity(), speeds.leftMetersPerSecond);
     final double rightOutput = mLinearPIDController.calculate(getRightVelocity(), speeds.rightMetersPerSecond);
