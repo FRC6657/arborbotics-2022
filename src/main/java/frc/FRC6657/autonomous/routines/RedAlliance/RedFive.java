@@ -9,7 +9,12 @@ import java.util.List;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.FRC6657.autonomous.Trajectories;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
@@ -26,15 +31,96 @@ public class RedFive extends SequentialCommandGroup {
     AcceleratorSubsystem accelerator
   ) {
     addCommands(
-
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_2, true),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_1, false),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_3, false),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_4_5, false),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_3, false),
+      new ParallelRaceGroup(
+        new WaitUntilCommand(intake::ballDetected),
+        drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_2, true)
+      ).beforeStarting(
+        new ParallelCommandGroup(
+          new InstantCommand(pistons::extend),
+          new InstantCommand(intake::start)
+        )
+      )
+      .andThen(
+        new ParallelCommandGroup(
+          new InstantCommand(pistons::retract),
+          new InstantCommand(intake::stop)
+        )
+      ),
+      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_1, false)
+      .beforeStarting(
+        new InstantCommand(() -> flywheel.setRPMTarget(1000))
+      )
+      .andThen(
+        new SequentialCommandGroup(
+          new WaitUntilCommand(flywheel::atTarget),
+          new InstantCommand(accelerator::start),
+          new WaitCommand(0.5)
+        ).andThen(
+          new ParallelCommandGroup(
+            new InstantCommand(accelerator::stop),
+            new InstantCommand(flywheel::stop)
+          )
+        )
+      ),
+      drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_3, false)
+      .beforeStarting(
+        new ParallelCommandGroup(
+          new InstantCommand(pistons::extend),
+          new InstantCommand(intake::start)
+        )
+      )
+      .andThen(
+        new ParallelCommandGroup(
+          new InstantCommand(pistons::retract),
+          new InstantCommand(intake::stop)
+        )
+      ),
+      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false)
+      .beforeStarting(
+        new InstantCommand(() -> flywheel.setRPMTarget(1000))
+      )
+      .andThen(
+        new SequentialCommandGroup(
+          new WaitUntilCommand(flywheel::atTarget),
+          new InstantCommand(accelerator::start),
+          new WaitCommand(0.5)
+        ).andThen(
+          new ParallelCommandGroup(
+            new InstantCommand(accelerator::stop),
+            new InstantCommand(flywheel::stop)
+          )
+        )
+      ),
+      drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_4_5, false)
+      .beforeStarting(
+        new ParallelCommandGroup(
+          new InstantCommand(pistons::extend),
+          new InstantCommand(intake::start)
+        )
+      )
+      .andThen(
+        new ParallelCommandGroup(
+          new InstantCommand(pistons::retract),
+          new InstantCommand(intake::stop)
+        )
+      ),
+      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_3, false)
+      .beforeStarting(
+        new InstantCommand(() -> flywheel.setRPMTarget(1000))
+      )
+      .andThen(
+        new SequentialCommandGroup(
+          new WaitUntilCommand(flywheel::atTarget),
+          new InstantCommand(accelerator::start),
+          new WaitCommand(0.5)
+        ).andThen(
+          new ParallelCommandGroup(
+            new InstantCommand(accelerator::stop),
+            new InstantCommand(flywheel::stop)
+          )
+        )
+      ),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_EXIT, false)
-
     );
   }
 
@@ -81,7 +167,7 @@ public class RedFive extends SequentialCommandGroup {
 
   private Trajectory PATH_TO_SHOT_3 = Trajectories.generateTrajectory(2,4,List.of(
     new Pose2d(13, 7.5, Rotation2d.fromDegrees(40)),
-    new Pose2d(9.3, 5.25, Rotation2d.fromDegrees(40))
+    new Pose2d(9.7, 5.5, Rotation2d.fromDegrees(40))
   ),
   true,
   "Red Five TWO PATH_TO_SHOT_3"

@@ -60,7 +60,7 @@ public final class Constants {
         // Drivetrain Values
         public static final double kRobotWeight = Units.lbsToKilograms(40);
         public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides
-        public static final double kGearRatio = 75 / 7; // Drive Gearbox Ratio
+        public static final double kGearRatio = 75.0 / 7.0; // Drive Gearbox Ratio
         public static final double kWheelRadius = Units.inchesToMeters(3); // Drive wheel Radius
         public static final double kDistancePerPulse = (2 * Math.PI * kWheelRadius) / (kFalconEncoderCPR * kGearRatio); // Conversion between Counts and Meters
         public static final double kAimTollerance = 3;
@@ -68,7 +68,7 @@ public final class Constants {
 
 
         //TODO Put robot on cart and figure out these values.
-        public static final double kMaxAttainableSpeed = 5;
+        public static final double kMaxAttainableSpeed = (6380/kGearRatio);
         public static final double kMaxAttainableTurnRate = Units.radiansToDegrees(kMaxAttainableSpeed * kTrackWidth/2);
 
         // Default Sim
