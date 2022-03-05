@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC6657.autonomous.routines.BallDetectionTest;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueFive;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueThree;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueTopTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedFive;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
@@ -160,7 +161,7 @@ public class RobotContainer implements Loggable{
     mAutoChooser.addOption("3",
       new SequentialCommandGroup[] {
         new RedThree(drivetrain, intake, extension, flywheel, accelerator),
-        null
+        new BlueThree(drivetrain, intake, extension, flywheel, accelerator)
       }
     );
 
