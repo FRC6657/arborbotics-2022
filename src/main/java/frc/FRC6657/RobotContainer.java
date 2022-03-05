@@ -31,6 +31,7 @@ import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
 import frc.FRC6657.autonomous.routines.Tests.BallDetectionTest;
 import frc.FRC6657.autonomous.routines.Tests.PoseTest;
+import frc.FRC6657.autonomous.routines.TurningAngleTest;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
 import frc.FRC6657.custom.controls.Deadbander;
@@ -142,6 +143,7 @@ public class RobotContainer implements Loggable{
     mAutoChooser.addOption("BlueMidTwo", new BlueMidTwo(drivetrain, intake, extension, flywheel, accelerator));
     mAutoChooser.addOption("RedMidTwo", new RedMidTwo(drivetrain, intake, extension, flywheel, accelerator));
     mAutoChooser.addOption("PoseTest", new PoseTest(drivetrain));
+    mAutoChooser.addOption("TurnAngleTest", new TurningAngleTest(drivetrain));
     SmartDashboard.putData(mAutoChooser);
   }
 

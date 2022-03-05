@@ -58,6 +58,7 @@ public final class Constants {
 
         // Drivetrain PID
         public static final double drive_linear_kP = 0.64132; //Char P gain 0.64132
+        public static final double Turn_Command_kP = 0; //Char P gain 0.64132
 
         public static final PIDController kLinearPIDController = new PIDController(drive_linear_kP, 0, 0);
 
@@ -69,6 +70,7 @@ public final class Constants {
         public static final double kDistancePerPulse = (2 * Math.PI * kWheelRadius) / (kFalconEncoderCPR * kGearRatio); // Conversion between Counts and Meters
         public static final double kAimTollerance = 3;
         public static final double kDistanceTollerance = 0.1;
+        public static final double kTurnCommandTolerance = 0.5;
 
 
         //TODO Put robot on cart and figure out these values.
