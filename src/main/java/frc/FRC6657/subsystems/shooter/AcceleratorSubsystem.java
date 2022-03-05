@@ -33,6 +33,10 @@ public class AcceleratorSubsystem extends SubsystemBase implements Loggable{
     mMotor.set(percent);
   }
 
+  public void start(){
+    set(Constants.Accelerator.kSpeed);
+  }
+
   @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Accelerator Speed", tabName = "AcceleratorSubsystem")
   public double getSpeed(){
     return mMotor.get();

@@ -42,6 +42,10 @@ public class IntakeSubsystem extends SubsystemBase implements Loggable {
     mTimer.start();
   }
 
+  public void start(){
+    set(Constants.Intake.kSpeed);
+  }
+
   @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Intake Speed", tabName = "IntakeSubsystem")
   public double getSpeed(){
     return mMotor.get();

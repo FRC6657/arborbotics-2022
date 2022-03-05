@@ -5,16 +5,21 @@
 package frc.FRC6657;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.management.MBeanServerPermission;
 
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
+import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,6 +37,15 @@ import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
 import frc.FRC6657.autonomous.routines.Tests.BallDetectionTest;
 import frc.FRC6657.autonomous.routines.Tests.PoseTest;
 import frc.FRC6657.autonomous.routines.TurningAngleTest;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueDoubleSteal;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueFive;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueThree;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueTopTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedFive;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedThree;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedTopTwo;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
 import frc.FRC6657.custom.controls.Deadbander;
@@ -52,17 +66,17 @@ import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
 @SuppressWarnings("unused")
-public class RobotContainer implements Loggable{
+public class RobotContainer implements Loggable {
 
   private CommandXboxController mXboxController = new CommandXboxController(0);
   private Joystick mJoystick = new Joystick(1);
 
   /** Dont trust this it needs overhauled */
   private DriverProfile mProfile = new DriverProfile(
-    5d, // Max Speed m/s
-    90d, // Max Turn deg/s
-    3d, // Mod Drive Speed m/s
-    80d // Mod Turn Speed deg/s
+      5d, // Max Speed m/s
+      90d, // Max Turn deg/s
+      3d, // Mod Drive Speed m/s
+      80d // Mod Turn Speed deg/s
   );
 
   private String Controls = "Testing";
@@ -74,48 +88,53 @@ public class RobotContainer implements Loggable{
   public final FlywheelSubsystem flywheel;
   public final HoodSubsystem hood;
   public final IntakeSubsystem intake;
-  //public final LiftSubsystem lift;
+  // public final LiftSubsystem lift;
   public final VisionSubsystem vision;
 
-  public final Trigger flywheelReady,flywheelActive,ballDetected,intakeActive;
+  public final Trigger flywheelReady, flywheelActive, ballDetected, intakeActive;
 
-  SendableChooser<SequentialCommandGroup> mAutoChooser = new SendableChooser<>();
+  SendableChooser<SequentialCommandGroup[]> mAutoChooser = new SendableChooser<>();
 
   public RobotContainer() {
 
-    //Subsystem Assignments
+    // Subsystem Assignments
     accelerator = new AcceleratorSubsystem();
     blinkin = new BlinkinSubsystem();
     extension = new ExtensionSubsystem();
     flywheel = new FlywheelSubsystem();
     hood = new HoodSubsystem();
     intake = new IntakeSubsystem();
-    //lift = new LiftSubsystem();
+    // lift = new LiftSubsystem();
     vision = new VisionSubsystem();
     drivetrain = new DrivetrainSubsystem(mProfile, vision);
 
-    //Triggers
+    // Triggers
     flywheelReady = new Trigger(flywheel::atTarget);
     flywheelActive = new Trigger(flywheel::active);
     ballDetected = new Trigger(intake::ballDetected);
     intakeActive = new Trigger(intake::active);
 
     flywheelReady.or(flywheelActive).or(ballDetected).or(intakeActive).whileActiveContinuous(
-      () -> blinkin.setIndicator(new BlinkinIndicator[] {
-        new BlinkinIndicator("Idle", Constants.BlinkinPriorities.kIdle, Constants.BlinkinColors.kIdle),
-        new BlinkinIndicator("FlywheelReady", (flywheelReady.get() ? 1 : 0) * Constants.BlinkinPriorities.kFlywheelReady, Constants.BlinkinColors.kReadyFlywheel),
-        new BlinkinIndicator("FlywheelActive", (flywheelActive.get() ? 1 : 0) * Constants.BlinkinPriorities.kFlywheelActive, Constants.BlinkinColors.kNotReadyFlywheel),
-        new BlinkinIndicator("BallDetected", (ballDetected.get() ? 1 : 0) * Constants.BlinkinPriorities.kBallDetected, Constants.BlinkinColors.kBallDetected),
-        new BlinkinIndicator("IntakeActive", (intakeActive.get() ? 1 : 0) * Constants.BlinkinPriorities.kIntakeActive, Constants.BlinkinColors.kIntake)
-      })
-    );
+        () -> blinkin.setIndicator(new BlinkinIndicator[] {
+            new BlinkinIndicator("Idle", Constants.BlinkinPriorities.kIdle, Constants.BlinkinColors.kIdle),
+            new BlinkinIndicator("FlywheelReady",
+                (flywheelReady.get() ? 1 : 0) * Constants.BlinkinPriorities.kFlywheelReady,
+                Constants.BlinkinColors.kReadyFlywheel),
+            new BlinkinIndicator("FlywheelActive",
+                (flywheelActive.get() ? 1 : 0) * Constants.BlinkinPriorities.kFlywheelActive,
+                Constants.BlinkinColors.kNotReadyFlywheel),
+            new BlinkinIndicator("BallDetected",
+                (ballDetected.get() ? 1 : 0) * Constants.BlinkinPriorities.kBallDetected,
+                Constants.BlinkinColors.kBallDetected),
+            new BlinkinIndicator("IntakeActive",
+                (intakeActive.get() ? 1 : 0) * Constants.BlinkinPriorities.kIntakeActive,
+                Constants.BlinkinColors.kIntake)
+        }));
 
     flywheelReady.or(flywheelActive).or(ballDetected).or(intakeActive).whenInactive(
-      () -> blinkin.setIndicator(new BlinkinIndicator[] {
-        new BlinkinIndicator("Idle", Constants.BlinkinPriorities.kIdle, Constants.BlinkinColors.kIdle)
-      })
-    );
-
+        () -> blinkin.setIndicator(new BlinkinIndicator[] {
+            new BlinkinIndicator("Idle", Constants.BlinkinPriorities.kIdle, Constants.BlinkinColors.kIdle)
+        }));
 
     drivetrain.setDefaultCommand(new RunCommand(() -> {
       drivetrain.teleopCurvatureDrive(
@@ -124,14 +143,13 @@ public class RobotContainer implements Loggable{
           mXboxController.getRightTrigger(),
           mXboxController.getLeftTrigger());
     }, drivetrain));
-    
+
     configureButtonBindings();
     configureAutoChooser();
 
-    if(RobotBase.isSimulation()){
+    if (RobotBase.isSimulation()) {
       spoofVision();
     }
-
   }
 
   private void spoofVision() {
@@ -139,13 +157,44 @@ public class RobotContainer implements Loggable{
   }
 
   private void configureAutoChooser() {
-    mAutoChooser.setDefaultOption("Nothing", null);
-    mAutoChooser.addOption("BlueMidTwo", new BlueMidTwo(drivetrain, intake, extension, flywheel, accelerator));
-    mAutoChooser.addOption("RedMidTwo", new RedMidTwo(drivetrain, intake, extension, flywheel, accelerator));
-    mAutoChooser.addOption("PoseTest", new PoseTest(drivetrain));
-    mAutoChooser.addOption("TurnAngleTest", new TurningAngleTest(drivetrain));
+    mAutoChooser.setDefaultOption("Nothing", new SequentialCommandGroup[]{null,null});
+    mAutoChooser.addOption("Middle 2",
+      new SequentialCommandGroup[]{
+        new RedMidTwo(drivetrain, intake, extension, flywheel, accelerator),
+        new BlueMidTwo(drivetrain, intake, extension, flywheel, accelerator)
+      }
+    );
+
+    mAutoChooser.addOption("5",
+      new SequentialCommandGroup[]{
+        new RedFive(drivetrain, intake, extension, flywheel, accelerator),
+        new BlueFive(drivetrain, intake, extension, flywheel, accelerator)
+      }
+    );
+
+    mAutoChooser.addOption("Top 2", 
+      new SequentialCommandGroup[] {
+        new RedTopTwo(drivetrain, intake, extension, flywheel, accelerator),
+        new BlueTopTwo(drivetrain, intake, extension, flywheel, accelerator)
+      }
+    );  
+    
+    mAutoChooser.addOption("3",
+      new SequentialCommandGroup[] {
+        new RedThree(drivetrain, intake, extension, flywheel, accelerator),
+        new BlueThree(drivetrain, intake, extension, flywheel, accelerator)
+      }
+    );
+
+    mAutoChooser.addOption("2 Ball Steal",
+      new SequentialCommandGroup[] {
+        null,
+        new BlueDoubleSteal(drivetrain, intake, extension, flywheel, accelerator)
+      }
+    );
+
     SmartDashboard.putData(mAutoChooser);
-  }
+    }
 
   private void configureButtonBindings() {
     
@@ -199,8 +248,13 @@ public class RobotContainer implements Loggable{
 
     }
   }
-
   public SequentialCommandGroup getAutonomousCommand() {
-    return mAutoChooser.getSelected();
+    int alliance = 0;
+    if(DriverStation.getAlliance() == Alliance.Red){
+      alliance = 0;
+    }else{
+      alliance = 1;
+    }
+    return mAutoChooser.getSelected()[alliance];
   }
 }

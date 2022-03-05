@@ -34,7 +34,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -59,8 +58,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   private final WPI_TalonFX mFrontLeft, mFrontRight, mBackLeft, mBackRight;
   // Simulated Drivetrain Motors
   private TalonFXSimCollection mLeftSim, mRightSim;
-  
-  //Gyro
+
+  // Gyro
   @Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro", tabName = "DrivetrainSubsystem")
   private final WPI_PigeonIMU mPigeonIMU = new WPI_PigeonIMU(Constants.kPigeonID);
   // Simulated Gyro
@@ -84,6 +83,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
       Nat.N1()
     ).fill(0.1, 0.1, 0.01) //Measurement Deviation X, Y, Theta
   );
+  // Kinematics and Odometry Classes
 
   // Feed forward and PID controller for advanced movement
   private final SimpleMotorFeedforward mFeedForward;
@@ -153,10 +153,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     }
 
     mVisionTargets.setPoses(vision.visionSupplier.getVisionTarget());
-
-    //Field Visualization
+    // Field Visualization
     SmartDashboard.putData(mField);
-
   }
 
   /**
@@ -252,6 +250,20 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
    * Reset Methods
    * 
    */
+  /**
+   * Resets the odometry
+   * 
+   * @param pose New Position
+   */
+  public void resetOdometry(Pose2d pose) {
+    // Reset Simulation entirely if we are in simulation
+    if (RobotBase.isSimulation()) {
+      mDrivetrainSim = Constants.Drivetrain.kSim;
+    }
+
+    resetEncoders();// Reset the encoders
+
+  }
   /**
    * Resets the encoders
    */
@@ -360,7 +372,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     mFrontLeft.stopMotor();
     mFrontRight.stopMotor();
   }
-
+  /*
+   * Get Methods
+   *
+   * /
 
   /**
    * Get left drivetrain encoder distance in meters
@@ -410,13 +425,13 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
    * @return Same as getRightVelocity()
    */
   @Log.Dial(rowIndex = 2, columnIndex = 3, width = 1, height = 1, name = "Right Vel", min = -Constants.Drivetrain.kMaxAttainableSpeed, max = Constants.Drivetrain.kMaxAttainableSpeed, showValue = false, tabName = "DrivetrainSubsystem")
-  public double rightVelocityGauge(){
+  public double rightVelocityGauge() {
     return getRightVelocity();
   }
 
   @Log(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name = "Gyro Velocity", tabName = "DrivetrainSubsystem")
-  public double getHeadingVelocity(){
-    double[] gyroVals = {0,0,0};
+  public double getHeadingVelocity() {
+    double[] gyroVals = { 0, 0, 0 };
     mPigeonIMU.getRawGyro(gyroVals);
     return gyroVals[2];
   }
@@ -425,8 +440,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
    * @return Gyro accumulated angle if it is ready to give accurate data
    */
   @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Gyro Raw", tabName = "Scott Gyro Stuff")
-  public double getGyroAngle(){
-    if(mPigeonIMU.getState() == PigeonState.Ready){
+  public double getGyroAngle() {
+    if (mPigeonIMU.getState() == PigeonState.Ready) {
       return mPigeonIMU.getFusedHeading();
     }
     return 0;
@@ -434,7 +449,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
   @Log(rowIndex = 0, columnIndex = 3, width = 2, height = 1, name = "Gyro Normalized", tabName = "Scott Gyro Stuff")
   public double getGyroCorrected() {
-    if(mPigeonIMU.getState() == PigeonState.Ready){
+    if (mPigeonIMU.getState() == PigeonState.Ready) {
       return ArborMath.normalizeFusedHeading(mPigeonIMU.getFusedHeading());
     }
     return 0;
@@ -454,7 +469,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   /*
    * Commands
    */
-
 
   public class TurnByAngleCommand extends CommandBase {
 
@@ -490,7 +504,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     }
 
   }
-
   /**
    * Command to follow a given trajectory
    */
@@ -508,7 +521,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
     @Override
     public void initialize() {
-
       if(resetPose){
         resetPoseEstimator(trajectory.getInitialPose());
       }
@@ -524,6 +536,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
     @Override
     public void execute() {
+
         mPathPoints.add(mPoseEstimator.getEstimatedPosition());
         mRobotPath.setPoses(mPathPoints);
 
