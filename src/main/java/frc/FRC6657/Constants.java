@@ -58,7 +58,8 @@ public final class Constants {
 
         // Drivetrain PID
         public static final double drive_linear_kP = 0.64132; //Char P gain 0.64132
-        public static final double Turn_Command_kP = 0; //Char P gain 0.64132
+        public static final double Turn_Command_kP = 1d/90;
+        public static final double Turn_Command_kD = 1d/500;
 
         public static final PIDController kLinearPIDController = new PIDController(drive_linear_kP, 0, 0);
 
@@ -74,7 +75,7 @@ public final class Constants {
 
 
         //TODO Put robot on cart and figure out these values.
-        public static final double kMaxAttainableSpeed = 5;
+        public static final double kMaxAttainableSpeed = 5; //TODO MATH THIS
         public static final double kMaxAttainableTurnRate = Units.radiansToDegrees(kMaxAttainableSpeed * kTrackWidth/2);
 
         // Default Sim

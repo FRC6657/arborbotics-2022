@@ -31,6 +31,7 @@
       "/LiveWindow/Ungrouped/Blinkin[0]": "Motor Controller",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon IMU [5]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Talon FX [1]": "Motor Controller",
@@ -65,7 +66,7 @@
         },
         "bottom": 900,
         "height": 8.229599952697754,
-        "image": "C:\\Code\\arborbotics-2022\\FieldImages\\2022-field.png",
+        "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
         "left": 74,
         "right": 1774,
         "robot-path": {

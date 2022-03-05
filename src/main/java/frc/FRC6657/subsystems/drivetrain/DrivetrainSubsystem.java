@@ -460,7 +460,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     double theta;
     double startAngle;
 
-    final PIDController mPIDController = new PIDController(Constants.Drivetrain.Turn_Command_kP, 0, 0);
+    final PIDController mPIDController = new PIDController(Constants.Drivetrain.Turn_Command_kP, 0, Constants.Drivetrain.Turn_Command_kD);
 
     public TurnByAngleCommand(double AngleToTurn) {
       this.theta = AngleToTurn;
@@ -474,10 +474,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
     @Override
     public void execute() {
-      final double angularFeedForward = mFeedForward.calculate(getGyroAngle(), startAngle + theta, 0.02);
-      final double angleOuput = mPIDController.calculate(getGyroAngle(), startAngle + theta);
-      final double mMotorSet = (angularFeedForward + angleOuput);
-      System.out.println(mMotorSet);
+      double angleOuput = mPIDController.calculate(getGyroAngle(), startAngle + theta);
+
+      mFrontLeft.set(-angleOuput);
+      mFrontRight.set(angleOuput);
+
     }
 
     @Override
