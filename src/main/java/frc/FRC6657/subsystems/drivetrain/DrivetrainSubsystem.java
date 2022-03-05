@@ -455,35 +455,38 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
    * Commands
    */
 
+
   public class TurnByAngleCommand extends CommandBase {
 
-    double theta;
-    double startAngle;
+    double mSetpoint;
+    double mStartPoint;
 
     final PIDController mPIDController = new PIDController(Constants.Drivetrain.Turn_Command_kP, 0, Constants.Drivetrain.Turn_Command_kD);
 
-    public TurnByAngleCommand(double AngleToTurn) {
-      this.theta = AngleToTurn;
+   /**
+    * Turn a specified Degree Amount
+    */
+    public TurnByAngleCommand(double mSetpoint) {
+      this.mSetpoint = mSetpoint;
     }
 
     @Override
     public void initialize() {
-      this.startAngle = getGyroAngle();
-      super.initialize();
+      this.mStartPoint = getGyroAngle();
     }
 
     @Override
     public void execute() {
-      double angleOuput = mPIDController.calculate(getGyroAngle(), startAngle + theta);
+      double output = mPIDController.calculate(getGyroAngle(), mStartPoint + mSetpoint);
 
-      mFrontLeft.set(-angleOuput);
-      mFrontRight.set(angleOuput);
+      mFrontLeft.set(-output);
+      mFrontRight.set(output);
 
     }
 
     @Override
     public boolean isFinished() {
-      return (startAngle + theta) - getGyroAngle() <= Constants.Drivetrain.kTurnCommandTolerance;
+      return (mStartPoint + mSetpoint) - getGyroAngle() <= Constants.Drivetrain.kTurnCommandTolerance;
     }
 
   }
