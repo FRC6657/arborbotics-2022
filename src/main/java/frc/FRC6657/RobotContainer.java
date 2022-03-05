@@ -35,6 +35,7 @@ import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueTopTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedFive;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedThree;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedTopTwo;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
@@ -155,7 +156,13 @@ public class RobotContainer implements Loggable{
         new BlueTopTwo(drivetrain, intake, extension, flywheel, accelerator)
       }
       );  
-
+    
+    mAutoChooser.addOption("3",
+      new SequentialCommandGroup[] {
+        new RedThree(drivetrain, intake, extension, flywheel, accelerator),
+        null
+      }
+    );
 
     SmartDashboard.putData(mAutoChooser);}
 
