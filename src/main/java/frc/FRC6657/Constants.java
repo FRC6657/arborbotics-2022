@@ -75,7 +75,7 @@ public final class Constants {
 
 
         //TODO Put robot on cart and figure out these values.
-        public static final double kMaxAttainableSpeed = 5; //TODO MATH THIS
+        public static final double kMaxAttainableSpeed = ((6380d/60) * (6 * Math.PI))/(39.37*kGearRatio);
         public static final double kMaxAttainableTurnRate = Units.radiansToDegrees(kMaxAttainableSpeed * kTrackWidth/2);
 
         // Default Sim
