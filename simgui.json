@@ -10,6 +10,9 @@
         "header": {
           "open": true
         }
+      },
+      "window": {
+        "visible": false
       }
     },
     "Solenoids": {
@@ -32,6 +35,7 @@
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon IMU [5]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Talon FX [1]": "Motor Controller",
@@ -70,7 +74,11 @@
         },
         "bottom": 900,
         "height": 8.229599952697754,
+<<<<<<< HEAD
         "image": "C:\\Users\\aerea\\Robotics 2022\\arborbotics-2022-main\\arborbotics-2022\\FieldImages\\2022-field.png",
+=======
+        "image": "C:\\Code\\arborbotics-2022\\FieldImages\\2022-field.png",
+>>>>>>> 9e3b34bda964de97ca043eaf3ca7dcda2932b7e8
         "left": 74,
         "right": 1774,
         "robot-path": {
@@ -116,5 +124,8 @@
       },
       "open": true
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
