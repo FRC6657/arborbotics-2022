@@ -16,8 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.BasePigeonSimCollection;
 import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
-import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
@@ -55,9 +54,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   
   //Gyro
   @Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro", tabName = "Drivetrain")
-  private final WPI_PigeonIMU mPigeonIMU = new WPI_PigeonIMU(Constants.kPigeonID);
+  private final WPI_Pigeon2 mPigeon = new WPI_Pigeon2(Constants.kPigeonID);
   //Simulated Gyro
-  private BasePigeonSimCollection mPigeonIMUSim;
+  private BasePigeonSimCollection mPigeonSim;
 
   //Kinematics and Odometry Classes
   private final DifferentialDriveKinematics mKinematics;
@@ -109,7 +108,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     configureMotors();
 
     //Gyro Stuff
-    mPigeonIMU.reset();
+    mPigeon.reset();
 
     //Fancy Stuff
     mKinematics = new DifferentialDriveKinematics(Constants.Drivetrain.kTrackWidth);
@@ -122,7 +121,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     //Simulation Stuff
     if(RobotBase.isSimulation()){
       mDrivetrainSim = Constants.Drivetrain.kSim;
-      mPigeonIMUSim = mPigeonIMU.getSimCollection();
+      mPigeonSim = mPigeon.getSimCollection();
       mLeftSim = mFrontLeft.getSimCollection();
       mRightSim = mFrontRight.getSimCollection();
     }
@@ -207,8 +206,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mBackLeft.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 250);
     mBackRight.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 250);
 
-    mPigeonIMU.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 250);
-    mPigeonIMU.setStatusFramePeriod(PigeonIMU_StatusFrame.RawStatus_4_Mag, 250);
+    mPigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 250);
+    mPigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.RawStatus_4_Mag, 250);
 
 
   }
@@ -246,8 +245,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * Resets the gyro
    */
   public void resetGyro(){
-    mPigeonIMU.reset();
-    mOdometry.resetPosition(mOdometry.getPoseMeters(), mPigeonIMU.getRotation2d());
+    mPigeon.reset();
+    mOdometry.resetPosition(mOdometry.getPoseMeters(), mPigeon.getRotation2d());
   }
 
   /**
@@ -401,7 +400,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
   @Log(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name = "Gyro Velocity", tabName = "Drivetrain")
   public double getHeadingVelocity(){
     double[] gyroVals = {0,0,0};
-    mPigeonIMU.getRawGyro(gyroVals);
+    mPigeon.getRawGyro(gyroVals);
     return gyroVals[2];
   }
 
@@ -409,10 +408,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
    * @return Gyro accumulated angle if it is ready to give accurate data
    */
   public double getGyroAngle(){
-    if(mPigeonIMU.getState() == PigeonState.Ready){
-      return mPigeonIMU.getFusedHeading();
-    }
-    return 0;
+      return mPigeon.getYaw();
   }
 
   /*
@@ -500,6 +496,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable{
     mLeftSim.setIntegratedSensorVelocity((int) (mDrivetrainSim.getLeftVelocityMetersPerSecond() / (10 * Constants.Drivetrain.kDistancePerPulse)));
     mRightSim.setIntegratedSensorVelocity((int) (mDrivetrainSim.getRightVelocityMetersPerSecond() / (10 * Constants.Drivetrain.kDistancePerPulse)));
 
-    mPigeonIMUSim.setRawHeading(mDrivetrainSim.getHeading().getDegrees());
+    mPigeonSim.setRawHeading(mDrivetrainSim.getHeading().getDegrees());
   }
 }
