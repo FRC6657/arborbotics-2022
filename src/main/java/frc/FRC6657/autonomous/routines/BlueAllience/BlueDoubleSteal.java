@@ -113,7 +113,7 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
 
     private Trajectory PATH_TO_SHOOT_RED = Trajectories.generateTrajectory(1, 2, List.of(
         new Pose2d(6.122, 7.082, Rotation2d.fromDegrees(96)),
-        new Pose2d(6.122, 7.082, Rotation2d.fromDegrees(12))
+        new Pose2d()
     ), 
     true, 
     "Blue Steal PATH_TO_SHOOT_RED"
