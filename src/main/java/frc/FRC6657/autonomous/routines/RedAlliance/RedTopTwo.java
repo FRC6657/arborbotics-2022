@@ -69,14 +69,14 @@ public class RedTopTwo extends SequentialCommandGroup{
 
     private Trajectory PATH_TO_SHOOT = Trajectories.generateTrajectory(1,2,List.of(
         new Pose2d(11.515, 2.413, Rotation2d.fromDegrees(-37.705)),
-        new Pose2d(10.089, 3.42, Rotation2d.fromDegrees(-40.210))
+        new Pose2d(9.762, 3.404, Rotation2d.fromDegrees(-17.604))
     ),
     true,
     "Red Mid TWO PATH_TO_SHOOT"
     );
 
     private Trajectory PATH_TO_PARK = Trajectories.generateTrajectory(1, 2, List.of(
-        new Pose2d(10.089, 3.42, Rotation2d.fromDegrees(-40.210)),
+        new Pose2d(9.762, 3.404, Rotation2d.fromDegrees(-17.604)),
         new Pose2d(11.174, 2.207, Rotation2d.fromDegrees(-40.210))
     ), 
     false, 

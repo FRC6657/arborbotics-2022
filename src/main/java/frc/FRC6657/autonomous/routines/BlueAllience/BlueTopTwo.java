@@ -68,14 +68,14 @@ public class BlueTopTwo extends SequentialCommandGroup{
 
     private Trajectory PATH_TO_SHOOT = Trajectories.generateTrajectory(1,2,List.of(
         new Pose2d(5.014, 6.16, Rotation2d.fromDegrees(-220)),
-        new Pose2d(6.532, 4.921, Rotation2d.fromDegrees(-223))
+        new Pose2d(6.766, 4.661, Rotation2d.fromDegrees(155.98))
     ),
     true,
     "Blue Mid TWO PATH_TO_SHOOT"
     );
 
     private Trajectory PATH_TO_PARK = Trajectories.generateTrajectory(1, 2, List.of(
-        new Pose2d(6.532, 4.921, Rotation2d.fromDegrees(-223)),
+        new Pose2d(6.766, 4.661, Rotation2d.fromDegrees(155.98)),
         new Pose2d(5.014, 6.16, Rotation2d.fromDegrees(-223))
     ), 
     false, 
