@@ -47,6 +47,7 @@ public class RedTopTwo extends SequentialCommandGroup{
             .beforeStarting(
                 new InstantCommand(() -> flywheel.setRPMTarget(1000))
             )
+
             .andThen(
                 new SequentialCommandGroup( //TODO This seems course, fix later.
                     new WaitUntilCommand(flywheel::atTarget),
