@@ -165,6 +165,13 @@ public class RobotContainer implements Loggable {
       }
     );
 
+    mAutoChooser.addOption("Turn Testing",
+      new SequentialCommandGroup[]{
+        new TurningAngleTest(drivetrain),
+        new TurningAngleTest(drivetrain)
+      }
+    );
+
     mAutoChooser.addOption("5",
       new SequentialCommandGroup[]{
         new RedFive(drivetrain, intake, extension, flywheel, accelerator),
