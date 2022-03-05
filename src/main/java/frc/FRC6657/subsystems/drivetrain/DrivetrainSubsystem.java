@@ -48,7 +48,6 @@ import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.custom.controls.DriverProfile;
 import frc.FRC6657.subsystems.vision.VisionSubsystem;
-import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
