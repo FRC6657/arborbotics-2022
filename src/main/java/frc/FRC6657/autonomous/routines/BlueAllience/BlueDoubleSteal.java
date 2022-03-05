@@ -48,7 +48,7 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
                 new InstantCommand(() -> flywheel.setRPMTarget(1000))
             )
             .andThen(
-                new SequentialCommandGroup( //TODO This seems coarse, fix later.
+                new SequentialCommandGroup(
                     new WaitUntilCommand(flywheel::atTarget),
                     new InstantCommand(accelerator::start),
                     new WaitCommand(0.5)
@@ -68,8 +68,7 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
                 new ParallelCommandGroup(
                     new InstantCommand(pistons::retract),
                     new InstantCommand(intake::stop)
-                )
-                
+                )  
             ),
             drivetrain.new TurnByAngleCommand(270)
             .beforeStarting(
@@ -93,8 +92,6 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
                     new WaitCommand(0.5)
                 )
             )
-            
-         // before starting turn back around
         );
     }
 
