@@ -56,7 +56,7 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
             ),
             new ParallelRaceGroup(
                 new WaitUntilCommand(intake::ballDetected),
-                drivetrain.new TrajectoryFollowerCommand(PATH_TO_RED_1, true)
+                drivetrain.new TrajectoryFollowerCommand(PATH_TO_RED_1, false)
             )
             .beforeStarting(
                 new ParallelCommandGroup(
@@ -71,7 +71,18 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
                 )
                 
             ),
-            drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOOT_RED, false)
+            drivetrain.new TurnByAngleCommand(270)
+            .beforeStarting(
+                new InstantCommand(() -> flywheel.setRPMTarget(1000))
+            )
+            .andThen(
+                new SequentialCommandGroup( //TODO This seems coarse, fix later.
+                    new WaitUntilCommand(flywheel::atTarget),
+                    new InstantCommand(accelerator::start),
+                    new WaitCommand(0.5)
+                )
+            ),
+            drivetrain.new TrajectoryFollowerCommand(PATH_TO_RED_2, false)
             .beforeStarting(
                 new InstantCommand(() -> flywheel.setRPMTarget(1000))
             )
@@ -82,7 +93,8 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
                     new WaitCommand(0.5)
                 )
             )
-         //   drivetrain.new TrajectoryFollowerCommand(PATH_TO_PARK, true)    
+            
+         // before starting turn back around
         );
     }
 
@@ -111,12 +123,12 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
     "Blue Steal PATH_TO_RED_1"
     );
 
-    private Trajectory PATH_TO_SHOOT_RED = Trajectories.generateTrajectory(1, 2, List.of(
-        new Pose2d(6.122, 7.082, Rotation2d.fromDegrees(96)),
-        new Pose2d()
+    private Trajectory PATH_TO_RED_2 = Trajectories.generateTrajectory(1, 2, List.of(
+        new Pose2d(6.122, 7.082, Rotation2d.fromDegrees(11.372)),
+        new Pose2d(4.467, 3.620, Rotation2d.fromDegrees(-81.657))
     ), 
-    true, 
-    "Blue Steal PATH_TO_SHOOT_RED"
+    false, 
+    "Blue Steal Two PATH_TO_RED_2"
     );
 
     private Trajectory PATH_TO_PARK = Trajectories.generateTrajectory(1, 2, List.of(
