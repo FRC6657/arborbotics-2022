@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC6657.autonomous.routines.BallDetectionTest;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueFive;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueTopTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedFive;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
 import frc.FRC6657.custom.ArborMath;
@@ -147,9 +148,14 @@ public class RobotContainer implements Loggable{
       }
     );
 
+    mAutoChooser.addOption("Top 2", 
+      new SequentialCommandGroup[] {
+        new BlueTopTwo(drivetrain, intake, extension, flywheel, accelerator)
+      }
+      );  
 
-    SmartDashboard.putData(mAutoChooser);
-  }
+
+    SmartDashboard.putData(mAutoChooser);}
 
   private void configureButtonBindings() {
     
