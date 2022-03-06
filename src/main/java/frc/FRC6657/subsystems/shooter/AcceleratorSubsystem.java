@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
 public class AcceleratorSubsystem extends SubsystemBase implements Loggable{
   
@@ -32,6 +33,14 @@ public class AcceleratorSubsystem extends SubsystemBase implements Loggable{
     mMotor.set(percent);
   }
 
+  public void start(){
+    set(Constants.Accelerator.kSpeed);
+  }
+
+  @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "Accelerator Speed", tabName = "AcceleratorSubsystem")
+  public double getSpeed(){
+    return mMotor.get();
+  }
 
   public void stop(){
     set(0);

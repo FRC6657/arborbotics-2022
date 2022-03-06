@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.FRC6657.autonomous.routines;
+package frc.FRC6657.autonomous.routines.Tests;
 
 import java.util.List;
 
@@ -24,32 +24,32 @@ public class BallDetectionTest extends SequentialCommandGroup {
     addCommands(
       new ParallelRaceGroup(
         new WaitUntilCommand(intake::ballDetected),
-        drivetrain.new TrajectoryFollowerCommand(BALL_TEST_1, true)
+        drivetrain.new TrajectoryFollowerCommand(FORWARD, true)
       ),
-      drivetrain.new TrajectoryFollowerCommand(BALL_TEST_2, false)
+      drivetrain.new TrajectoryFollowerCommand(BACKWARD, false)
     );
   }
-  
-  public static Trajectory BALL_TEST_1 = Trajectories.generateTrajectory(
-    1,
-    1,
-    List.of(
-        new Pose2d(4, 4, Rotation2d.fromDegrees(0)),
-        new Pose2d(5, 4, Rotation2d.fromDegrees(0))
-    ),
-    false,
-    "Ball Detection 1"
-);
 
-public static Trajectory BALL_TEST_2 = Trajectories.generateTrajectory(
-    1,
-    1,
-    List.of(
-        new Pose2d(5, 4, Rotation2d.fromDegrees(0)),
-        new Pose2d(4, 4, Rotation2d.fromDegrees(0))
-    ),
-    true,
-    "Ball Detection 2"
-);
+  public static Trajectory FORWARD = Trajectories.generateTrajectory(
+        1,
+        1,
+        List.of(
+            new Pose2d(4, 4, Rotation2d.fromDegrees(0)),
+            new Pose2d(5, 4, Rotation2d.fromDegrees(0))
+        ),
+        false,
+        "BallDetection FORWARD"
+    );
+
+    public static Trajectory BACKWARD = Trajectories.generateTrajectory(
+        1,
+        1,
+        List.of(
+            new Pose2d(5, 4, Rotation2d.fromDegrees(0)),
+            new Pose2d(4, 4, Rotation2d.fromDegrees(0))
+        ),
+        true,
+        "BallDetection BACKWARD"
+    );
 
 }

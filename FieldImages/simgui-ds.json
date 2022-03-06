@@ -1,7 +1,7 @@
 {
-  "Keyboard 0 Settings": {
+  "Joysticks": {
     "window": {
-      "visible": true
+      "visible": false
     }
   },
   "keyboardJoysticks": [
@@ -17,6 +17,7 @@
           "incKey": 83,
           "keyRate": 1.0
         },
+        {},
         {},
         {
           "decKey": 65,
@@ -98,6 +99,9 @@
   "robotJoysticks": [
     {
       "guid": "78696e70757401000000000000000000",
+      "useGamepad": true
+    },
+    {
       "useGamepad": true
     }
   ]

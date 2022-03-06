@@ -6,6 +6,10 @@ package frc.FRC6657;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -53,22 +57,25 @@ public final class Constants {
         public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(drive_kS, drive_kV, drive_kA);
 
         // Drivetrain PID
-        public static final double drive_linear_kP = 1; //Char P gain 3.1976
+        public static final double drive_linear_kP = 0.64132; //Char P gain 0.64132
+        public static final double Turn_Command_kP = 1d/90;
+        public static final double Turn_Command_kD = 1d/500;
 
         public static final PIDController kLinearPIDController = new PIDController(drive_linear_kP, 0, 0);
 
         // Drivetrain Values
         public static final double kRobotWeight = Units.lbsToKilograms(40);
         public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides
-        public static final double kGearRatio = 75 / 7; // Drive Gearbox Ratio
+        public static final double kGearRatio = 75d / 7; // Drive Gearbox Ratio
         public static final double kWheelRadius = Units.inchesToMeters(3); // Drive wheel Radius
         public static final double kDistancePerPulse = (2 * Math.PI * kWheelRadius) / (kFalconEncoderCPR * kGearRatio); // Conversion between Counts and Meters
         public static final double kAimTollerance = 3;
         public static final double kDistanceTollerance = 0.1;
+        public static final double kTurnCommandTolerance = 0.5;
 
 
         //TODO Put robot on cart and figure out these values.
-        public static final double kMaxAttainableSpeed = 5;
+        public static final double kMaxAttainableSpeed = ((6380d/60) * (6 * Math.PI))/(39.37*kGearRatio);
         public static final double kMaxAttainableTurnRate = Units.radiansToDegrees(kMaxAttainableSpeed * kTrackWidth/2);
 
         // Default Sim
@@ -149,6 +156,11 @@ public final class Constants {
         public static final int kCamResolutionWidth = 320; // pixels
         public static final int kCamResolutionHeight = 240; // pixels
         public static final double kTargetWidth = Units.feetToMeters(4);  
+        public static final Pose2d kTargetPos = new Pose2d(54/2, 27/2, Rotation2d.fromDegrees(0));
+        public static final Transform2d kCameraToRobot = new Transform2d(
+            new Translation2d(Units.feetToMeters(13/12), 0),
+            new Rotation2d()
+        );
     }
 
     /**
