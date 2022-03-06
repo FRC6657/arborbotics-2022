@@ -63,20 +63,23 @@ public final class Constants {
 
         // Drivetrain PID
         public static final double drive_linear_kP = 0.64132; //Char P gain 0.64132
+        public static final double Turn_Command_kP = 1d/90;
+        public static final double Turn_Command_kD = 1d/500;
 
         public static final PIDController kLinearPIDController = new PIDController(drive_linear_kP, 0, 0);
 
         // Drivetrain Values
         public static final double kRobotWeight = Units.lbsToKilograms(40);
         public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides
-        public static final double kGearRatio = 75 / 7; // Drive Gearbox Ratio
+        public static final double kGearRatio = 75d / 7; // Drive Gearbox Ratio
         public static final double kWheelRadius = Units.inchesToMeters(3); // Drive wheel Radius
         public static final double kDistancePerPulse = (2 * Math.PI * kWheelRadius) / (kFalconEncoderCPR * kGearRatio); // Conversion between Counts and Meters
         public static final double kAimTollerance = 3;
         public static final double kDistanceTollerance = 0.1;
+        public static final double kTurnCommandTolerance = 0.5;
 
         //TODO Put robot on cart and figure out these values.
-        public static final double kMaxAttainableSpeed = 5;
+        public static final double kMaxAttainableSpeed = ((6380d/60) * (6 * Math.PI))/(39.37*kGearRatio);
         public static final double kMaxAttainableTurnRate = Units.radiansToDegrees(kMaxAttainableSpeed * kTrackWidth/2);
 
         // Default Sim
