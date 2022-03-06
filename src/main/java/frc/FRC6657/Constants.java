@@ -141,7 +141,7 @@ public final class Constants {
 
         public static final double kRatio = 1d/(((10*5*3)*(3/2d)*(5/2d)));
 
-        public static final double kP = 12/(45);
+        public static final double kP = 12/45d;
 
         public static final PIDController kPIDController = new PIDController(kP, 0, 0);
 
@@ -156,16 +156,16 @@ public final class Constants {
     }
 
     public static class Vision{
-        public static final double kCameraHeightMeters = Units.inchesToMeters(35.111986);// CAD Estimate
+        public static final double kCameraHeightMeters = 0.638374;// CAD Estimate
         public static final double kTargetHeightMeters = Units.feetToMeters(8 + 8 / 12); // 8` 8" from manual
-        public static final double kCameraPitchRadians = Units.degreesToRadians(30); // CAD Estimate
+        public static final double kCameraPitchRadians = Units.degreesToRadians(42);
         public static final double kCamDiagFOV = 67.8; // degrees
         public static final int kCamResolutionWidth = 320; // pixels
         public static final int kCamResolutionHeight = 240; // pixels
         public static final double kTargetWidth = Units.feetToMeters(4);  
         public static final Pose2d kTargetPos = new Pose2d(54/2, 27/2, Rotation2d.fromDegrees(0));
         public static final Transform2d kCameraToRobot = new Transform2d(
-            new Translation2d(Units.feetToMeters(13/12), 0),
+            new Translation2d(-0.008486, -0.403435),
             new Rotation2d()
         );
     }

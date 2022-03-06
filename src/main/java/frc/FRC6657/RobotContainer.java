@@ -249,11 +249,6 @@ public class RobotContainer implements Loggable {
           () -> hood.setAngle(0)
         )
       );
-
-      mXboxController.pov.right().whenHeld(
-        drivetrain.new TurnByAngleCommand(-90)
-      );
-
     }
   }
 
