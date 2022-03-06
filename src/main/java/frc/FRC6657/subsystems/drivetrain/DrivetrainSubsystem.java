@@ -275,13 +275,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
    */
   public void resetGyro(){
     mPigeon.reset();
-    mPoseEstimator.resetPosition(newPose, mPigeonIMU.getRotation2d());
+    mPoseEstimator.resetPosition(mPoseEstimator.getEstimatedPosition(), mPigeon.getRotation2d());
   }
   
   public void resetPoseEstimator(Pose2d newPose){
-    mPigeonIMU.setFusedHeading(newPose.getRotation().getDegrees());
-    mPoseEstimator.resetPosition(newPose, mPigeonIMU.getRotation2d());
-
+    //mPigeon.setYaw(newPose.getRotation().getDegrees());
+    mPoseEstimator.resetPosition(newPose, mPigeon.getRotation2d());
   }
 
   /**
@@ -369,8 +368,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
    * Stops the Drivetrain
    */
   public void stop() {
-    mFrontLeft.stopMotor();
-    mFrontRight.stopMotor();
+    mFrontLeft.set(0);
+    mFrontRight.set(0);
   }
   /*
    * Get Methods
@@ -433,8 +432,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   public double getHeadingVelocity(){
     double[] gyroVals = {0,0,0};
     mPigeon.getRawGyro(gyroVals);
-
-
+    return gyroVals[2];
+  }
   /**
    * @return Gyro accumulated angle if it is ready to give accurate data
    */
@@ -444,14 +443,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
   @Log(rowIndex = 0, columnIndex = 3, width = 2, height = 1, name = "Gyro Normalized", tabName = "Scott Gyro Stuff")
   public double getGyroCorrected() {
-    if (mPigeonIMU.getState() == PigeonState.Ready) {
-      return ArborMath.normalizeFusedHeading(mPigeonIMU.getFusedHeading());
-    }
-    return 0;
+    return ArborMath.normalizeFusedHeading(mPigeon.getYaw());
   }
 
   public void updatePoseEstimator(DifferentialDriveWheelSpeeds actWheelSpeeds, double leftDist, double rightDist) {
-    mPoseEstimator.update(mPigeonIMU.getRotation2d(), actWheelSpeeds, leftDist, rightDist);
+    mPoseEstimator.update(mPigeon.getRotation2d(), actWheelSpeeds, leftDist, rightDist);
     var res = mVision.visionSupplier.getResult();
     if(res.hasTargets()){
       double imageCaptureTime = Timer.getFPGATimestamp() - res.getLatencyMillis();
@@ -488,6 +484,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     public void execute() {
       double output = mPIDController.calculate(getGyroAngle(), mStartPoint + mSetpoint);
 
+      System.out.println(output);
+
       mFrontLeft.set(-output);
       mFrontRight.set(output);
 
@@ -495,7 +493,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
     @Override
     public boolean isFinished() {
-      return (mStartPoint + mSetpoint) - getGyroAngle() <= Constants.Drivetrain.kTurnCommandTolerance;
+      return Math.abs((mStartPoint + mSetpoint) - getGyroAngle()) <= Constants.Drivetrain.kTurnCommandTolerance;
     }
 
   }

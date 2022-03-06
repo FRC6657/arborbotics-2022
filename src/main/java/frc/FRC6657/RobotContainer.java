@@ -250,7 +250,7 @@ public class RobotContainer implements Loggable {
       );
 
       mXboxController.pov.right().whenHeld(
-        drivetrain.new TurnByAngleCommand(360)
+        drivetrain.new TurnByAngleCommand(-90)
       );
 
     }

@@ -70,7 +70,7 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
                     new InstantCommand(intake::stop)
                 )  
             ),
-            drivetrain.new TurnByAngleCommand(270)
+            drivetrain.new TurnByAngleCommand(90)
             .beforeStarting(
                 new InstantCommand(() -> flywheel.setRPMTarget(1000))
             )
@@ -95,7 +95,7 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
         );
     }
 
-    private Trajectory PATH_TO_BALL_1 = Trajectories.generateTrajectory(3, 2, List.of(
+    private Trajectory PATH_TO_BALL_1 = Trajectories.generateTrajectory(4, 4, List.of(
         new Pose2d(6.140, 5.179, Rotation2d.fromDegrees(-220)),
         new Pose2d(5.014, 6.16, Rotation2d.fromDegrees(-220))
 
@@ -120,8 +120,8 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
     "Blue Steal PATH_TO_RED_1"
     );
 
-    private Trajectory PATH_TO_RED_2 = Trajectories.generateTrajectory(1, 2, List.of(
-        new Pose2d(6.122, 7.082, Rotation2d.fromDegrees(11.372)),
+    private Trajectory PATH_TO_RED_2 = Trajectories.generateTrajectory(4, 4, List.of(
+        new Pose2d(6.122, 7.082, Rotation2d.fromDegrees(-135)),
         new Pose2d(4.467, 3.620, Rotation2d.fromDegrees(-81.657))
     ), 
     false, 
