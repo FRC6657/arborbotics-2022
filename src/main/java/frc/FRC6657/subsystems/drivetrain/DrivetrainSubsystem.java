@@ -18,13 +18,18 @@ import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
+
+import org.opencv.core.Mat;
+
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.controller.LinearPlantInversionFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -35,6 +40,8 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -69,7 +76,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   private final DifferentialDrivePoseEstimator mPoseEstimator = new DifferentialDrivePoseEstimator(
     new Rotation2d(), 
     new Pose2d(), 
-    new MatBuilder<>(
+    new MatBuilder<>( 
       Nat.N5(), 
       Nat.N1()
     ).fill(0.02, 0.02, 0.01, 0.02, 0.02), 
@@ -80,12 +87,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     new MatBuilder<>(
       Nat.N3(), 
       Nat.N1()
-    ).fill(0.1, 0.1, 0.01) //Measurement Deviation X, Y, Theta
+    ).fill(0.1, 0.1, 0.01) //Vision Measurement Deviation X, Y, Theta
   );
-  // Kinematics and Odometry Classes
 
-  // Feed forward and PID controller for advanced movement
-  private final SimpleMotorFeedforward mFeedForward;
+  //Feed forward and PID controller for advanced movement
+  private final LinearPlantInversionFeedforward<N2,N2,N2> mFeedForward;
   private final PIDController mLinearPIDController;
 
   // Ramsete Controller for Path Following
@@ -305,14 +311,23 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
    * @param speeds Left and Right Velocities.
    */
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-    final double leftFeedforward = mFeedForward.calculate(speeds.leftMetersPerSecond);
-    final double rightFeedforward = mFeedForward.calculate(speeds.rightMetersPerSecond);
+
+    var feedForward = mFeedForward.calculate(
+      new MatBuilder<>(
+        Nat.N2(), 
+        Nat.N1()
+      )
+      .fill(
+        speeds.leftMetersPerSecond, 
+        speeds.rightMetersPerSecond
+      )
+    );
 
     final double leftOutput = mLinearPIDController.calculate(getLeftVelocity(), speeds.leftMetersPerSecond);
     final double rightOutput = mLinearPIDController.calculate(getRightVelocity(), speeds.rightMetersPerSecond);
 
-    mFrontLeft.setVoltage(leftOutput + leftFeedforward);
-    mFrontRight.setVoltage(rightOutput + rightFeedforward);
+    mFrontLeft.setVoltage(leftOutput + feedForward.get(0, 0));
+    mFrontRight.setVoltage(rightOutput + feedForward.get(1, 0));
   }
 
   /**
@@ -322,18 +337,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
    * @param speeds Left and Right speeds input -1 to 1
    */
   public void setSpeeds(WheelSpeeds speeds) {
-
-    speeds.left *= Constants.Drivetrain.kMaxAttainableSpeed;
-    speeds.right *= Constants.Drivetrain.kMaxAttainableSpeed;
-
-    final double leftFeedforward = mFeedForward.calculate(speeds.left);
-    final double rightFeedforward = mFeedForward.calculate(speeds.right);
-
-    final double leftOutput = mLinearPIDController.calculate(getLeftVelocity(), speeds.left);
-    final double rightOutput = mLinearPIDController.calculate(getRightVelocity(), speeds.right);
-
-    mFrontLeft.setVoltage(leftOutput + leftFeedforward);
-    mFrontRight.setVoltage(rightOutput + rightFeedforward);
+    setSpeeds(
+      new DifferentialDriveWheelSpeeds(
+        speeds.left * Constants.Drivetrain.kMaxAttainableSpeed,
+        speeds.right * Constants.Drivetrain.kMaxAttainableSpeed
+      )
+    );
   }
 
   /**

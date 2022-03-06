@@ -4,13 +4,14 @@
 
 package frc.FRC6657;
 
+import edu.wpi.first.math.controller.LinearPlantInversionFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -42,7 +43,6 @@ public final class Constants {
     public static final int kRightLiftID = 12; 
     public static final int kLeftLiftID = 13;
 
-
     // General Values
     public static final double kFalconEncoderCPR = 2048; // Encoder Counts per Rotation
 
@@ -51,10 +51,15 @@ public final class Constants {
      */
     public static class Drivetrain {
         // Drivetrain Characterization
-        public static final double drive_kS = 0.53584;
-        public static final double drive_kV = 2.2764;
-        public static final double drive_kA = 0.73118;
-        public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(drive_kS, drive_kV, drive_kA);
+        public static final double linear_kS = 0.53584;
+        public static final double linear_kV = 2.2764;
+        public static final double linear_kA = 0.73118;
+        //public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(linear_kS, linear_kV, linear_kA);
+
+
+        public static final double angular_kS = 0;
+        public static final double angular_kV = 0;
+        public static final double angular_kA = 0;
 
         // Drivetrain PID
         public static final double drive_linear_kP = 0.64132; //Char P gain 0.64132
@@ -73,7 +78,6 @@ public final class Constants {
         public static final double kDistanceTollerance = 0.1;
         public static final double kTurnCommandTolerance = 0.5;
 
-
         //TODO Put robot on cart and figure out these values.
         public static final double kMaxAttainableSpeed = ((6380d/60) * (6 * Math.PI))/(39.37*kGearRatio);
         public static final double kMaxAttainableTurnRate = Units.radiansToDegrees(kMaxAttainableSpeed * kTrackWidth/2);
@@ -88,6 +92,16 @@ public final class Constants {
             kTrackWidth,
             null
         );
+
+        public static final LinearSystem<N2,N2,N2> kPlant = LinearSystemId.identifyDrivetrainSystem(
+            linear_kV,
+            linear_kA,
+            angular_kV,
+            angular_kA
+        );
+
+        public static final LinearPlantInversionFeedforward<N2,N2,N2> kFeedForward = new LinearPlantInversionFeedforward<N2,N2,N2>(kPlant,0.02);
+
     }
 
     /**
