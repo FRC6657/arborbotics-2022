@@ -138,6 +138,13 @@ public final class Constants {
     public static class Hood {
         public static final double kUpSpeed = 0.5;
         public static final double kDownSpeed = -0.3;
+
+        public static final double kRatio = 1d/(((10*5*3)*(3/2d)*(5/2d)));
+
+        public static final double kP = 12/(45);
+
+        public static final PIDController kPIDController = new PIDController(kP, 0, 0);
+
     }
 
     

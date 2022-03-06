@@ -9,12 +9,14 @@
       "/LiveWindow/FlywheelSubsystem": "Subsystem",
       "/LiveWindow/HoodSubsystem": "Subsystem",
       "/LiveWindow/IntakeSubsystem": "Subsystem",
+      "/LiveWindow/LiftSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/Blinkin[0]": "Motor Controller",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon 2 [5]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Talon FX [1]": "Motor Controller",
@@ -24,10 +26,13 @@
       "/LiveWindow/Ungrouped/Talon FX [8]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [9]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [10]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon SRX [12]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon SRX [13]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [6]": "Motor Controller",
       "/LiveWindow/VisionSubsystem": "Subsystem",
       "/Shuffleboard/Drivetrain/Gyro": "Gyro",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Hood": "Mechanism2d",
       "/SmartDashboard/SendableChooser[0]": "String Chooser"
     },
     "windows": {
@@ -54,6 +59,11 @@
           "style": "Line"
         },
         "width": 16.459199905395508,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Hood": {
         "window": {
           "visible": true
         }

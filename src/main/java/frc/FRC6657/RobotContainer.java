@@ -20,8 +20,13 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -88,7 +93,7 @@ public class RobotContainer implements Loggable {
   public final FlywheelSubsystem flywheel;
   public final HoodSubsystem hood;
   public final IntakeSubsystem intake;
-  // public final LiftSubsystem lift;
+  public final LiftSubsystem lift;
   public final VisionSubsystem vision;
 
   public final Trigger flywheelReady, flywheelActive, ballDetected, intakeActive;
@@ -104,7 +109,7 @@ public class RobotContainer implements Loggable {
     flywheel = new FlywheelSubsystem();
     hood = new HoodSubsystem();
     intake = new IntakeSubsystem();
-    // lift = new LiftSubsystem();
+    lift = new LiftSubsystem();
     vision = new VisionSubsystem();
     drivetrain = new DrivetrainSubsystem(mProfile, vision);
 
@@ -174,7 +179,7 @@ public class RobotContainer implements Loggable {
 
     mAutoChooser.addOption("5",
       new SequentialCommandGroup[]{
-        new RedFive(drivetrain, intake, extension, flywheel, accelerator),
+        new RedFive(drivetrain, intake, extension, flywheel, accelerator, hood),
         new BlueFive(drivetrain, intake, extension, flywheel, accelerator)
       }
     );
@@ -234,18 +239,14 @@ public class RobotContainer implements Loggable {
 
       //Hood
       mXboxController.pov.up().whenHeld(
-        new StartEndCommand(
-          () -> hood.set(Constants.Hood.kUpSpeed), 
-          hood::stop,
-          hood
+        new InstantCommand(
+          () -> hood.setAngle(40) 
         )
       );
 
       mXboxController.pov.down().whenHeld(
-        new StartEndCommand(
-          () -> hood.set(Constants.Hood.kDownSpeed), 
-          hood::stop,
-          hood
+        new InstantCommand(
+          () -> hood.setAngle(0)
         )
       );
 
@@ -255,6 +256,7 @@ public class RobotContainer implements Loggable {
 
     }
   }
+
   public SequentialCommandGroup getAutonomousCommand() {
     int alliance = 0;
     if(DriverStation.getAlliance() == Alliance.Red){

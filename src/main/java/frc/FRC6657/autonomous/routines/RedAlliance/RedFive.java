@@ -21,6 +21,7 @@ import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.IntakeSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
+import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 
 public class RedFive extends SequentialCommandGroup {
   public RedFive(
@@ -28,7 +29,8 @@ public class RedFive extends SequentialCommandGroup {
     IntakeSubsystem intake,
     ExtensionSubsystem pistons,
     FlywheelSubsystem flywheel,
-    AcceleratorSubsystem accelerator
+    AcceleratorSubsystem accelerator,
+    HoodSubsystem hood
   ) {
     addCommands(
       new ParallelRaceGroup(
@@ -48,7 +50,10 @@ public class RedFive extends SequentialCommandGroup {
       ),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_1, false)
       .beforeStarting(
-        new InstantCommand(() -> flywheel.setRPMTarget(1000))
+        new ParallelCommandGroup(
+          new InstantCommand(() -> flywheel.setRPMTarget(1000)),
+          new InstantCommand(() -> hood.setAngle(45))
+        )
       )
       .andThen(
         new SequentialCommandGroup(
@@ -58,7 +63,8 @@ public class RedFive extends SequentialCommandGroup {
         ).andThen(
           new ParallelCommandGroup(
             new InstantCommand(accelerator::stop),
-            new InstantCommand(flywheel::stop)
+            new InstantCommand(flywheel::stop),
+            hood.new Home()
           )
         )
       ),
@@ -77,7 +83,10 @@ public class RedFive extends SequentialCommandGroup {
       ),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false)
       .beforeStarting(
-        new InstantCommand(() -> flywheel.setRPMTarget(1000))
+        new ParallelCommandGroup(
+          new InstantCommand(() -> flywheel.setRPMTarget(1000)),
+          new InstantCommand(() -> hood.setAngle(45))
+        )
       )
       .andThen(
         new SequentialCommandGroup(
@@ -87,7 +96,8 @@ public class RedFive extends SequentialCommandGroup {
         ).andThen(
           new ParallelCommandGroup(
             new InstantCommand(accelerator::stop),
-            new InstantCommand(flywheel::stop)
+            new InstantCommand(flywheel::stop),
+            hood.new Home()
           )
         )
       ),
@@ -106,7 +116,10 @@ public class RedFive extends SequentialCommandGroup {
       ),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_3, false)
       .beforeStarting(
-        new InstantCommand(() -> flywheel.setRPMTarget(1000))
+        new ParallelCommandGroup(
+          new InstantCommand(() -> flywheel.setRPMTarget(1000)),
+          new InstantCommand(() -> hood.setAngle(45))
+        )
       )
       .andThen(
         new SequentialCommandGroup(
@@ -116,7 +129,8 @@ public class RedFive extends SequentialCommandGroup {
         ).andThen(
           new ParallelCommandGroup(
             new InstantCommand(accelerator::stop),
-            new InstantCommand(flywheel::stop)
+            new InstantCommand(flywheel::stop),
+            hood.new Home()
           )
         )
       ),

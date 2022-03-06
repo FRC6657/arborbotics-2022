@@ -483,9 +483,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     @Override
     public void execute() {
       double output = mPIDController.calculate(getGyroAngle(), mStartPoint + mSetpoint);
-
-      System.out.println(output);
-
       mFrontLeft.set(-output);
       mFrontRight.set(output);
 
