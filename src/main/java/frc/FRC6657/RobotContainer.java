@@ -207,6 +207,13 @@ public class RobotContainer implements Loggable {
       }
     );
 
+    mAutoChooser.addOption("HomeHood", 
+      new SequentialCommandGroup[] {
+        new SequentialCommandGroup(hood.new Home()),
+        new SequentialCommandGroup(hood.new Home())
+      }
+    );
+
     SmartDashboard.putData(mAutoChooser);
     }
 
