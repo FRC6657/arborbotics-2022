@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
+import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
 @SuppressWarnings("unused")
 public class HoodSubsystem extends SubsystemBase {

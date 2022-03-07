@@ -122,14 +122,14 @@ public final class Constants {
         public static final double kSpeed = 0.5;
 
         // Characterization
-        public static final double kV = 0.0549; // 0.051151
-        public static final double kA= 0.0024487; //0.0024487 
+        public static final double kV = 0.0549/4.5; // 0.051151
+        public static final double kA= 0.0024487/4.5; //0.0024487 
 
         public static final LinearSystem<N1, N1, N1> kPlant = LinearSystemId.identifyVelocitySystem(kV, kA);
 
         public static final FlywheelSim kSim = new FlywheelSim(
             kPlant,
-            DCMotor.getFalcon500(1),
+            DCMotor.getFalcon500(2),
             kRatio
         );
 
@@ -159,11 +159,13 @@ public final class Constants {
         public static final double kCameraHeightMeters = 0.638374;// CAD Estimate
         public static final double kTargetHeightMeters = Units.feetToMeters(8 + 8 / 12); // 8` 8" from manual
         public static final double kCameraPitchRadians = Units.degreesToRadians(42);
+        public static final double kMaxLEDRange = 20;
         public static final double kCamDiagFOV = 67.8; // degrees
         public static final int kCamResolutionWidth = 320; // pixels
         public static final int kCamResolutionHeight = 240; // pixels
         public static final double kTargetWidth = Units.feetToMeters(4);  
-        public static final Pose2d kTargetPos = new Pose2d(54/2, 27/2, Rotation2d.fromDegrees(0));
+        public static final double kMinTargetArea = 10;
+        public static final Pose2d kTargetPos = new Pose2d(8.229, 4.115, Rotation2d.fromDegrees(0));
         public static final Transform2d kCameraToRobot = new Transform2d(
             new Translation2d(-0.008486, -0.403435),
             new Rotation2d()

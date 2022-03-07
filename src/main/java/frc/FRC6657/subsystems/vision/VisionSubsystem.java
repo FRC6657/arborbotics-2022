@@ -31,14 +31,6 @@ public class VisionSubsystem extends SubsystemBase {
   public final VisionSupplier visionSupplier = new VisionSupplier();
   private PhotonPipelineResult result;
 
-  public static final double camDiagFOV = 67.8; // degrees
-  public static final double camPitch = 42; // degrees
-  public static final double camHeightOffGround = 0.637519; // meters
-  public static final double maxLEDRange = 20; // meters
-  public static final int camResolutionWidth = 320; // pixels
-  public static final int camResolutionHeight = 240; // pixels
-  public static final double minTargetArea = 10; // square pixels
-
   public static final Translation2d kFieldCenterX = new Translation2d(8.2295, 4.115);
 
   private List<Pose2d> mVisionTargets = new ArrayList<Pose2d>();

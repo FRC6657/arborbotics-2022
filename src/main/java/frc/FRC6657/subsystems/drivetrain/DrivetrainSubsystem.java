@@ -17,6 +17,10 @@ import com.ctre.phoenix.sensors.BasePigeonSimCollection;
 import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+
+import org.photonvision.SimVisionSystem;
+import org.photonvision.SimVisionTarget;
+
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
@@ -40,6 +44,7 @@ import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
@@ -81,7 +86,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
       Nat.N1()
     ).fill(0.1, 0.1, 0.01) //Measurement Deviation X, Y, Theta
   );
-  // Kinematics and Odometry Classes
 
   // Feed forward and PID controller for advanced movement
   private final SimpleMotorFeedforward mFeedForward;
@@ -106,6 +110,21 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   private final DriverProfile mProfile;
 
   private VisionSubsystem mVision;
+
+  private SimVisionSystem mVisionSim = new SimVisionSystem(
+    "limelight",
+    Constants.Vision.kCamDiagFOV,
+    Units.radiansToDegrees(Constants.Vision.kCameraPitchRadians),
+    Constants.Vision.kCameraToRobot,
+    Constants.Vision.kCameraHeightMeters,
+    Constants.Vision.kMaxLEDRange,
+    Constants.Vision.kCamResolutionWidth,
+    Constants.Vision.kCamResolutionHeight,
+    Constants.Vision.kMinTargetArea
+  );
+
+  private SimVisionTarget mTarget = new SimVisionTarget(Constants.Vision.kTargetPos, Constants.Vision.kTargetHeightMeters, Units.feetToMeters(4), Units.inchesToMeters(2.5));
+
 
   /*
    * 
@@ -148,6 +167,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
       mPigeonSim = mPigeon.getSimCollection();
       mLeftSim = mFrontLeft.getSimCollection();
       mRightSim = mFrontRight.getSimCollection();
+
+      mVisionSim.addSimVisionTarget(mTarget);
+
     }
 
     mVisionTargets.setPoses(vision.visionSupplier.getVisionTarget());
@@ -578,5 +600,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
         (int) (mDrivetrainSim.getRightVelocityMetersPerSecond() / (10 * Constants.Drivetrain.kDistancePerPulse)));
 
     mPigeonSim.setRawHeading(mDrivetrainSim.getHeading().getDegrees());
+
+    mVisionSim.processFrame(mPoseEstimator.getEstimatedPosition());
+
   }
 }

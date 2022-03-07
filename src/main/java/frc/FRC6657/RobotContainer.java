@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -65,6 +66,7 @@ import frc.FRC6657.subsystems.lift.LiftSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
+import frc.FRC6657.subsystems.shooter.interpolation.InterpolatingTable;
 import frc.FRC6657.subsystems.vision.VisionSubsystem;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
@@ -103,6 +105,7 @@ public class RobotContainer implements Loggable {
   public RobotContainer() {
 
     // Subsystem Assignments
+    vision = new VisionSubsystem();
     accelerator = new AcceleratorSubsystem();
     blinkin = new BlinkinSubsystem();
     extension = new ExtensionSubsystem();
@@ -110,7 +113,6 @@ public class RobotContainer implements Loggable {
     hood = new HoodSubsystem();
     intake = new IntakeSubsystem();
     lift = new LiftSubsystem();
-    vision = new VisionSubsystem();
     drivetrain = new DrivetrainSubsystem(mProfile, vision);
 
     // Triggers
@@ -148,6 +150,26 @@ public class RobotContainer implements Loggable {
           mXboxController.getRightTrigger(),
           mXboxController.getLeftTrigger());
     }, drivetrain));
+
+    hood.setDefaultCommand(
+      new RunCommand(() -> {
+        if(vision.visionSupplier.hasTarget()){
+          hood.setAngle(InterpolatingTable.get(vision.visionSupplier.getDistance()).hoodAngle);
+        } else {
+          hood.setAngle(0);
+        }
+      }, hood
+    ));
+
+    flywheel.setDefaultCommand(
+      new RunCommand(() -> {
+        if(vision.visionSupplier.hasTarget()){
+          flywheel.setRPMTarget(InterpolatingTable.get(vision.visionSupplier.getDistance()).rpm);
+        } else{
+          flywheel.setRPMTarget(0);
+        }
+      }, flywheel
+    ));
 
     configureButtonBindings();
     configureAutoChooser();

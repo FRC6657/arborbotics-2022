@@ -76,19 +76,13 @@
     }
   },
   "NetworkTables": {
-    "LiveWindow": {
-      "Ungrouped": {
-        "Pigeon 2 [5]": {
-          "open": true
-        },
-        "open": true
-      },
-      "open": true
-    },
     "Shuffleboard": {
       "open": true
     },
     "SmartDashboard": {
+      "open": true
+    },
+    "photonvision": {
       "open": true
     }
   }
