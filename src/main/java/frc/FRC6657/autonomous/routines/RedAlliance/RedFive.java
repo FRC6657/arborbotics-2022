@@ -12,6 +12,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -22,6 +23,8 @@ import frc.FRC6657.subsystems.intake.IntakeSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
+import frc.FRC6657.subsystems.shooter.interpolation.InterpolatingTable;
+import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
 public class RedFive extends SequentialCommandGroup {
   public RedFive(
@@ -30,36 +33,37 @@ public class RedFive extends SequentialCommandGroup {
     ExtensionSubsystem pistons,
     FlywheelSubsystem flywheel,
     AcceleratorSubsystem accelerator,
-    HoodSubsystem hood
+    HoodSubsystem hood,
+    VisionSupplier vision
   ) {
     addCommands(
       new ParallelRaceGroup(
-        new WaitUntilCommand(intake::ballDetected),
-        drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_2, true)
+        new WaitUntilCommand(intake::ballDetected), //Cancel Trajectory if ball 2 is detected early
+        drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_2, true) //Go to ball #2
       ).beforeStarting(
-        new ParallelCommandGroup(
-          new InstantCommand(pistons::extend),
+        new ParallelCommandGroup( //Prepare Intake to pickup ball #2
+          new InstantCommand(pistons::extend), 
           new InstantCommand(intake::start)
         )
       )
       .andThen(
-        new ParallelCommandGroup(
+        new ParallelCommandGroup( //Retract Intake After Ball #2
           new InstantCommand(pistons::retract),
           new InstantCommand(intake::stop)
         )
       ),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_1, false)
-      .beforeStarting(
-        new ParallelCommandGroup(
-          new InstantCommand(() -> flywheel.setRPMTarget(1000)),
-          new InstantCommand(() -> hood.setAngle(45))
-        )
-      )
+      new ParallelRaceGroup(
+        drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_1, false),
+        new RunCommand(() -> {
+          hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
+          System.out.println(vision.getDistance());
+        }, hood),
+        new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
+      ) //Drive to a firing Position
       .andThen(
         new SequentialCommandGroup(
           new WaitUntilCommand(flywheel::atTarget),
-          new InstantCommand(accelerator::start),
-          new WaitCommand(0.5)
+          new InstantCommand(accelerator::start)
         ).andThen(
           new ParallelCommandGroup(
             new InstantCommand(accelerator::stop),

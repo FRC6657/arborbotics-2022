@@ -113,7 +113,7 @@ public class RobotContainer implements Loggable {
     hood = new HoodSubsystem();
     intake = new IntakeSubsystem();
     lift = new LiftSubsystem();
-    drivetrain = new DrivetrainSubsystem(mProfile, vision);
+    drivetrain = new DrivetrainSubsystem(mProfile, vision.visionSupplier);
 
     // Triggers
     flywheelReady = new Trigger(flywheel::atTarget);
@@ -141,7 +141,7 @@ public class RobotContainer implements Loggable {
     flywheelReady.or(flywheelActive).or(ballDetected).or(intakeActive).whenInactive(
         () -> blinkin.setIndicator(new BlinkinIndicator[] {
             new BlinkinIndicator("Idle", Constants.BlinkinPriorities.kIdle, Constants.BlinkinColors.kIdle)
-        }));
+    }));
 
     drivetrain.setDefaultCommand(new RunCommand(() -> {
       drivetrain.teleopCurvatureDrive(
@@ -150,26 +150,6 @@ public class RobotContainer implements Loggable {
           mXboxController.getRightTrigger(),
           mXboxController.getLeftTrigger());
     }, drivetrain));
-
-    hood.setDefaultCommand(
-      new RunCommand(() -> {
-        if(vision.visionSupplier.hasTarget()){
-          hood.setAngle(InterpolatingTable.get(vision.visionSupplier.getDistance()).hoodAngle);
-        } else {
-          hood.setAngle(0);
-        }
-      }, hood
-    ));
-
-    flywheel.setDefaultCommand(
-      new RunCommand(() -> {
-        if(vision.visionSupplier.hasTarget()){
-          flywheel.setRPMTarget(InterpolatingTable.get(vision.visionSupplier.getDistance()).rpm);
-        } else{
-          flywheel.setRPMTarget(0);
-        }
-      }, flywheel
-    ));
 
     configureButtonBindings();
     configureAutoChooser();
@@ -201,7 +181,7 @@ public class RobotContainer implements Loggable {
 
     mAutoChooser.addOption("5",
       new SequentialCommandGroup[]{
-        new RedFive(drivetrain, intake, extension, flywheel, accelerator, hood),
+        new RedFive(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
         new BlueFive(drivetrain, intake, extension, flywheel, accelerator)
       }
     );
@@ -234,43 +214,37 @@ public class RobotContainer implements Loggable {
     
     switch(Controls){
       case "Testing":
-        //Intake
         mXboxController.a().whenHeld(
           new ParallelCommandGroup(
-            new StartEndCommand(
-              () -> intake.set(Constants.Intake.kSpeed), 
-              intake::stop,
-              intake
-            ),
-            new StartEndCommand(
-              extension::extend,
-              extension::retract,
-              extension
+
+            drivetrain.new VisionAimAssist(),
+
+            new ConditionalCommand(
+
+              new ParallelCommandGroup(
+
+                new RunCommand(
+                  () -> hood.setAngle(InterpolatingTable.get(vision.visionSupplier.getDistance()).hoodAngle),
+                  hood
+                ),
+                new RunCommand(
+                  () -> flywheel.setRPMTarget(InterpolatingTable.get(vision.visionSupplier.getDistance()).rpm),
+                  flywheel
+                )
+
+              ),
+              new InstantCommand(),
+              vision.visionSupplier::hasTarget
+
             )
+
+          )
+        ).whenReleased(
+          new ParallelCommandGroup(
+            hood.new Home(),
+            new InstantCommand(() -> flywheel.setRPMTarget(0))
           )
         );
-
-      //Flywheel
-      mXboxController.b().whenHeld(
-          new StartEndCommand(
-            () -> flywheel.set(Constants.Flywheel.kSpeed),
-            flywheel::stop,
-            flywheel
-          )
-      );
-
-      //Hood
-      mXboxController.pov.up().whenHeld(
-        new InstantCommand(
-          () -> hood.setAngle(40) 
-        )
-      );
-
-      mXboxController.pov.down().whenHeld(
-        new InstantCommand(
-          () -> hood.setAngle(0)
-        )
-      );
     }
   }
 

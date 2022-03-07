@@ -1,4 +1,13 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "Talon FX[2]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -77,12 +86,18 @@
   },
   "NetworkTables": {
     "Shuffleboard": {
+      "FlywheelSubsystem": {
+        "open": true
+      },
       "open": true
     },
     "SmartDashboard": {
       "open": true
     },
     "photonvision": {
+      "limelight": {
+        "open": true
+      },
       "open": true
     }
   }

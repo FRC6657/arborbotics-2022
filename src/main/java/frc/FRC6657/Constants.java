@@ -63,6 +63,9 @@ public final class Constants {
 
         public static final PIDController kLinearPIDController = new PIDController(drive_linear_kP, 0, 0);
 
+        public static final double vision_kP = 6d/27;
+        public static final double vision_kD = 1d/30;
+
         // Drivetrain Values
         public static final double kRobotWeight = Units.lbsToKilograms(40);
         public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides
@@ -73,8 +76,6 @@ public final class Constants {
         public static final double kDistanceTollerance = 0.1;
         public static final double kTurnCommandTolerance = 0.5;
 
-
-        //TODO Put robot on cart and figure out these values.
         public static final double kMaxAttainableSpeed = ((6380d/60) * (6 * Math.PI))/(39.37*kGearRatio);
         public static final double kMaxAttainableTurnRate = Units.radiansToDegrees(kMaxAttainableSpeed * kTrackWidth/2);
 
@@ -156,6 +157,7 @@ public final class Constants {
     }
 
     public static class Vision{
+        public static final String kCameraName = "limelight";
         public static final double kCameraHeightMeters = 0.638374;// CAD Estimate
         public static final double kTargetHeightMeters = Units.feetToMeters(8 + 8 / 12); // 8` 8" from manual
         public static final double kCameraPitchRadians = Units.degreesToRadians(42);
@@ -165,10 +167,10 @@ public final class Constants {
         public static final int kCamResolutionHeight = 240; // pixels
         public static final double kTargetWidth = Units.feetToMeters(4);  
         public static final double kMinTargetArea = 10;
-        public static final Pose2d kTargetPos = new Pose2d(8.229, 4.115, Rotation2d.fromDegrees(0));
+        public static final Pose2d kTargetPos = new Pose2d(8.029, 4.415, Rotation2d.fromDegrees(0));
         public static final Transform2d kCameraToRobot = new Transform2d(
             new Translation2d(-0.008486, -0.403435),
-            new Rotation2d()
+            new Rotation2d(Units.degreesToRadians(180))
         );
     }
 

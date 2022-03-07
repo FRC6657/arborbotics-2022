@@ -14,8 +14,8 @@ public class InterpolatingTable {
     // Interpolating tree map Example values for now
     private static final TreeMap<Double, ShotParameter> map = new TreeMap<>(
         Map.ofEntries(
-            entry(1.45, new ShotParameter(0,1000)), //1 Meter away set rpm to 2000 and 10* hood angle
-            entry(4.5, new ShotParameter(45,4000)) //2  Meter away set rpm to 2000 and 10* hood angle
+            entry(1.45, new ShotParameter(0,1000)),
+            entry(4.5, new ShotParameter(45,4000))
         )
     );
 
