@@ -128,14 +128,6 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
     "Blue Steal Two PATH_TO_RED_2"
     );
 
-    private Trajectory PATH_TO_PARK = Trajectories.generateTrajectory(1, 2, List.of(
-        new Pose2d(6.766, 4.661, Rotation2d.fromDegrees(155.98)),
-        new Pose2d(5.014, 6.16, Rotation2d.fromDegrees(-223))
-    ), 
-    false, 
-    "Blue Steal TWO PATH_TO_PARK"
-    );
-
 
     }
 

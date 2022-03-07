@@ -20,13 +20,19 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -60,6 +66,7 @@ import frc.FRC6657.subsystems.lift.LiftSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
+import frc.FRC6657.subsystems.shooter.interpolation.InterpolatingTable;
 import frc.FRC6657.subsystems.vision.VisionSubsystem;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
@@ -88,7 +95,7 @@ public class RobotContainer implements Loggable {
   public final FlywheelSubsystem flywheel;
   public final HoodSubsystem hood;
   public final IntakeSubsystem intake;
-  // public final LiftSubsystem lift;
+  public final LiftSubsystem lift;
   public final VisionSubsystem vision;
 
   public final Trigger flywheelReady, flywheelActive, ballDetected, intakeActive;
@@ -98,15 +105,15 @@ public class RobotContainer implements Loggable {
   public RobotContainer() {
 
     // Subsystem Assignments
+    vision = new VisionSubsystem();
     accelerator = new AcceleratorSubsystem();
     blinkin = new BlinkinSubsystem();
     extension = new ExtensionSubsystem();
     flywheel = new FlywheelSubsystem();
     hood = new HoodSubsystem();
     intake = new IntakeSubsystem();
-    // lift = new LiftSubsystem();
-    vision = new VisionSubsystem();
-    drivetrain = new DrivetrainSubsystem(mProfile, vision);
+    lift = new LiftSubsystem();
+    drivetrain = new DrivetrainSubsystem(mProfile, vision.visionSupplier);
 
     // Triggers
     flywheelReady = new Trigger(flywheel::atTarget);
@@ -134,7 +141,7 @@ public class RobotContainer implements Loggable {
     flywheelReady.or(flywheelActive).or(ballDetected).or(intakeActive).whenInactive(
         () -> blinkin.setIndicator(new BlinkinIndicator[] {
             new BlinkinIndicator("Idle", Constants.BlinkinPriorities.kIdle, Constants.BlinkinColors.kIdle)
-        }));
+    }));
 
     drivetrain.setDefaultCommand(new RunCommand(() -> {
       drivetrain.teleopCurvatureDrive(
@@ -174,7 +181,7 @@ public class RobotContainer implements Loggable {
 
     mAutoChooser.addOption("5",
       new SequentialCommandGroup[]{
-        new RedFive(drivetrain, intake, extension, flywheel, accelerator),
+        new RedFive(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
         new BlueFive(drivetrain, intake, extension, flywheel, accelerator)
       }
     );
@@ -200,6 +207,13 @@ public class RobotContainer implements Loggable {
       }
     );
 
+    mAutoChooser.addOption("HomeHood", 
+      new SequentialCommandGroup[] {
+        new SequentialCommandGroup(hood.new Home()),
+        new SequentialCommandGroup(hood.new Home())
+      }
+    );
+
     SmartDashboard.putData(mAutoChooser);
     }
 
@@ -207,54 +221,31 @@ public class RobotContainer implements Loggable {
     
     switch(Controls){
       case "Testing":
-        //Intake
         mXboxController.a().whenHeld(
+            new ConditionalCommand(
+              new ParallelCommandGroup(
+                drivetrain.new VisionAimAssist(),
+                new RunCommand(
+                  () -> hood.setAngle(InterpolatingTable.get(vision.visionSupplier.getDistance()).hoodAngle),
+                  hood
+                ),
+                new RunCommand(
+                  () -> flywheel.setRPMTarget(InterpolatingTable.get(vision.visionSupplier.getDistance()).rpm),
+                  flywheel
+                )
+              ),
+              new InstantCommand(),
+              vision.visionSupplier::hasTarget
+          )
+        ).whenReleased(
           new ParallelCommandGroup(
-            new StartEndCommand(
-              () -> intake.set(Constants.Intake.kSpeed), 
-              intake::stop,
-              intake
-            ),
-            new StartEndCommand(
-              extension::extend,
-              extension::retract,
-              extension
-            )
+            hood.new Home(),
+            new InstantCommand(() -> flywheel.setRPMTarget(0))
           )
         );
-
-      //Flywheel
-      mXboxController.b().whenHeld(
-          new StartEndCommand(
-            () -> flywheel.set(Constants.Flywheel.kSpeed),
-            flywheel::stop,
-            flywheel
-          )
-      );
-
-      //Hood
-      mXboxController.pov.up().whenHeld(
-        new StartEndCommand(
-          () -> hood.set(Constants.Hood.kUpSpeed), 
-          hood::stop,
-          hood
-        )
-      );
-
-      mXboxController.pov.down().whenHeld(
-        new StartEndCommand(
-          () -> hood.set(Constants.Hood.kDownSpeed), 
-          hood::stop,
-          hood
-        )
-      );
-
-      mXboxController.pov.right().whenHeld(
-        drivetrain.new TurnByAngleCommand(-90)
-      );
-
     }
   }
+
   public SequentialCommandGroup getAutonomousCommand() {
     int alliance = 0;
     if(DriverStation.getAlliance() == Alliance.Red){

@@ -9,12 +9,13 @@ import java.util.List;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
+import org.photonvision.SimVisionSystem;
+import org.photonvision.SimVisionTarget;
 import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -23,7 +24,7 @@ import frc.FRC6657.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
 
-  private final PhotonCamera mLimelight = new PhotonCamera("limelight");
+  private final PhotonCamera mLimelight = new PhotonCamera(Constants.Vision.kCameraName);
   private double yaw;
   private double pitch;
   private double distance;
@@ -31,20 +32,24 @@ public class VisionSubsystem extends SubsystemBase {
   public final VisionSupplier visionSupplier = new VisionSupplier();
   private PhotonPipelineResult result;
 
-  public static final double camDiagFOV = 67.8; // degrees
-  public static final double camPitch = 42; // degrees
-  public static final double camHeightOffGround = 0.637519; // meters
-  public static final double maxLEDRange = 20; // meters
-  public static final int camResolutionWidth = 320; // pixels
-  public static final int camResolutionHeight = 240; // pixels
-  public static final double minTargetArea = 10; // square pixels
-
   public static final Translation2d kFieldCenterX = new Translation2d(8.2295, 4.115);
+  
+  private SimVisionSystem mSim = new SimVisionSystem(
+    Constants.Vision.kCameraName,
+    Constants.Vision.kCamDiagFOV,
+    Units.radiansToDegrees(Constants.Vision.kCameraPitchRadians),
+    Constants.Vision.kCameraToRobot,
+    Constants.Vision.kCameraHeightMeters,
+    Constants.Vision.kMaxLEDRange,
+    Constants.Vision.kCamResolutionWidth,
+    Constants.Vision.kCamResolutionHeight,
+    Constants.Vision.kMinTargetArea
+  );
 
-  private List<Pose2d> mVisionTargets = new ArrayList<Pose2d>();
+  private SimVisionTarget mTarget = new SimVisionTarget(Constants.Vision.kTargetPos, Constants.Vision.kTargetHeightMeters, Units.feetToMeters(4), Units.inchesToMeters(2.5));
 
   public VisionSubsystem(){
-    mVisionTargets.add(new Pose2d(kFieldCenterX, new Rotation2d()));
+    mSim.addSimVisionTarget(mTarget);
   }
 
 
@@ -92,8 +97,12 @@ public class VisionSubsystem extends SubsystemBase {
       return result;
     }
 
-    public List<Pose2d> getVisionTarget() {
-      return mVisionTargets;
+    public SimVisionSystem getSim(){
+      return mSim;
+    }
+
+    public void processSim(Pose2d robotPoseMeters){
+      mSim.processFrame(robotPoseMeters);
     }
 
     // Toggles the LL LEDs

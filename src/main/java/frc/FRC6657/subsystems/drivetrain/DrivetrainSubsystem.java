@@ -46,7 +46,7 @@ import frc.FRC6657.Constants;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.custom.controls.DriverProfile;
-import frc.FRC6657.subsystems.vision.VisionSubsystem;
+import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -81,7 +81,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
       Nat.N1()
     ).fill(0.1, 0.1, 0.01) //Measurement Deviation X, Y, Theta
   );
-  // Kinematics and Odometry Classes
 
   // Feed forward and PID controller for advanced movement
   private final SimpleMotorFeedforward mFeedForward;
@@ -96,7 +95,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   // Field objects to display trajectory following accuracy
   private FieldObject2d mTrajectoryPlot = mField.getObject("trajectory");
   private FieldObject2d mRobotPath = mField.getObject("robot-path");
-  private FieldObject2d mVisionTargets = mField.getObject("VisionTargets");
   private List<Pose2d> mPathPoints = new ArrayList<Pose2d>();
 
   // Drivetrain Simulation
@@ -105,7 +103,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   // Driver Profile
   private final DriverProfile mProfile;
 
-  private VisionSubsystem mVision;
+  private VisionSupplier mVision;
 
   /*
    * 
@@ -116,7 +114,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
    /**
     * The subsystem that controls the drivetrain
     */
-  public DrivetrainSubsystem(DriverProfile profile, VisionSubsystem vision) {
+  public DrivetrainSubsystem(DriverProfile profile, VisionSupplier vision) {
 
     // Loads the Driver Profile
     this.mProfile = profile;
@@ -148,9 +146,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
       mPigeonSim = mPigeon.getSimCollection();
       mLeftSim = mFrontLeft.getSimCollection();
       mRightSim = mFrontRight.getSimCollection();
+
     }
 
-    mVisionTargets.setPoses(vision.visionSupplier.getVisionTarget());
     // Field Visualization
     SmartDashboard.putData(mField);
   }
@@ -448,7 +446,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
   public void updatePoseEstimator(DifferentialDriveWheelSpeeds actWheelSpeeds, double leftDist, double rightDist) {
     mPoseEstimator.update(mPigeon.getRotation2d(), actWheelSpeeds, leftDist, rightDist);
-    var res = mVision.visionSupplier.getResult();
+    var res = mVision.getResult();
     if(res.hasTargets()){
       double imageCaptureTime = Timer.getFPGATimestamp() - res.getLatencyMillis();
       Transform2d camToTargetTrans = res.getBestTarget().getCameraToTarget();
@@ -483,9 +481,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     @Override
     public void execute() {
       double output = mPIDController.calculate(getGyroAngle(), mStartPoint + mSetpoint);
-
-      System.out.println(output);
-
       mFrontLeft.set(-output);
       mFrontRight.set(output);
 
@@ -551,6 +546,20 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     }
   }
 
+  public class VisionAimAssist extends CommandBase{
+    PIDController mPID = new PIDController(Constants.Drivetrain.vision_kP, 0, Constants.Drivetrain.vision_kD);
+
+    @Override
+    public void execute() {
+      if(mVision.hasTarget()){
+        double effort = mPID.calculate(mVision.getYaw(), 0);
+        mFrontLeft.setVoltage(-effort);
+        mFrontRight.setVoltage(effort);
+      }
+    }
+  }
+
+
   /*
    *
    * WPILib Methods
@@ -581,5 +590,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
         (int) (mDrivetrainSim.getRightVelocityMetersPerSecond() / (10 * Constants.Drivetrain.kDistancePerPulse)));
 
     mPigeonSim.setRawHeading(mDrivetrainSim.getHeading().getDegrees());
+
+    mVision.processSim(mPoseEstimator.getEstimatedPosition());
+
   }
 }
