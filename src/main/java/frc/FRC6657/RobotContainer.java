@@ -215,14 +215,9 @@ public class RobotContainer implements Loggable {
     switch(Controls){
       case "Testing":
         mXboxController.a().whenHeld(
-          new ParallelCommandGroup(
-
-            drivetrain.new VisionAimAssist(),
-
             new ConditionalCommand(
-
               new ParallelCommandGroup(
-
+                drivetrain.new VisionAimAssist(),
                 new RunCommand(
                   () -> hood.setAngle(InterpolatingTable.get(vision.visionSupplier.getDistance()).hoodAngle),
                   hood
@@ -231,13 +226,9 @@ public class RobotContainer implements Loggable {
                   () -> flywheel.setRPMTarget(InterpolatingTable.get(vision.visionSupplier.getDistance()).rpm),
                   flywheel
                 )
-
               ),
               new InstantCommand(),
               vision.visionSupplier::hasTarget
-
-            )
-
           )
         ).whenReleased(
           new ParallelCommandGroup(
