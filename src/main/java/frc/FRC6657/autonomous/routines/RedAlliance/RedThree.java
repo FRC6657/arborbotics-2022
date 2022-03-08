@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.FRC6657.Constants.Vision;
 import frc.FRC6657.autonomous.Trajectories;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
@@ -53,14 +52,16 @@ public class RedThree extends SequentialCommandGroup {
           new InstantCommand(intake::stop)
         )
       ),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_1, false)
-      .beforeStarting(
-        new RunCommand(() -> {
-          hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
-          System.out.println(vision.getDistance());
-        }, hood) 
-      )
-      .andThen(
+
+      new ParallelRaceGroup(
+        drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_1, false),
+          new RunCommand(() -> {
+            hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
+            System.out.println(vision.getDistance());
+          }, hood),
+          new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
+          
+        .andThen(
         new SequentialCommandGroup(
           new WaitUntilCommand(flywheel::atTarget),
           new InstantCommand(accelerator::start)
@@ -70,8 +71,8 @@ public class RedThree extends SequentialCommandGroup {
             new InstantCommand(flywheel::stop)
           )
         )
+      )
       ),
-
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_3, false)
       .beforeStarting(
         new ParallelCommandGroup(
