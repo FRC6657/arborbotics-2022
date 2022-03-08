@@ -38,7 +38,7 @@ public class HoodSubsystem extends SubsystemBase {
     private PIDController mPidController = Constants.Hood.kPIDController;
 
     double angleSetpoint = 0;
-    boolean hasHomed = false;
+    boolean homing = false;
 
     public HoodSubsystem() {
         mMotor = new CANSparkMax(Constants.kHoodID, MotorType.kBrushless);
@@ -80,8 +80,10 @@ public class HoodSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        hoodAngle.setAngle(-180-angleSetpoint); //Visualizer
-        mMotor.setVoltage(mPidController.calculate(getAngle(), angleSetpoint));
+        if (homing == false){
+            hoodAngle.setAngle(-180-angleSetpoint); //Visualizer
+            mMotor.setVoltage(mPidController.calculate(getAngle(), angleSetpoint));
+        }
     }
 
     public class Home extends CommandBase{
@@ -90,6 +92,8 @@ public class HoodSubsystem extends SubsystemBase {
 
         @Override
         public void initialize() {
+
+            homing = true;
 
             if(RobotBase.isSimulation()){
                 setAngle(0);
@@ -105,6 +109,7 @@ public class HoodSubsystem extends SubsystemBase {
             timer.stop();
             stop();
             mMotor.getEncoder().setPosition(0);
+            homing = false;
         }
 
         @Override

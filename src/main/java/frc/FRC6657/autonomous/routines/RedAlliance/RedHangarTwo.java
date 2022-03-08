@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -53,12 +54,17 @@ public class RedHangarTwo extends SequentialCommandGroup{
                 new InstantCommand(accelerator::start, accelerator),
                 new WaitCommand(1),
                 new InstantCommand(accelerator::stop, accelerator)
+            ).andThen(
+                new ParallelCommandGroup(
+                    hood.new Home(),
+                    new InstantCommand(() -> flywheel.setRPMTarget(0))
+                )
             )
         );
     }
 
     private Trajectory PATH_TO_BALL_1 = Trajectories.generateTrajectory(1, 2, List.of(
-        new Pose2d(9.7, 2.633918, Rotation2d.fromDegrees(-66.25)),
+        new Pose2d(10.5, 3.55, Rotation2d.fromDegrees(-89.15)),
         new Pose2d(11.58, 2, Rotation2d.fromDegrees(-30))
 
     ), false, 
