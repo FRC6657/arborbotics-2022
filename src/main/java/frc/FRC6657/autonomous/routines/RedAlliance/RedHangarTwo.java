@@ -18,8 +18,8 @@ import frc.FRC6657.subsystems.intake.IntakeSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 
-public class RedTopTwo extends SequentialCommandGroup{
-    public RedTopTwo (
+public class RedHangarTwo extends SequentialCommandGroup{
+    public RedHangarTwo (
         DrivetrainSubsystem drivetrain,
         IntakeSubsystem intake,
         ExtensionSubsystem pistons,
