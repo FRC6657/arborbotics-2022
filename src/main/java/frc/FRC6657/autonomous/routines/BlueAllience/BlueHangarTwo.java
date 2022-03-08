@@ -5,6 +5,7 @@ import java.util.List;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.FRC6657.autonomous.Trajectories;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
@@ -22,13 +23,12 @@ public class BlueHangarTwo extends SequentialCommandGroup{
         AcceleratorSubsystem accelerator
     ) {
         addCommands(
-            drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_1, true) 
         );
     }
 
     private Trajectory PATH_TO_BALL_1 = Trajectories.generateTrajectory(1, 2, List.of(
         new Pose2d(9.7, 2.633918, Rotation2d.fromDegrees(-66.25)),
-        new Pose2d(11.58, 2, Rotation2d.fromDegrees(0))
+        new Pose2d(11.58, 2, Rotation2d.fromDegrees(-30))
 
     ), false, 
     "Blue Hangar 2 PATH_TO_BALL"

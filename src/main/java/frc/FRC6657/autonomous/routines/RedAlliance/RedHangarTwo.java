@@ -5,18 +5,24 @@ import java.util.List;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.FRC6657.Constants;
 import frc.FRC6657.autonomous.Trajectories;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.IntakeSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
+import frc.FRC6657.subsystems.shooter.HoodSubsystem;
+import frc.FRC6657.subsystems.shooter.interpolation.InterpolatingTable;
+import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
 public class RedHangarTwo extends SequentialCommandGroup{
     public RedHangarTwo (
@@ -24,65 +30,39 @@ public class RedHangarTwo extends SequentialCommandGroup{
         IntakeSubsystem intake,
         ExtensionSubsystem pistons,
         FlywheelSubsystem flywheel,
-        AcceleratorSubsystem accelerator
+        HoodSubsystem hood,
+        AcceleratorSubsystem accelerator,
+        VisionSupplier vision
     ) {
         addCommands(
+            drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_1, true),
             new ParallelRaceGroup(
-                new WaitUntilCommand(intake::ballDetected),
-                drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_1, true)
-            )
-            .beforeStarting(
-                new ParallelCommandGroup(
-                    new InstantCommand(pistons::extend),
-                    new InstantCommand(intake::start)
-                )
-            )
-            .andThen(
-                new ParallelCommandGroup(
-                    new InstantCommand(pistons::retract),
-                    new InstantCommand(intake::stop)
+                new WaitUntilCommand(() -> Math.abs(vision.getYaw()) < Constants.Drivetrain.kTurnCommandTolerance),
+                drivetrain.new VisionAimAssist(),
+                new RunCommand(
+                    () -> hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle),
+                    hood
+                ),
+                new RunCommand(
+                    () -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm),
+                    flywheel
                 )
             ),
-            drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOOT, false)
-            .beforeStarting(
-                new InstantCommand(() -> flywheel.setRPMTarget(1000))
+            new WaitUntilCommand(() -> (flywheel.atTarget() && hood.atTarget())),
+            new SequentialCommandGroup(
+                new InstantCommand(accelerator::start, accelerator),
+                new WaitCommand(1),
+                new InstantCommand(accelerator::stop, accelerator)
             )
-
-            .andThen(
-                new SequentialCommandGroup( //TODO This seems course, fix later.
-                    new WaitUntilCommand(flywheel::atTarget),
-                    new InstantCommand(accelerator::start),
-                    new WaitCommand(0.5)
-                )
-            ),
-            drivetrain.new TrajectoryFollowerCommand(PATH_TO_PARK, true)    
-            );
+        );
     }
 
-    private Trajectory PATH_TO_BALL_1 = Trajectories.generateTrajectory(3, 2, List.of(
-        new Pose2d(10.4, 3.189, Rotation2d.fromDegrees(-35.815)),
-        new Pose2d(11.515, 2.413, Rotation2d.fromDegrees(-37.705))
+    private Trajectory PATH_TO_BALL_1 = Trajectories.generateTrajectory(1, 2, List.of(
+        new Pose2d(9.7, 2.633918, Rotation2d.fromDegrees(-66.25)),
+        new Pose2d(11.58, 2, Rotation2d.fromDegrees(-30))
 
-    ), 
-    false, 
-    "Red Mid 2 PATH_TO_BALL"
-    );
-
-    private Trajectory PATH_TO_SHOOT = Trajectories.generateTrajectory(1,2,List.of(
-        new Pose2d(11.515, 2.413, Rotation2d.fromDegrees(-37.705)),
-        new Pose2d(9.762, 3.404, Rotation2d.fromDegrees(-17.604))
-    ),
-    true,
-    "Red Mid TWO PATH_TO_SHOOT"
-    );
-
-    private Trajectory PATH_TO_PARK = Trajectories.generateTrajectory(1, 2, List.of(
-        new Pose2d(9.762, 3.404, Rotation2d.fromDegrees(-17.604)),
-        new Pose2d(11.174, 2.207, Rotation2d.fromDegrees(-40.210))
-    ), 
-    false, 
-    "Red Mid TWO PATH_TO_PARK"
+    ), false, 
+    "Red Hangar 2 PATH_TO_BALL"
     );
     
 }
-

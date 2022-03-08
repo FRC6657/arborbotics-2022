@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
+import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
 @SuppressWarnings("unused")
@@ -64,12 +65,23 @@ public class HoodSubsystem extends SubsystemBase {
     public void setAngle(double angle){
         angleSetpoint = MathUtil.clamp(angle, 0, 45);
     }
+    
+    public double getAngle(){
+        if(RobotBase.isReal()){
+            return mMotor.getEncoder().getPosition();
+        }else{
+            return angleSetpoint;
+        }
+    }
 
+    public boolean atTarget(){
+        return Math.abs(angleSetpoint - getAngle()) < 1;
+    }
 
     @Override
     public void periodic() {
         hoodAngle.setAngle(-180-angleSetpoint); //Visualizer
-        mMotor.setVoltage(mPidController.calculate(mMotor.getEncoder().getPosition(), angleSetpoint));
+        mMotor.setVoltage(mPidController.calculate(getAngle(), angleSetpoint));
     }
 
     public class Home extends CommandBase{

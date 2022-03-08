@@ -188,7 +188,7 @@ public class RobotContainer implements Loggable {
 
     mAutoChooser.addOption("Hangar 2", 
       new SequentialCommandGroup[] {
-        new RedHangarTwo(drivetrain, intake, extension, flywheel, accelerator),
+        new RedHangarTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier),
         new BlueHangarTwo(drivetrain, intake, extension, flywheel, accelerator)
       }
     );  
