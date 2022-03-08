@@ -47,10 +47,12 @@ import frc.FRC6657.autonomous.routines.BlueAllience.BlueDoubleSteal;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueFive;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueThree;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueWallTwo;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueHangarTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedFive;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedThree;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedWallTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedHangarTwo;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
@@ -206,6 +208,11 @@ public class RobotContainer implements Loggable {
         new BlueDoubleSteal(drivetrain, intake, extension, flywheel, accelerator)
       }
     );
+
+    mAutoChooser.addOption("2 Ball Wall", new SequentialCommandGroup[]{
+      new RedWallTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier),
+      new BlueWallTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier)
+    });
 
     mAutoChooser.addOption("HomeHood", 
       new SequentialCommandGroup[] {
