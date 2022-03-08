@@ -183,7 +183,7 @@ public class RobotContainer implements Loggable {
     mAutoChooser.addOption("5",
       new SequentialCommandGroup[]{
         new RedFive(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
-        new BlueFive(drivetrain, intake, extension, flywheel, accelerator)
+        new BlueFive(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
     );
 
@@ -204,7 +204,7 @@ public class RobotContainer implements Loggable {
     mAutoChooser.addOption("2 Ball Steal",
       new SequentialCommandGroup[] {
         null,
-        new BlueDoubleSteal(drivetrain, intake, extension, flywheel, accelerator)
+        new BlueDoubleSteal(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
     );
 
