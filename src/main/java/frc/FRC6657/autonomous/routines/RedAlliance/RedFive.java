@@ -88,8 +88,10 @@ public class RedFive extends SequentialCommandGroup {
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false)
       .beforeStarting(
         new ParallelCommandGroup(
-          new InstantCommand(() -> flywheel.setRPMTarget(1000)),
-          new InstantCommand(() -> hood.setAngle(45))
+          new RunCommand(() -> {
+            hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
+            System.out.println(vision.getDistance());
+          }, hood)
         )
       )
       .andThen(
@@ -120,9 +122,10 @@ public class RedFive extends SequentialCommandGroup {
       ),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_3, false)
       .beforeStarting(
-        new ParallelCommandGroup(
-          new InstantCommand(() -> flywheel.setRPMTarget(1000)),
-          new InstantCommand(() -> hood.setAngle(45))
+        new ParallelCommandGroup(new RunCommand(() -> {
+          hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
+          System.out.println(vision.getDistance());
+        }, hood)
         )
       )
       .andThen(

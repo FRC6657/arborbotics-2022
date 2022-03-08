@@ -98,6 +98,7 @@ public class RobotContainer implements Loggable {
   public final LiftSubsystem lift;
   public final VisionSubsystem vision;
 
+
   public final Trigger flywheelReady, flywheelActive, ballDetected, intakeActive;
 
   SendableChooser<SequentialCommandGroup[]> mAutoChooser = new SendableChooser<>();
@@ -167,7 +168,7 @@ public class RobotContainer implements Loggable {
     mAutoChooser.setDefaultOption("Nothing", new SequentialCommandGroup[]{null,null});
     mAutoChooser.addOption("Middle 2",
       new SequentialCommandGroup[]{
-        new RedMidTwo(drivetrain, intake, extension, flywheel, accelerator),
+        new RedMidTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
         new BlueMidTwo(drivetrain, intake, extension, flywheel, accelerator)
       }
     );
@@ -195,7 +196,7 @@ public class RobotContainer implements Loggable {
     
     mAutoChooser.addOption("3",
       new SequentialCommandGroup[] {
-        new RedThree(drivetrain, intake, extension, flywheel, accelerator),
+        new RedThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
         new BlueThree(drivetrain, intake, extension, flywheel, accelerator)
       }
     );

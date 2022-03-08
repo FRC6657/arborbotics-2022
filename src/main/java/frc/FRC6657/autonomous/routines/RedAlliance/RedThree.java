@@ -12,15 +12,20 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.FRC6657.Constants.Vision;
 import frc.FRC6657.autonomous.Trajectories;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.IntakeSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
+import frc.FRC6657.subsystems.shooter.HoodSubsystem;
+import frc.FRC6657.subsystems.shooter.interpolation.InterpolatingTable;
+import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
 public class RedThree extends SequentialCommandGroup {
   public RedThree(
@@ -28,7 +33,9 @@ public class RedThree extends SequentialCommandGroup {
     IntakeSubsystem intake,
     ExtensionSubsystem pistons,
     FlywheelSubsystem flywheel,
-    AcceleratorSubsystem accelerator
+    AcceleratorSubsystem accelerator,
+    HoodSubsystem hood,
+    VisionSupplier vision
   ) {
     addCommands(
       new ParallelRaceGroup(
@@ -48,13 +55,15 @@ public class RedThree extends SequentialCommandGroup {
       ),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_1, false)
       .beforeStarting(
-        new InstantCommand(() -> flywheel.setRPMTarget(1000))
+        new RunCommand(() -> {
+          hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
+          System.out.println(vision.getDistance());
+        }, hood) 
       )
       .andThen(
         new SequentialCommandGroup(
           new WaitUntilCommand(flywheel::atTarget),
-          new InstantCommand(accelerator::start),
-          new WaitCommand(0.5)
+          new InstantCommand(accelerator::start)
         ).andThen(
           new ParallelCommandGroup(
             new InstantCommand(accelerator::stop),
@@ -62,14 +71,15 @@ public class RedThree extends SequentialCommandGroup {
           )
         )
       ),
+
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_3, false)
       .beforeStarting(
         new ParallelCommandGroup(
           new InstantCommand(pistons::extend),
-          new InstantCommand(intake::start)
+          new InstantCommand(intake::start),
+          new WaitCommand(0.5)
         )
-      )
-      .andThen(
+      ).andThen(
         new ParallelCommandGroup(
           new InstantCommand(pistons::retract),
           new InstantCommand(intake::stop)
@@ -77,7 +87,10 @@ public class RedThree extends SequentialCommandGroup {
       ),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false)
       .beforeStarting(
-        new InstantCommand(() -> flywheel.setRPMTarget(1000))
+        new RunCommand(() -> {
+          hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
+          System.out.println(vision.getDistance());
+        }, hood) 
       )
       .andThen(
         new SequentialCommandGroup(
@@ -97,14 +110,14 @@ public class RedThree extends SequentialCommandGroup {
 
   private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(3,6,List.of(
     new Pose2d(8.91, 6.363, Rotation2d.fromDegrees(91.158)),
-    new Pose2d(8.962, 7.26, Rotation2d.fromDegrees(91.158))
+    new Pose2d(8.962, 7.4, Rotation2d.fromDegrees(91.158))
   ),
   false,
   "Red Five TWO PATH_TO_BALL_2"
   );
 
   private Trajectory PATH_TO_SHOT_1 = Trajectories.generateTrajectory(1.5,4,List.of(
-    new Pose2d(8.962, 7.26, Rotation2d.fromDegrees(95)),
+    new Pose2d(8.962, 7.4, Rotation2d.fromDegrees(95)),
     new Pose2d(8.858, 5.66, Rotation2d.fromDegrees(70))
   ),
   true,
@@ -112,9 +125,9 @@ public class RedThree extends SequentialCommandGroup {
   );
 
   private Trajectory PATH_TO_BALL_3 = Trajectories.generateTrajectory(3,4,List.of(
-    new Pose2d(8.858, 6.4, Rotation2d.fromDegrees(0)),
-    new Pose2d(10.185, 6.4, Rotation2d.fromDegrees(0)),
-    new Pose2d(11.5, 6.4, Rotation2d.fromDegrees(0))
+    new Pose2d(8.858, 6.4, Rotation2d.fromDegrees(70)),
+    new Pose2d(10.185, 6.4, Rotation2d.fromDegrees(70)),
+    new Pose2d(11.5, 6.4, Rotation2d.fromDegrees(70))
   ),
   false,
   "Red Five TWO PATH_TO_BALL_3"

@@ -6,7 +6,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -16,6 +18,9 @@ import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.IntakeSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
+import frc.FRC6657.subsystems.shooter.HoodSubsystem;
+import frc.FRC6657.subsystems.shooter.interpolation.InterpolatingTable;
+import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
 public class RedMidTwo extends SequentialCommandGroup{
     public RedMidTwo(
@@ -23,13 +28,15 @@ public class RedMidTwo extends SequentialCommandGroup{
         IntakeSubsystem intake,
         ExtensionSubsystem extension,
         FlywheelSubsystem flywheel,
-        AcceleratorSubsystem accelerator
+        AcceleratorSubsystem accelerator,
+        HoodSubsystem hood,
+        VisionSupplier vision
     ) {
         addCommands(
 
             //TODO Make this one thing and use a constant
             new InstantCommand(extension::extend, extension),
-            new InstantCommand(() -> intake.set(1)),
+            new InstantCommand(intake::start, intake),
 
             new ParallelRaceGroup(
                 new WaitUntilCommand(intake::ballDetected),
@@ -37,28 +44,38 @@ public class RedMidTwo extends SequentialCommandGroup{
             ),
 
             //TODO Retract Intake
-            new InstantCommand(intake::stop),
+            new InstantCommand(intake::stop, intake),
             
             new InstantCommand(drivetrain::stop, drivetrain),
 
             //TODO Set target when driving to ball 2
-            new InstantCommand(() -> flywheel.setRPMTarget(1000)),
 
-            new WaitUntilCommand(flywheel::atTarget),
-            new InstantCommand(() -> accelerator.set(1)),
-            new WaitCommand(.75), //TODO Make this not timed
-            new InstantCommand(() -> accelerator.set(1)),
-            new WaitCommand(.75), //TODO Make this not timed
-            new InstantCommand(flywheel::stop),
-            new InstantCommand(accelerator::stop)
+            //Start shooting
+            new RunCommand(() -> {
+          hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
+          System.out.println(vision.getDistance());
+        }, hood) 
+            .andThen(
+                new SequentialCommandGroup(
+                    new WaitUntilCommand(flywheel::atTarget),
+                    new InstantCommand(accelerator::start, accelerator)
+                )
+            )
+            .andThen(
+                new ParallelCommandGroup(
+                    new InstantCommand(accelerator::stop, accelerator),
+                    new InstantCommand(flywheel::stop, flywheel)
+                ),
+                hood.new Home()    
+            )
         );
     }
 
     private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(1,1,List.of(
-        new Pose2d(9.802, 5.55, Rotation2d.fromDegrees(210)),
-        new Pose2d(11.218, 6.353,Rotation2d.fromDegrees(210))
+        new Pose2d(9.802, 5.55, Rotation2d.fromDegrees(24)),
+        new Pose2d(11.218, 6.353,Rotation2d.fromDegrees(24))
     ),
-    true,
+    false,
     "RedMidTwo PATH_TO_BALL_2"
     );
 }
