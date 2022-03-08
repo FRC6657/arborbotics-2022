@@ -85,22 +85,23 @@ public class RedThree extends SequentialCommandGroup {
           new InstantCommand(intake::stop)
         )
       ),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false)
-      .beforeStarting(
+      new ParallelRaceGroup(
+        drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false),
         new RunCommand(() -> {
           hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
           System.out.println(vision.getDistance());
-        }, hood) 
+        }, hood),
+        new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
       )
       .andThen(
         new SequentialCommandGroup(
           new WaitUntilCommand(flywheel::atTarget),
-          new InstantCommand(accelerator::start),
-          new WaitCommand(0.5)
+          new InstantCommand(accelerator::start)
         ).andThen(
           new ParallelCommandGroup(
             new InstantCommand(accelerator::stop),
-            new InstantCommand(flywheel::stop)
+            new InstantCommand(flywheel::stop),
+            hood.new Home()
           )
         )
       ),
@@ -125,9 +126,9 @@ public class RedThree extends SequentialCommandGroup {
   );
 
   private Trajectory PATH_TO_BALL_3 = Trajectories.generateTrajectory(3,4,List.of(
-    new Pose2d(8.858, 6.4, Rotation2d.fromDegrees(70)),
-    new Pose2d(10.185, 6.4, Rotation2d.fromDegrees(70)),
-    new Pose2d(11.5, 6.4, Rotation2d.fromDegrees(70))
+    new Pose2d(8.858, 6.4, Rotation2d.fromDegrees(0)),
+    new Pose2d(10.185, 6.4, Rotation2d.fromDegrees(0)),
+    new Pose2d(11.5, 6.4, Rotation2d.fromDegrees(0))
   ),
   false,
   "Red Five TWO PATH_TO_BALL_3"

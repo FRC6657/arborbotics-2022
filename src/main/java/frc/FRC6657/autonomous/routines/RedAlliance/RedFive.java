@@ -85,20 +85,18 @@ public class RedFive extends SequentialCommandGroup {
           new InstantCommand(intake::stop)
         )
       ),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false)
-      .beforeStarting(
-        new ParallelCommandGroup(
+      new ParallelRaceGroup(
+          drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false),
           new RunCommand(() -> {
             hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
             System.out.println(vision.getDistance());
-          }, hood)
+          }, hood),
+          new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
         )
-      )
       .andThen(
         new SequentialCommandGroup(
           new WaitUntilCommand(flywheel::atTarget),
-          new InstantCommand(accelerator::start),
-          new WaitCommand(0.5)
+          new InstantCommand(accelerator::start)
         ).andThen(
           new ParallelCommandGroup(
             new InstantCommand(accelerator::stop),
@@ -122,7 +120,8 @@ public class RedFive extends SequentialCommandGroup {
       ),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_3, false)
       .beforeStarting(
-        new ParallelCommandGroup(new RunCommand(() -> {
+        new ParallelRaceGroup(
+          new RunCommand(() -> {
           hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
           System.out.println(vision.getDistance());
         }, hood)
@@ -131,8 +130,7 @@ public class RedFive extends SequentialCommandGroup {
       .andThen(
         new SequentialCommandGroup(
           new WaitUntilCommand(flywheel::atTarget),
-          new InstantCommand(accelerator::start),
-          new WaitCommand(0.5)
+          new InstantCommand(accelerator::start)
         ).andThen(
           new ParallelCommandGroup(
             new InstantCommand(accelerator::stop),
