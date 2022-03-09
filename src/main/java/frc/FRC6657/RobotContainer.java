@@ -166,6 +166,14 @@ public class RobotContainer implements Loggable {
 
   private void configureAutoChooser() {
     mAutoChooser.setDefaultOption("Nothing", new SequentialCommandGroup[]{null,null});
+
+    mAutoChooser.addOption("2 Ball Steal",
+    new SequentialCommandGroup[] {
+      null,
+      new BlueDoubleSteal(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
+    }
+  );
+
     mAutoChooser.addOption("Middle 2",
       new SequentialCommandGroup[]{
         new RedMidTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
@@ -173,10 +181,17 @@ public class RobotContainer implements Loggable {
       }
     );
 
-    mAutoChooser.addOption("Turn Testing",
-      new SequentialCommandGroup[]{
-        new TurningAngleTest(drivetrain),
-        new TurningAngleTest(drivetrain)
+    mAutoChooser.addOption("Top 2", 
+    new SequentialCommandGroup[] {
+      new RedTopTwo(drivetrain, intake, extension, flywheel, accelerator),
+      new BlueTopTwo(drivetrain, intake, extension, flywheel, accelerator)
+    }
+  );  
+    
+    mAutoChooser.addOption("3",
+      new SequentialCommandGroup[] {
+        new RedThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+        new BlueThree(drivetrain, intake, extension, flywheel, accelerator)
       }
     );
 
@@ -187,31 +202,17 @@ public class RobotContainer implements Loggable {
       }
     );
 
-    mAutoChooser.addOption("Top 2", 
-      new SequentialCommandGroup[] {
-        new RedTopTwo(drivetrain, intake, extension, flywheel, accelerator),
-        new BlueTopTwo(drivetrain, intake, extension, flywheel, accelerator)
-      }
-    );  
-    
-    mAutoChooser.addOption("3",
-      new SequentialCommandGroup[] {
-        new RedThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
-        new BlueThree(drivetrain, intake, extension, flywheel, accelerator)
-      }
-    );
-
-    mAutoChooser.addOption("2 Ball Steal",
-      new SequentialCommandGroup[] {
-        null,
-        new BlueDoubleSteal(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
-      }
-    );
-
     mAutoChooser.addOption("HomeHood", 
       new SequentialCommandGroup[] {
         new SequentialCommandGroup(hood.new Home()),
         new SequentialCommandGroup(hood.new Home())
+      }
+    );
+
+    mAutoChooser.addOption("Turn Testing",
+      new SequentialCommandGroup[]{
+        new TurningAngleTest(drivetrain),
+        new TurningAngleTest(drivetrain)
       }
     );
 
