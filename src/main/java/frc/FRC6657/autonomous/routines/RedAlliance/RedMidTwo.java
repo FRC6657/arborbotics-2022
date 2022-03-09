@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.FRC6657.Constants;
 import frc.FRC6657.autonomous.Trajectories;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
@@ -51,6 +51,8 @@ public class RedMidTwo extends SequentialCommandGroup{
             //Start shooting
            
       new ParallelRaceGroup(
+        new WaitUntilCommand(() -> Math.abs(vision.getYaw()) < Constants.Drivetrain.kTurnCommandTolerance),
+        drivetrain.new VisionAimAssist(),
           new RunCommand(() -> {
             hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
             System.out.println(vision.getDistance());
