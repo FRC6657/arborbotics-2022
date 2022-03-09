@@ -100,6 +100,7 @@ public class RobotContainer implements Loggable {
   public final LiftSubsystem lift;
   public final VisionSubsystem vision;
 
+
   public final Trigger flywheelReady, flywheelActive, ballDetected, intakeActive;
 
   SendableChooser<SequentialCommandGroup[]> mAutoChooser = new SendableChooser<>();
@@ -167,24 +168,18 @@ public class RobotContainer implements Loggable {
 
   private void configureAutoChooser() {
     mAutoChooser.setDefaultOption("Nothing", new SequentialCommandGroup[]{null,null});
+
+    mAutoChooser.addOption("2 Ball Steal",
+    new SequentialCommandGroup[] {
+      null,
+      new BlueDoubleSteal(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
+    }
+  );
+
     mAutoChooser.addOption("Middle 2",
       new SequentialCommandGroup[]{
-        new RedMidTwo(drivetrain, intake, extension, flywheel, accelerator),
+        new RedMidTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
         new BlueMidTwo(drivetrain, intake, extension, flywheel, accelerator)
-      }
-    );
-
-    mAutoChooser.addOption("Turn Testing",
-      new SequentialCommandGroup[]{
-        new TurningAngleTest(drivetrain),
-        new TurningAngleTest(drivetrain)
-      }
-    );
-
-    mAutoChooser.addOption("5",
-      new SequentialCommandGroup[]{
-        new RedFive(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
-        new BlueFive(drivetrain, intake, extension, flywheel, accelerator)
       }
     );
 
@@ -197,15 +192,15 @@ public class RobotContainer implements Loggable {
     
     mAutoChooser.addOption("3",
       new SequentialCommandGroup[] {
-        new RedThree(drivetrain, intake, extension, flywheel, accelerator),
+        new RedThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
         new BlueThree(drivetrain, intake, extension, flywheel, accelerator)
       }
     );
 
-    mAutoChooser.addOption("2 Ball Steal",
-      new SequentialCommandGroup[] {
-        null,
-        new BlueDoubleSteal(drivetrain, intake, extension, flywheel, accelerator)
+    mAutoChooser.addOption("5",
+      new SequentialCommandGroup[]{
+        new RedFive(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+        new BlueFive(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
     );
 
@@ -218,6 +213,13 @@ public class RobotContainer implements Loggable {
       new SequentialCommandGroup[] {
         new SequentialCommandGroup(hood.new Home()),
         new SequentialCommandGroup(hood.new Home())
+      }
+    );
+
+    mAutoChooser.addOption("Turn Testing",
+      new SequentialCommandGroup[]{
+        new TurningAngleTest(drivetrain),
+        new TurningAngleTest(drivetrain)
       }
     );
 
