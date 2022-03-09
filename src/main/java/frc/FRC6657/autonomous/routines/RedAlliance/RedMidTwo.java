@@ -48,27 +48,27 @@ public class RedMidTwo extends SequentialCommandGroup{
             
             new InstantCommand(drivetrain::stop, drivetrain),
 
-            //TODO Set target when driving to ball 2
-
             //Start shooting
-            new RunCommand(() -> {
-          hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
-          System.out.println(vision.getDistance());
-        }, hood) 
-            .andThen(
-                new SequentialCommandGroup(
-                    new WaitUntilCommand(flywheel::atTarget),
-                    new InstantCommand(accelerator::start, accelerator)
-                )
-            )
-            .andThen(
-                new ParallelCommandGroup(
-                    new InstantCommand(accelerator::stop, accelerator),
-                    new InstantCommand(flywheel::stop, flywheel)
-                ),
-                hood.new Home()    
-            )
-        );
+           
+      new ParallelRaceGroup(
+          new RunCommand(() -> {
+            hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
+            System.out.println(vision.getDistance());
+          }, hood),
+          new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
+          
+        .andThen(
+        new SequentialCommandGroup(
+          new WaitUntilCommand(flywheel::atTarget),
+          new InstantCommand(accelerator::start)
+        ).andThen(
+          new ParallelCommandGroup(
+            new InstantCommand(accelerator::stop),
+            new InstantCommand(flywheel::stop)
+          )
+        )
+      )
+      ));
     }
 
     private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(1,1,List.of(
