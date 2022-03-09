@@ -548,7 +548,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
   public class VisionAimAssist extends CommandBase{
     PIDController mPID = new PIDController(Constants.Drivetrain.vision_kP, 0, Constants.Drivetrain.vision_kD);
-
     @Override
     public void execute() {
       if(mVision.hasTarget()){
@@ -556,6 +555,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
         mFrontLeft.setVoltage(-effort);
         mFrontRight.setVoltage(effort);
       }
+    }
+    @Override
+    public void end(boolean interrupted) {
+        stop();
     }
   }
 

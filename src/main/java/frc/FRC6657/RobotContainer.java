@@ -47,11 +47,13 @@ import frc.FRC6657.autonomous.routines.BlueAllience.BlueDoubleSteal;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueFive;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueThree;
-import frc.FRC6657.autonomous.routines.BlueAllience.BlueTopTwo;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueWallTwo;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueHangarTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedFive;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedThree;
-import frc.FRC6657.autonomous.routines.RedAlliance.RedTopTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedWallTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedHangarTwo;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
 import frc.FRC6657.custom.controls.Deadbander;
@@ -181,12 +183,12 @@ public class RobotContainer implements Loggable {
       }
     );
 
-    mAutoChooser.addOption("Top 2", 
-    new SequentialCommandGroup[] {
-      new RedTopTwo(drivetrain, intake, extension, flywheel, accelerator),
-      new BlueTopTwo(drivetrain, intake, extension, flywheel, accelerator)
-    }
-  );  
+    mAutoChooser.addOption("Hangar 2", 
+      new SequentialCommandGroup[] {
+        new RedHangarTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier),
+        new BlueHangarTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier)
+      }
+    );  
     
     mAutoChooser.addOption("3",
       new SequentialCommandGroup[] {
@@ -201,6 +203,11 @@ public class RobotContainer implements Loggable {
         new BlueFive(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
     );
+
+    mAutoChooser.addOption("2 Ball Wall", new SequentialCommandGroup[]{
+      new RedWallTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier),
+      new BlueWallTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier)
+    });
 
     mAutoChooser.addOption("HomeHood", 
       new SequentialCommandGroup[] {

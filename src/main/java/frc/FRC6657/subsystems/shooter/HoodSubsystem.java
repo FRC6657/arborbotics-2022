@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
+import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
 @SuppressWarnings("unused")
@@ -37,7 +38,7 @@ public class HoodSubsystem extends SubsystemBase {
     private PIDController mPidController = Constants.Hood.kPIDController;
 
     double angleSetpoint = 0;
-    boolean hasHomed = false;
+    boolean homing = false;
 
     public HoodSubsystem() {
         mMotor = new CANSparkMax(Constants.kHoodID, MotorType.kBrushless);
@@ -64,12 +65,25 @@ public class HoodSubsystem extends SubsystemBase {
     public void setAngle(double angle){
         angleSetpoint = MathUtil.clamp(angle, 0, 45);
     }
+    
+    public double getAngle(){
+        if(RobotBase.isReal()){
+            return mMotor.getEncoder().getPosition();
+        }else{
+            return angleSetpoint;
+        }
+    }
 
+    public boolean atTarget(){
+        return Math.abs(angleSetpoint - getAngle()) < 1;
+    }
 
     @Override
     public void periodic() {
-        hoodAngle.setAngle(-180-angleSetpoint); //Visualizer
-        mMotor.setVoltage(mPidController.calculate(mMotor.getEncoder().getPosition(), angleSetpoint));
+        if (homing == false){
+            hoodAngle.setAngle(-180-angleSetpoint); //Visualizer
+            mMotor.setVoltage(mPidController.calculate(getAngle(), angleSetpoint));
+        }
     }
 
     public class Home extends CommandBase{
@@ -78,6 +92,8 @@ public class HoodSubsystem extends SubsystemBase {
 
         @Override
         public void initialize() {
+
+            homing = true;
 
             if(RobotBase.isSimulation()){
                 setAngle(0);
@@ -93,6 +109,7 @@ public class HoodSubsystem extends SubsystemBase {
             timer.stop();
             stop();
             mMotor.getEncoder().setPosition(0);
+            homing = false;
         }
 
         @Override
