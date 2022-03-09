@@ -118,15 +118,14 @@ public class RedFive extends SequentialCommandGroup {
           new InstantCommand(intake::stop)
         )
       ),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_3, false)
-      .beforeStarting(
-        new ParallelRaceGroup(
+      new ParallelRaceGroup(
+          drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_3, false),
           new RunCommand(() -> {
           hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
           System.out.println(vision.getDistance());
-        }, hood)
+          }, hood),
+          new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
         )
-      )
       .andThen(
         new SequentialCommandGroup(
           new WaitUntilCommand(flywheel::atTarget),
