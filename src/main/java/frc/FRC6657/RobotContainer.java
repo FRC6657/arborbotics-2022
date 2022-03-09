@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import javax.management.MBeanServerPermission;
 
+import com.fasterxml.jackson.databind.deser.impl.NullsAsEmptyProvider;
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
@@ -169,6 +170,18 @@ public class RobotContainer implements Loggable {
   private void configureAutoChooser() {
     mAutoChooser.setDefaultOption("Nothing", new SequentialCommandGroup[]{null,null});
 
+    mAutoChooser.addOption("2 Ball Wall", new SequentialCommandGroup[]{
+      new RedWallTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier),
+      new BlueWallTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier)
+    });
+
+    mAutoChooser.addOption("2 Ball Hangar", 
+    new SequentialCommandGroup[] {
+      new RedHangarTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier),
+      new BlueHangarTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier)
+    }
+  );  
+
     mAutoChooser.addOption("2 Ball Steal",
     new SequentialCommandGroup[] {
       null,
@@ -176,38 +189,40 @@ public class RobotContainer implements Loggable {
     }
   );
 
-    mAutoChooser.addOption("Middle 2",
+    mAutoChooser.addOption("2 Ball Mid",
       new SequentialCommandGroup[]{
         new RedMidTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
         new BlueMidTwo(drivetrain, intake, extension, flywheel, accelerator)
       }
     );
-
-    mAutoChooser.addOption("Hangar 2", 
-      new SequentialCommandGroup[] {
-        new RedHangarTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier),
-        new BlueHangarTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier)
-      }
-    );  
     
-    mAutoChooser.addOption("3",
+    mAutoChooser.addOption("3 Ball Wall",
       new SequentialCommandGroup[] {
         new RedThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
         new BlueThree(drivetrain, intake, extension, flywheel, accelerator)
       }
     );
 
-    mAutoChooser.addOption("5",
+    mAutoChooser.addOption("3 Ball Hangar",
+      new SequentialCommandGroup[]{
+        new RedThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+        null
+      }
+    );
+
+    mAutoChooser.addOption("4 Ball Cooperative",
+      new SequentialCommandGroup[]{
+        null, 
+        null
+      }
+    );
+
+    mAutoChooser.addOption("5/4 Ball",
       new SequentialCommandGroup[]{
         new RedFive(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
         new BlueFive(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
     );
-
-    mAutoChooser.addOption("2 Ball Wall", new SequentialCommandGroup[]{
-      new RedWallTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier),
-      new BlueWallTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier)
-    });
 
     mAutoChooser.addOption("HomeHood", 
       new SequentialCommandGroup[] {
