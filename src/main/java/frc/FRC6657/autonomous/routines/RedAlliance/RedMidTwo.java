@@ -6,23 +6,19 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.FRC6657.Constants;
 import frc.FRC6657.autonomous.Trajectories;
+import frc.FRC6657.custom.ArborSequentialCommandGroup;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.IntakeSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
-import frc.FRC6657.subsystems.shooter.interpolation.InterpolatingTable;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
-public class RedMidTwo extends SequentialCommandGroup{
+public class RedMidTwo extends ArborSequentialCommandGroup{
     public RedMidTwo(
         DrivetrainSubsystem drivetrain,
         IntakeSubsystem intake,
@@ -32,6 +28,7 @@ public class RedMidTwo extends SequentialCommandGroup{
         HoodSubsystem hood,
         VisionSupplier vision
     ) {
+        addReqs(drivetrain, intake, extension, flywheel, hood, accelerator, vision);
         addCommands(
 
             //TODO Make this one thing and use a constant
@@ -50,26 +47,7 @@ public class RedMidTwo extends SequentialCommandGroup{
 
             //Start shooting
            
-      new ParallelRaceGroup(
-        new WaitUntilCommand(() -> Math.abs(vision.getYaw()) < Constants.Drivetrain.kTurnCommandTolerance),
-        drivetrain.new VisionAimAssist(),
-        new RunCommand(() -> {
-            hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
-            System.out.println(vision.getDistance());
-          }, hood),
-        new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
-      )
-      .andThen(
-        new SequentialCommandGroup(
-          new WaitUntilCommand(flywheel::atTarget),
-          new InstantCommand(accelerator::start)
-        ).andThen(
-          new ParallelCommandGroup(
-            new InstantCommand(accelerator::stop),
-            new InstantCommand(flywheel::stop)
-          )
-        )
-      )
+      new TurnAndShoot()
       );
     }
 

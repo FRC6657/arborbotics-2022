@@ -205,7 +205,7 @@ public class RobotContainer implements Loggable {
 
     mAutoChooser.addOption("3 Ball Hangar",
       new SequentialCommandGroup[]{
-        new RedThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+        null,
         null
       }
     );
