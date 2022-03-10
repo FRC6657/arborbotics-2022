@@ -53,13 +53,13 @@ public class RedMidTwo extends SequentialCommandGroup{
       new ParallelRaceGroup(
         new WaitUntilCommand(() -> Math.abs(vision.getYaw()) < Constants.Drivetrain.kTurnCommandTolerance),
         drivetrain.new VisionAimAssist(),
-          new RunCommand(() -> {
+        new RunCommand(() -> {
             hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
             System.out.println(vision.getDistance());
           }, hood),
-          new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
-          
-        .andThen(
+        new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
+      )
+      .andThen(
         new SequentialCommandGroup(
           new WaitUntilCommand(flywheel::atTarget),
           new InstantCommand(accelerator::start)
@@ -70,7 +70,7 @@ public class RedMidTwo extends SequentialCommandGroup{
           )
         )
       )
-      ));
+      );
     }
 
     private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(1,1,List.of(
