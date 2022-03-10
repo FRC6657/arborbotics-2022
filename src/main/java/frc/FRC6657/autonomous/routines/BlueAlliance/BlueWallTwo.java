@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.FRC6657.autonomous.routines.BlueAllience;
+package frc.FRC6657.autonomous.routines.BlueAlliance;
 
 import java.util.List;
 
@@ -32,8 +32,8 @@ public class BlueWallTwo extends SequentialCommandGroup {
     IntakeSubsystem intake,
     ExtensionSubsystem pistons,
     FlywheelSubsystem flywheel,
-    HoodSubsystem hood,
     AcceleratorSubsystem accelerator,
+    HoodSubsystem hood,
     VisionSupplier vision
   ) {
     addCommands(

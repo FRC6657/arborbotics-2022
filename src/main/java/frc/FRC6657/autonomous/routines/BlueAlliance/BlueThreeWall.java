@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.FRC6657.autonomous.routines.BlueAllience;
+package frc.FRC6657.autonomous.routines.BlueAlliance;
 
 import java.util.List;
 
@@ -12,25 +12,29 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.FRC6657.autonomous.Trajectories;
+import frc.FRC6657.custom.ArborSequentialCommandGroup;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.IntakeSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
+import frc.FRC6657.subsystems.shooter.HoodSubsystem;
+import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
-public class BlueThree extends SequentialCommandGroup {
+public class BlueThreeWall extends ArborSequentialCommandGroup {
   /** Creates a new BlueFive. */
-  public BlueThree(
+  public BlueThreeWall(
     DrivetrainSubsystem drivetrain,
     IntakeSubsystem intake,
     ExtensionSubsystem pistons,
     FlywheelSubsystem flywheel,
-    AcceleratorSubsystem accelerator
+    AcceleratorSubsystem accelerator,
+    HoodSubsystem hood,
+    VisionSupplier vision
   ) {
+    addReqs(drivetrain, intake, pistons, flywheel, hood, accelerator, vision);
     addCommands(
       new ParallelRaceGroup(
         new WaitUntilCommand(intake::ballDetected),
@@ -47,23 +51,7 @@ public class BlueThree extends SequentialCommandGroup {
           new InstantCommand(intake::stop)
         )
       ),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_1, false)
-      .beforeStarting(
-        new InstantCommand(() -> flywheel.setRPMTarget(1000))
-      )
-      .andThen(
-        new SequentialCommandGroup(
-          new WaitUntilCommand(flywheel::atTarget),
-          new InstantCommand(accelerator::start),
-          new WaitCommand(0.5)
-        ).andThen(
-          new ParallelCommandGroup(
-            new InstantCommand(accelerator::stop),
-            new InstantCommand(flywheel::stop)
-          )
-       )
-      ),
-      
+      new TurnAndShoot(drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_1, false)),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_3, false)
       .beforeStarting(
         new ParallelCommandGroup(
@@ -77,24 +65,9 @@ public class BlueThree extends SequentialCommandGroup {
           new InstantCommand(intake::stop)
         )
       ),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false)
-      .beforeStarting(
-        new InstantCommand(() -> flywheel.setRPMTarget(1000))
-      )
-      .andThen(
-        new SequentialCommandGroup(
-          new WaitUntilCommand(flywheel::atTarget),
-          new InstantCommand(accelerator::start),
-          new WaitCommand(0.5)
-        ).andThen(
-          new ParallelCommandGroup(
-            new InstantCommand(accelerator::stop),
-            new InstantCommand(flywheel::stop)
-          )
-        )
-      ),
+      new TurnAndShoot(drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false)),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_EXIT, false)
-        );
+      );
   }
 
   private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(3,6,List.of(

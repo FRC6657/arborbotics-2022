@@ -32,8 +32,8 @@ public class RedWallTwo extends SequentialCommandGroup {
     IntakeSubsystem intake,
     ExtensionSubsystem pistons,
     FlywheelSubsystem flywheel,
-    HoodSubsystem hood,
     AcceleratorSubsystem accelerator,
+    HoodSubsystem hood,
     VisionSupplier vision
   ) {
     addCommands(

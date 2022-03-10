@@ -1,21 +1,18 @@
-package frc.FRC6657.autonomous.routines.BlueAllience;
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
-import java.util.List;
+package frc.FRC6657.custom;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.FRC6657.Constants;
-import frc.FRC6657.autonomous.Trajectories;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.IntakeSubsystem;
@@ -25,31 +22,47 @@ import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.shooter.interpolation.InterpolatingTable;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
-public class BlueHangarTwo extends SequentialCommandGroup{
-    public BlueHangarTwo (
-        DrivetrainSubsystem drivetrain,
-        IntakeSubsystem intake,
-        ExtensionSubsystem pistons,
-        FlywheelSubsystem flywheel,
-        HoodSubsystem hood,
-        AcceleratorSubsystem accelerator,
-        VisionSupplier vision
-    ) {
-        addCommands(
-            drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_1, true)
-            .beforeStarting(
-                new ParallelCommandGroup( //Prepare Intake to pickup ball #2
-                  new InstantCommand(pistons::extend), 
-                  new InstantCommand(intake::start)
-                )
-              )
-              .andThen(
-                new ParallelCommandGroup( //Retract Intake After Ball #2
-                  new InstantCommand(pistons::retract),
-                  new InstantCommand(intake::stop)
-                )
-              ),
-            new ParallelRaceGroup(
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+public class ArborSequentialCommandGroup extends SequentialCommandGroup {
+  /** Creates a new ArborSequentialCommandGroup. */
+  DrivetrainSubsystem drivetrain;
+  IntakeSubsystem intake;
+  ExtensionSubsystem pistons;
+  FlywheelSubsystem flywheel;
+  HoodSubsystem hood;
+  AcceleratorSubsystem accelerator;
+  VisionSupplier vision;
+
+  public void addReqs(
+    DrivetrainSubsystem drivetrain,
+    IntakeSubsystem intake,
+    ExtensionSubsystem pistons,
+    FlywheelSubsystem flywheel,
+    HoodSubsystem hood,
+    AcceleratorSubsystem accelerator,
+    VisionSupplier vision
+  ){
+    this.drivetrain = drivetrain;
+    this.intake = intake;
+    this.pistons = pistons;
+    this.flywheel = flywheel;
+    this.hood = hood;
+    this.accelerator = accelerator;
+    this.vision = vision;
+  }
+
+  public class TurnAndShoot extends SequentialCommandGroup {
+    public TurnAndShoot(Command cmd) {
+      addCommands(
+        cmd,
+        new TurnAndShoot()
+      );
+    }
+    public TurnAndShoot() {
+      addCommands(
+        new ParallelRaceGroup(
                 new WaitUntilCommand(() -> Math.abs(vision.getYaw()) < Constants.Drivetrain.kTurnCommandTolerance),
                 drivetrain.new VisionAimAssist(),
                 new RunCommand(
@@ -74,13 +87,6 @@ public class BlueHangarTwo extends SequentialCommandGroup{
             )
         );
     }
+  }
 
-    private Trajectory PATH_TO_BALL_1 = Trajectories.generateTrajectory(1, 2, List.of(
-        new Pose2d(6, 4.68, Rotation2d.fromDegrees(91.87)),
-        new Pose2d(5, 6.25, Rotation2d.fromDegrees(140))
-
-    ), false, 
-    "Red Hangar 2 PATH_TO_BALL"
-    );
-    
 }

@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import javax.management.MBeanServerPermission;
 
+import com.fasterxml.jackson.databind.deser.impl.NullsAsEmptyProvider;
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
@@ -38,17 +39,16 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
 import frc.FRC6657.autonomous.routines.Tests.BallDetectionTest;
 import frc.FRC6657.autonomous.routines.Tests.PoseTest;
 import frc.FRC6657.autonomous.routines.TurningAngleTest;
-import frc.FRC6657.autonomous.routines.BlueAllience.BlueDoubleSteal;
-import frc.FRC6657.autonomous.routines.BlueAllience.BlueFive;
-import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
-import frc.FRC6657.autonomous.routines.BlueAllience.BlueThree;
-import frc.FRC6657.autonomous.routines.BlueAllience.BlueWallTwo;
-import frc.FRC6657.autonomous.routines.BlueAllience.BlueHangarTwo;
+import frc.FRC6657.autonomous.routines.BlueAlliance.BlueDoubleSteal;
+import frc.FRC6657.autonomous.routines.BlueAlliance.BlueFive;
+import frc.FRC6657.autonomous.routines.BlueAlliance.BlueHangarTwo;
+import frc.FRC6657.autonomous.routines.BlueAlliance.BlueMidTwo;
+import frc.FRC6657.autonomous.routines.BlueAlliance.BlueThreeWall;
+import frc.FRC6657.autonomous.routines.BlueAlliance.BlueWallTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedFive;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedThree;
@@ -169,6 +169,18 @@ public class RobotContainer implements Loggable {
   private void configureAutoChooser() {
     mAutoChooser.setDefaultOption("Nothing", new SequentialCommandGroup[]{null,null});
 
+    mAutoChooser.addOption("2 Ball Wall", new SequentialCommandGroup[]{
+      new RedWallTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+      new BlueWallTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
+    });
+
+    mAutoChooser.addOption("2 Ball Hangar", 
+    new SequentialCommandGroup[] {
+      new RedHangarTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+      new BlueHangarTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
+    }
+  );  
+
     mAutoChooser.addOption("2 Ball Steal",
     new SequentialCommandGroup[] {
       null,
@@ -176,38 +188,40 @@ public class RobotContainer implements Loggable {
     }
   );
 
-    mAutoChooser.addOption("Middle 2",
+    mAutoChooser.addOption("2 Ball Mid",
       new SequentialCommandGroup[]{
         new RedMidTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
-        new BlueMidTwo(drivetrain, intake, extension, flywheel, accelerator)
+        new BlueMidTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
     );
-
-    mAutoChooser.addOption("Hangar 2", 
-      new SequentialCommandGroup[] {
-        new RedHangarTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier),
-        new BlueHangarTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier)
-      }
-    );  
     
-    mAutoChooser.addOption("3",
+    mAutoChooser.addOption("3 Ball Wall",
       new SequentialCommandGroup[] {
         new RedThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
-        new BlueThree(drivetrain, intake, extension, flywheel, accelerator)
+        new BlueThreeWall(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
     );
 
-    mAutoChooser.addOption("5",
+    mAutoChooser.addOption("3 Ball Hangar",
+      new SequentialCommandGroup[]{
+        null,
+        null
+      }
+    );
+
+    mAutoChooser.addOption("4 Ball Cooperative",
+      new SequentialCommandGroup[]{
+        null, 
+        null
+      }
+    );
+
+    mAutoChooser.addOption("5/4 Ball",
       new SequentialCommandGroup[]{
         new RedFive(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
         new BlueFive(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
     );
-
-    mAutoChooser.addOption("2 Ball Wall", new SequentialCommandGroup[]{
-      new RedWallTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier),
-      new BlueWallTwo(drivetrain, intake, extension, flywheel, hood, accelerator, vision.visionSupplier)
-    });
 
     mAutoChooser.addOption("HomeHood", 
       new SequentialCommandGroup[] {

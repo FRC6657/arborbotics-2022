@@ -12,6 +12,12 @@
       "/LiveWindow/LiftSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/Blinkin[0]": "Motor Controller",
       "/LiveWindow/Ungrouped/PIDController[10]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[11]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[12]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[13]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[14]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[15]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[16]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
@@ -41,6 +47,14 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "Pose1": {
+          "length": 0.9860000014305115,
+          "width": 0.8510000109672546
+        },
+        "Pose2": {
+          "length": 0.9860000014305115,
+          "width": 0.8510000109672546
+        },
         "Robot": {
           "length": 0.9860000014305115,
           "width": 0.8510000109672546
