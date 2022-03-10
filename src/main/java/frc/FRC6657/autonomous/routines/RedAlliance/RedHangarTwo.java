@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.FRC6657.Constants;
 import frc.FRC6657.autonomous.Trajectories;
+import frc.FRC6657.custom.ArborSequentialCommandGroup;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.IntakeSubsystem;
@@ -23,7 +24,7 @@ import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.shooter.interpolation.InterpolatingTable;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
-public class RedHangarTwo extends SequentialCommandGroup{
+public class RedHangarTwo extends ArborSequentialCommandGroup{
     public RedHangarTwo (
         DrivetrainSubsystem drivetrain,
         IntakeSubsystem intake,
@@ -33,31 +34,22 @@ public class RedHangarTwo extends SequentialCommandGroup{
         AcceleratorSubsystem accelerator,
         VisionSupplier vision
     ) {
+        addReqs(drivetrain, intake, pistons, flywheel, hood, accelerator, vision);
         addCommands(
-            drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_1, true),
-            new ParallelRaceGroup(
-                new WaitUntilCommand(() -> Math.abs(vision.getYaw()) < Constants.Drivetrain.kTurnCommandTolerance),
-                drivetrain.new VisionAimAssist(),
-                new RunCommand(
-                    () -> hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle),
-                    hood
-                ),
-                new RunCommand(
-                    () -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm),
-                    flywheel
+            drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_1, true)
+            .beforeStarting(
+                new ParallelCommandGroup( //Prepare Intake to pickup ball #2
+                  new InstantCommand(pistons::extend), 
+                  new InstantCommand(intake::start)
                 )
-            ),
-            new WaitUntilCommand(() -> (flywheel.atTarget() && hood.atTarget())),
-            new SequentialCommandGroup(
-                new InstantCommand(accelerator::start, accelerator),
-                new WaitCommand(1),
-                new InstantCommand(accelerator::stop, accelerator)
-            ).andThen(
-                new ParallelCommandGroup(
-                    hood.new Home(),
-                    new InstantCommand(() -> flywheel.setRPMTarget(0))
+              )
+              .andThen(
+                new ParallelCommandGroup( //Retract Intake After Ball #2
+                  new InstantCommand(pistons::retract),
+                  new InstantCommand(intake::stop)
                 )
-            )
+              ),
+            new TurnAndShoot()
         );
     }
 
