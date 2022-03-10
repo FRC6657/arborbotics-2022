@@ -31,18 +31,17 @@ public class RedSingleSteal extends SequentialCommandGroup {
         VisionSupplier vision
     ) {
         addCommands(
-            new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_RED_2.getInitialPose()), drivetrain),
-            new IntakePath(PATH_TO_RED_2, drivetrain, intake, pistons),
-            new AimRoutine(drivetrain, hood, flywheel, vision),
-            new FireRoutine(flywheel, hood, accelerator, 0.5),
-            new IntakePath(PATH_TO_BLUE_1, drivetrain, intake, pistons),
-            drivetrain.new TrajectoryFollowerCommand(PATH_TO_BLUE_SHOT_1),
-            new ParallelCommandGroup(
+            new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_RED_2.getInitialPose()), drivetrain), //Reset Position
+            new IntakePath(PATH_TO_RED_2, drivetrain, intake, pistons), //Intake Red 2
+            new AimRoutine(drivetrain, hood, flywheel, vision), //Aim
+            new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Red 1 & 2
+            new IntakePath(PATH_TO_BLUE_1, drivetrain, intake, pistons), //Intake Blue 1
+            new ParallelCommandGroup( //Arrange Shooter
+                drivetrain.new TrajectoryFollowerCommand(PATH_TO_BLUE_SHOT_1), //Move to firing position
                 new InstantCommand(() -> hood.setAngle(45), hood),
                 new InstantCommand(() -> flywheel.setRPMTarget(1000), flywheel)
             ),
-            new FireRoutine(flywheel, hood, accelerator, 0.5)
-
+            new FireRoutine(flywheel, hood, accelerator, 0.5) //Fire Blue 1
         );
     }
 

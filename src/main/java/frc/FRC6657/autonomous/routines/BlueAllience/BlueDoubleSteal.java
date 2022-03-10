@@ -31,24 +31,25 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
         VisionSupplier vision
     ) {
         addCommands(
-            new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_BLUE_2.getInitialPose()), drivetrain),
-            new IntakePath(PATH_TO_BLUE_2, drivetrain, intake, pistons),
-            new AimRoutine(drivetrain, hood, flywheel, vision),
-            new FireRoutine(flywheel, hood, accelerator, 0.5),
-            new IntakePath(PATH_TO_RED_1, drivetrain, intake, pistons),
-            drivetrain.new TrajectoryFollowerCommand(PATH_TO_RED_SHOT_1),
-            new ParallelCommandGroup(
+            new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_BLUE_2.getInitialPose()), drivetrain), //Reset Position
+            new IntakePath(PATH_TO_BLUE_2, drivetrain, intake, pistons), //Intake Blue 2
+            new AimRoutine(drivetrain, hood, flywheel, vision), //Aim
+            new FireRoutine(flywheel, hood, accelerator, 0.5), //Shoot Ball 1 & 2
+            new IntakePath(PATH_TO_RED_1, drivetrain, intake, pistons), //Intake Red 1
+            
+            new ParallelCommandGroup( //Arrange shooter
+                drivetrain.new TrajectoryFollowerCommand(PATH_TO_RED_SHOT_1), //Go to firing position
                 new InstantCommand(() -> hood.setAngle(45), hood),
                 new InstantCommand(() -> flywheel.setRPMTarget(1000), flywheel)
             ),
-            new FireRoutine(flywheel, hood, accelerator, 0.5),
-            new IntakePath(PATH_TO_RED_2, drivetrain, intake, pistons),
-            drivetrain.new TurnByAngleCommand(45),
-            new ParallelCommandGroup(
+            new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Red 1
+            new IntakePath(PATH_TO_RED_2, drivetrain, intake, pistons), //Intake Red 2
+            new ParallelCommandGroup( //Arrange Shooter
+                drivetrain.new TurnByAngleCommand(45), //Aim Towards Hangar
                 new InstantCommand(() -> hood.setAngle(45), hood),
                 new InstantCommand(() -> flywheel.setRPMTarget(1000), flywheel)
             ),
-            new FireRoutine(flywheel, hood, accelerator, 0.5)
+            new FireRoutine(flywheel, hood, accelerator, 0.5) //Fire Red 2
         );
     }
 

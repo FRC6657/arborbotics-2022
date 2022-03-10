@@ -34,14 +34,14 @@ public class RedWallThree extends SequentialCommandGroup {
     VisionSupplier vision
   ) {
     addCommands(
-      new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_BALL_2.getInitialPose()), drivetrain),
-      new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons),
-      new AimRoutine(drivetrain, hood, flywheel, vision),
-      new FireRoutine(flywheel, hood, accelerator, 0.5),
-      new IntakePath(PATH_TO_BALL_3, drivetrain, intake, pistons),
-      drivetrain.new TurnByAngleCommand(30),
-      new AimRoutine(drivetrain, hood, flywheel, vision),
-      new FireRoutine(flywheel, hood, accelerator, 0.5)
+      new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_BALL_2.getInitialPose()), drivetrain), //Reset Position
+      new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons), //Intake Red 2
+      new AimRoutine(drivetrain, hood, flywheel, vision), //Aim
+      new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Red 1 & 2
+      new IntakePath(PATH_TO_BALL_3, drivetrain, intake, pistons), //intake Red 3
+      drivetrain.new TurnByAngleCommand(30), //Turn to target Visibility //TODO Make this more precise
+      new AimRoutine(drivetrain, hood, flywheel, vision), //Aim 
+      new FireRoutine(flywheel, hood, accelerator, 0.5) //Fire Red 3
     );
   }
 
