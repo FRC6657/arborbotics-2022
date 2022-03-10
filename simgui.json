@@ -38,7 +38,9 @@
       "/LiveWindow/Ungrouped/PIDController[26]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[27]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[28]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[29]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[30]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
@@ -80,7 +82,7 @@
         },
         "bottom": 900,
         "height": 8.229599952697754,
-        "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
+        "image": "C:\\Users\\aerea\\Robotics 2022\\arborbotics-2022-main\\arborbotics-2022\\FieldImages\\2022-field.png",
         "intake": {
           "arrows": false,
           "color": [
@@ -150,6 +152,7 @@
               "min": -6000.0
             }
           ],
+          "height": 102,
           "series": [
             {
               "color": [
@@ -177,7 +180,7 @@
               "min": -1.5
             }
           ],
-          "height": 278,
+          "height": -11,
           "series": [
             {
               "color": [
