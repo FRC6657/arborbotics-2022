@@ -43,6 +43,7 @@ import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedSingleSteal;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueDoubleSteal;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueFive;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueHangarThree;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueHangarTwo;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueSingleSteal;
@@ -213,7 +214,7 @@ public class RobotContainer implements Loggable {
     mAutoChooser.addOption("3 Ball Hangar",
       new SequentialCommandGroup[]{
         new RedHangarThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
-        null
+        new BlueHangarThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
     );
 
