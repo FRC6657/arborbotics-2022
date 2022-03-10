@@ -8,8 +8,8 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.FRC6657.autonomous.Trajectories;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
@@ -17,6 +17,9 @@ import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.IntakeSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
+import frc.FRC6657.subsystems.shooter.HoodSubsystem;
+import frc.FRC6657.subsystems.shooter.interpolation.InterpolatingTable;
+import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
 public class BlueDoubleSteal extends SequentialCommandGroup{
     public BlueDoubleSteal(
@@ -24,7 +27,9 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
         IntakeSubsystem intake,
         ExtensionSubsystem pistons,
         FlywheelSubsystem flywheel,
-        AcceleratorSubsystem accelerator
+        AcceleratorSubsystem accelerator,
+        HoodSubsystem hood,
+        VisionSupplier vision
     ) {
         addCommands(
             new ParallelRaceGroup(
@@ -43,15 +48,27 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
                     new InstantCommand(intake::stop)
                 )
             ),
-            drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOOT, false)
-            .beforeStarting(
-                new InstantCommand(() -> flywheel.setRPMTarget(1000))
-            )
+            new ParallelRaceGroup(
+                drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOOT, false),
+                new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel),
+                new RunCommand(
+                    () -> {
+                        hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
+                        System.out.println(vision.getDistance());
+                    }, 
+                    hood
+                )
+            ) //Drive to Fire
             .andThen(
                 new SequentialCommandGroup(
                     new WaitUntilCommand(flywheel::atTarget),
-                    new InstantCommand(accelerator::start),
-                    new WaitCommand(0.5)
+                    new InstantCommand(accelerator::start)
+                ).andThen(
+                    new ParallelCommandGroup(
+                    new InstantCommand(accelerator::stop),
+                    new InstantCommand(flywheel::stop),
+                    hood.new Home()
+                    )
                 )
             ),
             new ParallelRaceGroup(
@@ -70,26 +87,27 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
                     new InstantCommand(intake::stop)
                 )  
             ),
-            drivetrain.new TurnByAngleCommand(90)
-            .beforeStarting(
-                new InstantCommand(() -> flywheel.setRPMTarget(1000))
-            )
-            .andThen(
-                new SequentialCommandGroup( //TODO This seems coarse, fix later.
-                    new WaitUntilCommand(flywheel::atTarget),
-                    new InstantCommand(accelerator::start),
-                    new WaitCommand(0.5)
+            new ParallelRaceGroup(
+                drivetrain.new TrajectoryFollowerCommand(PATH_TO_RED_2, false),
+                new RunCommand(() -> flywheel.setRPMTarget(2000)),
+                new RunCommand(
+                    () -> {
+                        hood.setAngle(45);
+                        System.out.println(vision.getDistance());
+                    }, 
+                    hood
                 )
-            ),
-            drivetrain.new TrajectoryFollowerCommand(PATH_TO_RED_2, false)
-            .beforeStarting(
-                new InstantCommand(() -> flywheel.setRPMTarget(1000))
-            )
+            )//Get rid of our stolen goods
             .andThen(
                 new SequentialCommandGroup( //TODO This seems coarse, fix later.
                     new WaitUntilCommand(flywheel::atTarget),
-                    new InstantCommand(accelerator::start),
-                    new WaitCommand(0.5)
+                    new InstantCommand(accelerator::start)
+                ).andThen(
+                    new ParallelCommandGroup(
+                        new InstantCommand(accelerator::stop),
+                        new InstantCommand(flywheel::stop),
+                        hood.new Home()
+                    )
                 )
             )
         );
@@ -122,7 +140,7 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
 
     private Trajectory PATH_TO_RED_2 = Trajectories.generateTrajectory(4, 4, List.of(
         new Pose2d(6.122, 7.082, Rotation2d.fromDegrees(-135)),
-        new Pose2d(4.467, 3.620, Rotation2d.fromDegrees(-81.657))
+        new Pose2d(4.467, 3.620, Rotation2d.fromDegrees(-71.657))
     ), 
     false, 
     "Blue Steal Two PATH_TO_RED_2"

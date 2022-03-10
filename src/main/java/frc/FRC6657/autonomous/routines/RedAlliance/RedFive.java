@@ -85,18 +85,18 @@ public class RedFive extends SequentialCommandGroup {
           new InstantCommand(intake::stop)
         )
       ),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false)
-      .beforeStarting(
-        new ParallelCommandGroup(
-          new InstantCommand(() -> flywheel.setRPMTarget(1000)),
-          new InstantCommand(() -> hood.setAngle(45))
+      new ParallelRaceGroup(
+          drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false),
+          new RunCommand(() -> {
+            hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
+            System.out.println(vision.getDistance());
+          }, hood),
+          new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
         )
-      )
       .andThen(
         new SequentialCommandGroup(
           new WaitUntilCommand(flywheel::atTarget),
-          new InstantCommand(accelerator::start),
-          new WaitCommand(0.5)
+          new InstantCommand(accelerator::start)
         ).andThen(
           new ParallelCommandGroup(
             new InstantCommand(accelerator::stop),
@@ -118,18 +118,18 @@ public class RedFive extends SequentialCommandGroup {
           new InstantCommand(intake::stop)
         )
       ),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_3, false)
-      .beforeStarting(
-        new ParallelCommandGroup(
-          new InstantCommand(() -> flywheel.setRPMTarget(1000)),
-          new InstantCommand(() -> hood.setAngle(45))
+      new ParallelRaceGroup(
+          drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_3, false),
+          new RunCommand(() -> {
+          hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
+          System.out.println(vision.getDistance());
+          }, hood),
+          new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
         )
-      )
       .andThen(
         new SequentialCommandGroup(
           new WaitUntilCommand(flywheel::atTarget),
-          new InstantCommand(accelerator::start),
-          new WaitCommand(0.5)
+          new InstantCommand(accelerator::start)
         ).andThen(
           new ParallelCommandGroup(
             new InstantCommand(accelerator::stop),
