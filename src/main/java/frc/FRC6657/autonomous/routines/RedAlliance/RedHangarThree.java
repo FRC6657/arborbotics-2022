@@ -40,7 +40,7 @@ public class RedHangarThree extends SequentialCommandGroup{
         );
     }
 
-    private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(1, 2, List.of(
+    private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(4, 2, List.of(
         new Pose2d(10.5, 3.55, Rotation2d.fromDegrees(-89.15)),
         new Pose2d(11.58, 2.125, Rotation2d.fromDegrees(-30))
 
@@ -48,8 +48,8 @@ public class RedHangarThree extends SequentialCommandGroup{
     "Red Hangar 2 PATH_TO_BALL_2"
     );
 
-    private Trajectory PATH_TO_BALL_3 = Trajectories.generateTrajectory(1, 2, List.of(
-        new Pose2d(11.58, 2.125, Rotation2d.fromDegrees(-30)),
+    private Trajectory PATH_TO_BALL_3 = Trajectories.generateTrajectory(4, 2, List.of(
+        new Pose2d(11, 2.125, Rotation2d.fromDegrees(90)),
         new Pose2d(11.5, 6.429, Rotation2d.fromDegrees(30.841))
     ), false, 
     "Red Hangar 3 PATH_TO_BALL_3"
