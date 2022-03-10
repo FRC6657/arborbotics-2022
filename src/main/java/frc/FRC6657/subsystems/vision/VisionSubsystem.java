@@ -4,9 +4,6 @@
 
 package frc.FRC6657.subsystems.vision;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.SimVisionSystem;

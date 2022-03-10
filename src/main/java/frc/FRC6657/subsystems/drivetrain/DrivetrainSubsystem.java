@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
@@ -96,6 +97,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   private FieldObject2d mTrajectoryPlot = mField.getObject("trajectory");
   private FieldObject2d mRobotPath = mField.getObject("robot-path");
   private List<Pose2d> mPathPoints = new ArrayList<Pose2d>();
+
+  private FieldObject2d mIntakeVisualier = mField.getObject("intake");
 
   // Drivetrain Simulation
   DifferentialDrivetrainSim mDrivetrainSim;
@@ -573,6 +576,13 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   public void periodic() {
     updatePoseEstimator(new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity()), getLeftMeters(), getRightMeters());
     mField.setRobotPose(mPoseEstimator.getEstimatedPosition());
+    mIntakeVisualier.setPose(
+      new Pose2d(
+        (mPoseEstimator.getEstimatedPosition().getX() + 0.6056505 * Math.cos(Units.degreesToRadians(mPoseEstimator.getEstimatedPosition().getRotation().getDegrees()))),
+        (mPoseEstimator.getEstimatedPosition().getY() + 0.6056505 * Math.sin(Units.degreesToRadians(mPoseEstimator.getEstimatedPosition().getRotation().getDegrees()))),
+        mPoseEstimator.getEstimatedPosition().getRotation()
+      )
+    );
   }
 
   @Override

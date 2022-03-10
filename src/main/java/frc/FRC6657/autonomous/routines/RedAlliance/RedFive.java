@@ -78,7 +78,26 @@ public class RedFive extends ArborSequentialCommandGroup {
           new InstantCommand(intake::stop)
         )
       ),
-      new TurnAndShoot(drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_3, false)),
+      new ParallelRaceGroup(
+          drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_3, false),
+          new RunCommand(() -> {
+          hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
+          System.out.println(vision.getDistance());
+          }, hood),
+          new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
+        )
+      .andThen(
+        new SequentialCommandGroup(
+          new WaitUntilCommand(flywheel::atTarget),
+          new InstantCommand(accelerator::start)
+        ).andThen(
+          new ParallelCommandGroup(
+            new InstantCommand(accelerator::stop),
+            new InstantCommand(flywheel::stop),
+            hood.new Home()
+          )
+        )
+      ),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_EXIT, false)
     );
   }
