@@ -6,10 +6,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.FRC6657.autonomous.Trajectories;
-import frc.FRC6657.custom.ArborSequentialCommandGroup;
+import frc.FRC6657.autonomous.common.AimRoutine;
+import frc.FRC6657.autonomous.common.FireRoutine;
+import frc.FRC6657.autonomous.common.IntakePath;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.IntakeSubsystem;
@@ -18,37 +19,22 @@ import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
-public class RedMidTwo extends ArborSequentialCommandGroup{
+public class RedMidTwo extends SequentialCommandGroup{
     public RedMidTwo(
         DrivetrainSubsystem drivetrain,
         IntakeSubsystem intake,
-        ExtensionSubsystem extension,
+        ExtensionSubsystem pistons,
         FlywheelSubsystem flywheel,
         AcceleratorSubsystem accelerator,
         HoodSubsystem hood,
         VisionSupplier vision
     ) {
-        addReqs(drivetrain, intake, extension, flywheel, hood, accelerator, vision);
         addCommands(
-
-            //TODO Make this one thing and use a constant
-            new InstantCommand(extension::extend, extension),
-            new InstantCommand(intake::start, intake),
-
-            new ParallelRaceGroup(
-                new WaitUntilCommand(intake::ballDetected),
-                drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_2, true)
-            ),
-
-            //TODO Retract Intake
-            new InstantCommand(intake::stop, intake),
-            
-            new InstantCommand(drivetrain::stop, drivetrain),
-
-            //Start shooting
-           
-      new TurnAndShoot()
-      );
+            new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_BALL_2.getInitialPose()), drivetrain),
+            new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons),
+            new AimRoutine(drivetrain, hood, flywheel, vision),
+            new FireRoutine(flywheel, hood, accelerator, 0.5)
+        );
     }
 
     private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(1,1,List.of(
@@ -56,6 +42,6 @@ public class RedMidTwo extends ArborSequentialCommandGroup{
         new Pose2d(11.218, 6.353,Rotation2d.fromDegrees(24))
     ),
     false,
-    "RedMidTwo PATH_TO_BALL_2"
+    "Red Mid Two PATH_TO_BALL_2"
     );
 }

@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.FRC6657.autonomous.routines.RedAlliance;
+package frc.FRC6657.autonomous.routines.BlueAllience;
 
 import java.util.List;
 
@@ -22,8 +22,8 @@ import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
-public class RedWallTwo extends SequentialCommandGroup {
-  public RedWallTwo(
+public class BlueWallTwo extends SequentialCommandGroup {
+  public BlueWallTwo(
     DrivetrainSubsystem drivetrain,
     IntakeSubsystem intake,
     ExtensionSubsystem pistons,
@@ -40,19 +40,18 @@ public class RedWallTwo extends SequentialCommandGroup {
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_TAXI)
     );
   }
-
   private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(1, 2, List.of(
-    new Pose2d(8.85, 6.36, Rotation2d.fromDegrees(90.7)),
-    new Pose2d(8.93, 7.34, Rotation2d.fromDegrees(90))
+    new Pose2d(7.625, 1.95, Rotation2d.fromDegrees(-87.616)),
+    new Pose2d(7.6125, 1, Rotation2d.fromDegrees(-90))
   ), false, 
-  "Red Wall Two PATH_TO_BALL_2"
+  "Blue Wall 2 PATH_TO_BALL_2"
   );
 
   private Trajectory PATH_TO_TAXI = Trajectories.generateTrajectory(1, 2, List.of(
-    new Pose2d(8.93, 7.34, Rotation2d.fromDegrees(180)),
-    new Pose2d(11,7.5, Rotation2d.fromDegrees(180))
+    new Pose2d(7.6125, 0.79, Rotation2d.fromDegrees(0)),
+    new Pose2d(5.5, 0.65, Rotation2d.fromDegrees(0))
   ), true, 
-  "Red Wall Two PATH_TO_TAXI"
+  "Blue Wall 2 PATH_TO_TAXI"
   );
 
 }

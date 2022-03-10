@@ -262,6 +262,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
     resetEncoders();// Reset the encoders
 
+
   }
   /**
    * Resets the encoders
@@ -280,7 +281,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   }
   
   public void resetPoseEstimator(Pose2d newPose){
-    //mPigeon.setYaw(newPose.getRotation().getDegrees());
     mPoseEstimator.resetPosition(newPose, mPigeon.getRotation2d());
   }
 
@@ -502,20 +502,14 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
     private final Timer timer = new Timer();
     private final Trajectory trajectory;
-    private boolean resetPose;
 
-    public TrajectoryFollowerCommand(Trajectory trajectory, boolean resetPose) {
+    public TrajectoryFollowerCommand(Trajectory trajectory) {
       this.trajectory = trajectory;
-      this.resetPose = resetPose;
       addRequirements(DrivetrainSubsystem.this);
     }
 
     @Override
     public void initialize() {
-      if(resetPose){
-        resetPoseEstimator(trajectory.getInitialPose());
-      }
-    
       mPathPoints.clear();
       mPathPoints.add(mPoseEstimator.getEstimatedPosition());
       mRobotPath.setPoses(mPathPoints);
@@ -551,6 +545,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
   public class VisionAimAssist extends CommandBase{
     PIDController mPID = new PIDController(Constants.Drivetrain.vision_kP, 0, Constants.Drivetrain.vision_kD);
+
+    @Override
+    public void initialize() {
+        mVision.enableLEDs();
+    }
+
     @Override
     public void execute() {
       if(mVision.hasTarget()){
@@ -562,6 +562,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     @Override
     public void end(boolean interrupted) {
         stop();
+        mVision.disableLEDs();
     }
   }
 
@@ -576,13 +577,16 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   public void periodic() {
     updatePoseEstimator(new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity()), getLeftMeters(), getRightMeters());
     mField.setRobotPose(mPoseEstimator.getEstimatedPosition());
-    mIntakeVisualier.setPose(
-      new Pose2d(
-        (mPoseEstimator.getEstimatedPosition().getX() + 0.6056505 * Math.cos(Units.degreesToRadians(mPoseEstimator.getEstimatedPosition().getRotation().getDegrees()))),
-        (mPoseEstimator.getEstimatedPosition().getY() + 0.6056505 * Math.sin(Units.degreesToRadians(mPoseEstimator.getEstimatedPosition().getRotation().getDegrees()))),
-        mPoseEstimator.getEstimatedPosition().getRotation()
-      )
-    );
+
+    if(RobotBase.isSimulation()){
+      mIntakeVisualier.setPose(
+        new Pose2d(
+          (mPoseEstimator.getEstimatedPosition().getX() + 0.6056505 * Math.cos(Units.degreesToRadians(mPoseEstimator.getEstimatedPosition().getRotation().getDegrees()))),
+          (mPoseEstimator.getEstimatedPosition().getY() + 0.6056505 * Math.sin(Units.degreesToRadians(mPoseEstimator.getEstimatedPosition().getRotation().getDegrees()))),
+          mPoseEstimator.getEstimatedPosition().getRotation()
+        )
+      );
+    }
   }
 
   @Override

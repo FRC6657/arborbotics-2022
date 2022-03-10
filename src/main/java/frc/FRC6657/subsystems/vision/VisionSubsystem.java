@@ -123,5 +123,13 @@ public class VisionSubsystem extends SubsystemBase {
         }
       }
     }
+
+    public void enableLEDs(){
+      mLimelight.setLED(VisionLEDMode.kOn);
+    }
+    public void disableLEDs(){
+      mLimelight.setLED(VisionLEDMode.kOff);
+    }
+
   }
 }

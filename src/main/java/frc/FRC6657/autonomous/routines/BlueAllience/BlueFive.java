@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.FRC6657.autonomous.routines.RedAlliance;
+package frc.FRC6657.autonomous.routines.BlueAllience;
 
 import java.util.List;
 
@@ -24,8 +24,9 @@ import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
-public class RedFive extends SequentialCommandGroup{
-  public RedFive(
+public class BlueFive extends SequentialCommandGroup{
+  /** Creates a new BlueFive. */
+  public BlueFive(
     DrivetrainSubsystem drivetrain,
     IntakeSubsystem intake,
     ExtensionSubsystem pistons,
@@ -40,7 +41,7 @@ public class RedFive extends SequentialCommandGroup{
       new AimRoutine(drivetrain, hood, flywheel, vision),
       new FireRoutine(flywheel, hood, accelerator, 0.5),
       new IntakePath(PATH_TO_BALL_3, drivetrain, intake, pistons),
-      drivetrain.new TurnByAngleCommand(30),
+      drivetrain.new TurnByAngleCommand(15),
       new AimRoutine(drivetrain, hood, flywheel, vision),
       new FireRoutine(flywheel, hood, accelerator, 0.5),
       new IntakePath(PATH_TO_BALL_4_5, drivetrain, intake, pistons),
@@ -49,36 +50,37 @@ public class RedFive extends SequentialCommandGroup{
     );
   }
 
-  private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(2,3,List.of(
-    new Pose2d(8.91, 6, Rotation2d.fromDegrees(91.158)),
-    new Pose2d(8.962, 7.4, Rotation2d.fromDegrees(91.158))
+  private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(3,6,List.of(
+    new Pose2d(7.821, 1.922, Rotation2d.fromDegrees(-89.018)),
+    new Pose2d(7.784, 1, Rotation2d.fromDegrees(-89.018))
   ),
   false,
-  "Red Five TWO PATH_TO_BALL_2"
+  "Blue Five TWO PATH_TO_BALL_2"
   );
 
   private Trajectory PATH_TO_BALL_3 = Trajectories.generateTrajectory(3,4,List.of(
-    new Pose2d(10, 6.4, Rotation2d.fromDegrees(0)),
-    new Pose2d(11.5, 6.4, Rotation2d.fromDegrees(0))
+    new Pose2d(7.885, 2.629, Rotation2d.fromDegrees(-150)),
+    new Pose2d(5.022, 1.75, Rotation2d.fromDegrees(-180))
   ),
   false,
-  "Red Five TWO PATH_TO_BALL_3"
+  "Blue Five TWO PATH_TO_BALL_3"
   );
 
   private Trajectory PATH_TO_BALL_4_5 = Trajectories.generateTrajectory(3,2,List.of(
-    new Pose2d(13.125, 5.25, Rotation2d.fromDegrees(40)),
-    new Pose2d(14.8, 6.7, Rotation2d.fromDegrees(40))
+    new Pose2d(4.625, 3.3, Rotation2d.fromDegrees(-136)),
+    new Pose2d(1.625, 1.625, Rotation2d.fromDegrees(-150))
   ),
   false,
-  "Red Five TWO PATH_TO_BALL_4_5"
+  "Blue Five TWO PATH_TO_BALL_4_5"
   );
 
-  private Trajectory PATH_TO_4_5_SHOT = Trajectories.generateTrajectory(3,4,List.of(
-    new Pose2d(15, 6.75, Rotation2d.fromDegrees(26)),
-    new Pose2d(11.5, 5.75, Rotation2d.fromDegrees(13))
+  private Trajectory PATH_TO_4_5_SHOT = Trajectories.generateTrajectory(3,2,List.of(
+    new Pose2d(2, 1.5, Rotation2d.fromDegrees(200)),
+    new Pose2d(4.75, 2.5, Rotation2d.fromDegrees(200))
   ),
   true,
-  "Red Five TWO PATH_TO_4_5_SHOT"
+  "Blue Five TWO PATH_TO_4_5_SHOT"
   );
 
 }
+

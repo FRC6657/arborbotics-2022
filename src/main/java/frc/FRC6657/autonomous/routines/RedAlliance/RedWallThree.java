@@ -22,8 +22,9 @@ import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
-public class RedWallTwo extends SequentialCommandGroup {
-  public RedWallTwo(
+
+public class RedWallThree extends SequentialCommandGroup {
+  public RedWallThree(
     DrivetrainSubsystem drivetrain,
     IntakeSubsystem intake,
     ExtensionSubsystem pistons,
@@ -37,22 +38,27 @@ public class RedWallTwo extends SequentialCommandGroup {
       new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons),
       new AimRoutine(drivetrain, hood, flywheel, vision),
       new FireRoutine(flywheel, hood, accelerator, 0.5),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_TAXI)
+      new IntakePath(PATH_TO_BALL_3, drivetrain, intake, pistons),
+      drivetrain.new TurnByAngleCommand(30),
+      new AimRoutine(drivetrain, hood, flywheel, vision),
+      new FireRoutine(flywheel, hood, accelerator, 0.5)
     );
   }
 
-  private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(1, 2, List.of(
-    new Pose2d(8.85, 6.36, Rotation2d.fromDegrees(90.7)),
-    new Pose2d(8.93, 7.34, Rotation2d.fromDegrees(90))
-  ), false, 
-  "Red Wall Two PATH_TO_BALL_2"
+  private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(2,3,List.of(
+    new Pose2d(8.91, 6, Rotation2d.fromDegrees(91.158)),
+    new Pose2d(8.962, 7.4, Rotation2d.fromDegrees(91.158))
+  ),
+  false,
+  "Red Wall Three TWO PATH_TO_BALL_2"
   );
 
-  private Trajectory PATH_TO_TAXI = Trajectories.generateTrajectory(1, 2, List.of(
-    new Pose2d(8.93, 7.34, Rotation2d.fromDegrees(180)),
-    new Pose2d(11,7.5, Rotation2d.fromDegrees(180))
-  ), true, 
-  "Red Wall Two PATH_TO_TAXI"
+  private Trajectory PATH_TO_BALL_3 = Trajectories.generateTrajectory(3,4,List.of(
+    new Pose2d(10, 6.4, Rotation2d.fromDegrees(0)),
+    new Pose2d(11.5, 6.4, Rotation2d.fromDegrees(0))
+  ),
+  false,
+  "Red Wall Three TWO PATH_TO_BALL_3"
   );
 
 }

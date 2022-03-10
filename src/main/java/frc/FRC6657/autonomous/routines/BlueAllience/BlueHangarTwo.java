@@ -1,4 +1,4 @@
-package frc.FRC6657.autonomous.routines.RedAlliance;
+package frc.FRC6657.autonomous.routines.BlueAllience;
 
 import java.util.List;
 
@@ -19,15 +19,15 @@ import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
-public class RedHangarTwo extends SequentialCommandGroup{
-    public RedHangarTwo (
-        DrivetrainSubsystem drivetrain,
-        IntakeSubsystem intake,
-        ExtensionSubsystem pistons,
-        FlywheelSubsystem flywheel,
-        AcceleratorSubsystem accelerator,
-        HoodSubsystem hood,
-        VisionSupplier vision
+public class BlueHangarTwo extends SequentialCommandGroup{
+    public BlueHangarTwo (
+      DrivetrainSubsystem drivetrain,
+      IntakeSubsystem intake,
+      ExtensionSubsystem pistons,
+      FlywheelSubsystem flywheel,
+      AcceleratorSubsystem accelerator,
+      HoodSubsystem hood,
+      VisionSupplier vision
     ) {
         addCommands(
           new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_BALL_2.getInitialPose()), drivetrain),
@@ -38,11 +38,11 @@ public class RedHangarTwo extends SequentialCommandGroup{
     }
 
     private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(1, 2, List.of(
-        new Pose2d(10.5, 3.55, Rotation2d.fromDegrees(-89.15)),
-        new Pose2d(11.58, 2.125, Rotation2d.fromDegrees(-30))
+        new Pose2d(6, 4.68, Rotation2d.fromDegrees(91.87)),
+        new Pose2d(5, 6.25, Rotation2d.fromDegrees(140))
 
     ), false, 
-    "Red Hangar 2 PATH_TO_BALL_2"
+    "Blue Hangar 2 PATH_TO_BALL_2"
     );
     
 }

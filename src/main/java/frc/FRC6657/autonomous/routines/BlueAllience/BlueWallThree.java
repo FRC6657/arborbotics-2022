@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.FRC6657.autonomous.routines.RedAlliance;
+package frc.FRC6657.autonomous.routines.BlueAllience;
 
 import java.util.List;
 
@@ -22,8 +22,10 @@ import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
-public class RedWallTwo extends SequentialCommandGroup {
-  public RedWallTwo(
+
+public class BlueWallThree extends SequentialCommandGroup {
+  /** Creates a new BlueFive. */
+  public BlueWallThree(
     DrivetrainSubsystem drivetrain,
     IntakeSubsystem intake,
     ExtensionSubsystem pistons,
@@ -37,22 +39,28 @@ public class RedWallTwo extends SequentialCommandGroup {
       new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons),
       new AimRoutine(drivetrain, hood, flywheel, vision),
       new FireRoutine(flywheel, hood, accelerator, 0.5),
-      drivetrain.new TrajectoryFollowerCommand(PATH_TO_TAXI)
+      new IntakePath(PATH_TO_BALL_3, drivetrain, intake, pistons),
+      new AimRoutine(drivetrain, hood, flywheel, vision),
+      new FireRoutine(flywheel, hood, accelerator, 0.5)
     );
   }
 
-  private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(1, 2, List.of(
-    new Pose2d(8.85, 6.36, Rotation2d.fromDegrees(90.7)),
-    new Pose2d(8.93, 7.34, Rotation2d.fromDegrees(90))
-  ), false, 
-  "Red Wall Two PATH_TO_BALL_2"
+  private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(3,6,List.of(
+    new Pose2d(7.821, 1.922, Rotation2d.fromDegrees(-89.018)),
+    new Pose2d(7.784, 1, Rotation2d.fromDegrees(-89.018))
+  ),
+  false,
+  "Blue Wall Three TWO PATH_TO_BALL_2"
   );
 
-  private Trajectory PATH_TO_TAXI = Trajectories.generateTrajectory(1, 2, List.of(
-    new Pose2d(8.93, 7.34, Rotation2d.fromDegrees(180)),
-    new Pose2d(11,7.5, Rotation2d.fromDegrees(180))
-  ), true, 
-  "Red Wall Two PATH_TO_TAXI"
+  private Trajectory PATH_TO_BALL_3 = Trajectories.generateTrajectory(3,4,List.of(
+    new Pose2d(7.885, 2.629, Rotation2d.fromDegrees(-150)),
+    new Pose2d(5.022, 1.75, Rotation2d.fromDegrees(-180))
+  ),
+  false,
+  "Blue Wall Three TWO PATH_TO_BALL_3"
   );
 
 }
+
+

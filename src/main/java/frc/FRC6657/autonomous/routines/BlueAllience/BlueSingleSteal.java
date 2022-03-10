@@ -1,4 +1,4 @@
-package frc.FRC6657.autonomous.routines.RedAlliance;
+package frc.FRC6657.autonomous.routines.BlueAllience;
 
 import java.util.List;
 
@@ -20,8 +20,8 @@ import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
-public class RedDoubleSteal extends SequentialCommandGroup {
-    public RedDoubleSteal(
+public class BlueSingleSteal extends SequentialCommandGroup{
+    public BlueSingleSteal(
         DrivetrainSubsystem drivetrain,
         IntakeSubsystem intake,
         ExtensionSubsystem pistons,
@@ -31,61 +31,44 @@ public class RedDoubleSteal extends SequentialCommandGroup {
         VisionSupplier vision
     ) {
         addCommands(
-            new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_RED_2.getInitialPose()), drivetrain),
+            new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_BLUE_2.getInitialPose()), drivetrain),
             new IntakePath(PATH_TO_BLUE_2, drivetrain, intake, pistons),
             new AimRoutine(drivetrain, hood, flywheel, vision),
             new FireRoutine(flywheel, hood, accelerator, 0.5),
             new IntakePath(PATH_TO_RED_1, drivetrain, intake, pistons),
-            drivetrain.new TrajectoryFollowerCommand(PATH_TO_BLUE_SHOT_1),
-            new ParallelCommandGroup(
-                new InstantCommand(() -> hood.setAngle(45), hood),
-                new InstantCommand(() -> flywheel.setRPMTarget(1000), flywheel)
-            ),
-            new FireRoutine(flywheel, hood, accelerator, 0.5),
-            new IntakePath(PATH_TO_RED_2, drivetrain, intake, pistons),
-            drivetrain.new TurnByAngleCommand(45),
+            drivetrain.new TrajectoryFollowerCommand(PATH_TO_RED_SHOT_1),
             new ParallelCommandGroup(
                 new InstantCommand(() -> hood.setAngle(45), hood),
                 new InstantCommand(() -> flywheel.setRPMTarget(1000), flywheel)
             ),
             new FireRoutine(flywheel, hood, accelerator, 0.5)
-
         );
     }
 
-    private Trajectory PATH_TO_RED_2 = Trajectories.generateTrajectory(1, 2, List.of(
-        new Pose2d(10.5, 3.55, Rotation2d.fromDegrees(-89.15)),
-        new Pose2d(11.58, 2.125, Rotation2d.fromDegrees(-30))
+    private Trajectory PATH_TO_BLUE_2 = Trajectories.generateTrajectory(4, 4, List.of(
+        new Pose2d(6.140, 5.179, Rotation2d.fromDegrees(-220)),
+        new Pose2d(5.014, 6.16, Rotation2d.fromDegrees(-220))
 
-    ),
-    false, 
-    "Red Double Steal PATH_TO_RED_2"
+    ), false, 
+    "Blue Single Steal 2 PATH_TO_BLUE_2"
     );
 
-    private Trajectory PATH_TO_RED_1 = Trajectories.generateTrajectory(1, 2, List.of(
-        new Pose2d(10.5, 3.55, Rotation2d.fromDegrees(-89.15)),
-        new Pose2d(10.5, 1.7, Rotation2d.fromDegrees(-90))
+    private Trajectory PATH_TO_RED_1 = Trajectories.generateTrajectory(1, 2,List.of(
+        new Pose2d(6.766, 4.661, Rotation2d.fromDegrees(155.98)),
+        new Pose2d(5.9, 7.082, Rotation2d.fromDegrees(96))
 
-    ),
+    ), 
     false, 
-    "Red Double Steal PATH_TO_RED_SHOT_1"
+    "Blue Single Steal PATH_TO_RED_1"
     );
 
-    private Trajectory PATH_TO_BLUE_SHOT_1 = Trajectories.generateTrajectory(1, 2, List.of(
-        new Pose2d(10.5, 1.7, Rotation2d.fromDegrees(180)),
-        new Pose2d(11.5, 1.7, Rotation2d.fromDegrees(180))
-    ),
+    private Trajectory PATH_TO_RED_SHOT_1 = Trajectories.generateTrajectory(1, 2,List.of(
+        new Pose2d(6, 6.5, Rotation2d.fromDegrees(0)),
+        new Pose2d(5, 6.5, Rotation2d.fromDegrees(0))
+
+    ), 
     true, 
-    "Red Double Steal PATH_TO_BLUE_SHOT_1"
-    );
-
-    private Trajectory PATH_TO_BLUE_2 = Trajectories.generateTrajectory(4, 2, List.of(
-        new Pose2d(12.1, 1.9, Rotation2d.fromDegrees(90)),
-        new Pose2d(12.1, 4.3, Rotation2d.fromDegrees(90))
-
-    ),
-    false, 
-    "Red Double Steal PATH_TO_BLUE_2"
+    "Blue Single Steal PATH_TO_RED_SHOT_1"
     );
 
 }

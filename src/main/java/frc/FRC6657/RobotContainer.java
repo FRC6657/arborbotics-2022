@@ -40,18 +40,18 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
-import frc.FRC6657.autonomous.routines.Tests.BallDetectionTest;
-import frc.FRC6657.autonomous.routines.Tests.PoseTest;
-import frc.FRC6657.autonomous.routines.TurningAngleTest;
-import frc.FRC6657.autonomous.routines.BlueAlliance.BlueDoubleSteal;
-import frc.FRC6657.autonomous.routines.BlueAlliance.BlueFive;
-import frc.FRC6657.autonomous.routines.BlueAlliance.BlueHangarTwo;
-import frc.FRC6657.autonomous.routines.BlueAlliance.BlueMidTwo;
-import frc.FRC6657.autonomous.routines.BlueAlliance.BlueThreeWall;
-import frc.FRC6657.autonomous.routines.BlueAlliance.BlueWallTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedSingleSteal;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueDoubleSteal;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueFive;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueHangarTwo;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueSingleSteal;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueWallThree;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueWallTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedDoubleSteal;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedFive;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
-import frc.FRC6657.autonomous.routines.RedAlliance.RedThree;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedWallThree;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedWallTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedHangarTwo;
 import frc.FRC6657.custom.ArborMath;
@@ -181,9 +181,16 @@ public class RobotContainer implements Loggable {
     }
   );  
 
-    mAutoChooser.addOption("2 Ball Steal",
+    mAutoChooser.addOption("2 Ball Single Steal", 
+      new SequentialCommandGroup[] {
+        new RedSingleSteal(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+        new BlueSingleSteal(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
+      }
+    );
+
+    mAutoChooser.addOption("2 Ball Double Steal",
     new SequentialCommandGroup[] {
-      null,
+      new RedDoubleSteal(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
       new BlueDoubleSteal(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
     }
   );
@@ -197,8 +204,8 @@ public class RobotContainer implements Loggable {
     
     mAutoChooser.addOption("3 Ball Wall",
       new SequentialCommandGroup[] {
-        new RedThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
-        new BlueThreeWall(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
+        new RedWallThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+        new BlueWallThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
     );
 
@@ -227,13 +234,6 @@ public class RobotContainer implements Loggable {
       new SequentialCommandGroup[] {
         new SequentialCommandGroup(hood.new Home()),
         new SequentialCommandGroup(hood.new Home())
-      }
-    );
-
-    mAutoChooser.addOption("Turn Testing",
-      new SequentialCommandGroup[]{
-        new TurningAngleTest(drivetrain),
-        new TurningAngleTest(drivetrain)
       }
     );
 
