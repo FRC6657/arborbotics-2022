@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedSingleSteal;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueCoopFour;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueDoubleSteal;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueFive;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueHangarThree;
@@ -49,6 +50,7 @@ import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueSingleSteal;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueWallThree;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueWallTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedCoopFour;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedDoubleSteal;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedFive;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
@@ -220,8 +222,8 @@ public class RobotContainer implements Loggable {
 
     mAutoChooser.addOption("4 Ball Cooperative",
       new SequentialCommandGroup[]{
-        null, 
-        null
+        new RedCoopFour(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier), 
+        new BlueCoopFour(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
     );
 
