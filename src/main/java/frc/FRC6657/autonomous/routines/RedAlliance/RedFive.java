@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.FRC6657.Constants;
 import frc.FRC6657.autonomous.Trajectories;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
@@ -52,26 +53,30 @@ public class RedFive extends SequentialCommandGroup {
           new InstantCommand(intake::stop)
         )
       ),
+     drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_1, false),
       new ParallelRaceGroup(
-        drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_1, false),
-        new RunCommand(() -> {
-          hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
-          System.out.println(vision.getDistance());
-        }, hood),
-        new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
-      ) //Drive to a firing Position
-      .andThen(
-        new SequentialCommandGroup(
-          new WaitUntilCommand(flywheel::atTarget),
-          new InstantCommand(accelerator::start)
-        ).andThen(
-          new ParallelCommandGroup(
-            new InstantCommand(accelerator::stop),
-            new InstantCommand(flywheel::stop),
-            hood.new Home()
-          )
+        new WaitUntilCommand(() -> Math.abs(vision.getYaw()) < Constants.Drivetrain.kTurnCommandTolerance),
+        drivetrain.new VisionAimAssist(),
+        new RunCommand(
+            () -> hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle),
+            hood
+        ),
+        new RunCommand(
+            () -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm),
+            flywheel
         )
-      ),
+    ),
+    new WaitUntilCommand(() -> (flywheel.atTarget() && hood.atTarget())),
+    new SequentialCommandGroup(
+        new InstantCommand(accelerator::start, accelerator),
+        new WaitCommand(1),
+        new InstantCommand(accelerator::stop, accelerator)
+    ).andThen(
+        new ParallelCommandGroup(
+            hood.new Home(),
+            new InstantCommand(() -> flywheel.setRPMTarget(0))
+        )
+    ),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_3, false)
       .beforeStarting(
         new ParallelCommandGroup(
@@ -85,26 +90,30 @@ public class RedFive extends SequentialCommandGroup {
           new InstantCommand(intake::stop)
         )
       ),
+      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false),
       new ParallelRaceGroup(
-          drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_2, false),
-          new RunCommand(() -> {
-            hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
-            System.out.println(vision.getDistance());
-          }, hood),
-          new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
+        new WaitUntilCommand(() -> Math.abs(vision.getYaw()) < Constants.Drivetrain.kTurnCommandTolerance),
+        drivetrain.new VisionAimAssist(),
+        new RunCommand(
+            () -> hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle),
+            hood
+        ),
+        new RunCommand(
+            () -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm),
+            flywheel
         )
-      .andThen(
-        new SequentialCommandGroup(
-          new WaitUntilCommand(flywheel::atTarget),
-          new InstantCommand(accelerator::start)
-        ).andThen(
-          new ParallelCommandGroup(
-            new InstantCommand(accelerator::stop),
-            new InstantCommand(flywheel::stop),
-            hood.new Home()
-          )
+    ),
+    new WaitUntilCommand(() -> (flywheel.atTarget() && hood.atTarget())),
+    new SequentialCommandGroup(
+        new InstantCommand(accelerator::start, accelerator),
+        new WaitCommand(1),
+        new InstantCommand(accelerator::stop, accelerator)
+    ).andThen(
+        new ParallelCommandGroup(
+            hood.new Home(),
+            new InstantCommand(() -> flywheel.setRPMTarget(0))
         )
-      ),
+    ),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_4_5, false)
       .beforeStarting(
         new ParallelCommandGroup(
@@ -118,25 +127,29 @@ public class RedFive extends SequentialCommandGroup {
           new InstantCommand(intake::stop)
         )
       ),
+      drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_3, false),
       new ParallelRaceGroup(
-        drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOT_3, false),
-        new RunCommand(() -> {
-          hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
-          System.out.println(vision.getDistance());
-        }, hood),
-        new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel)
-      )
-    .andThen(
-      new SequentialCommandGroup(
-        new WaitUntilCommand(flywheel::atTarget),
-        new InstantCommand(accelerator::start)
-      ).andThen(
-        new ParallelCommandGroup(
-          new InstantCommand(accelerator::stop),
-          new InstantCommand(flywheel::stop),
-          hood.new Home()
+        new WaitUntilCommand(() -> Math.abs(vision.getYaw()) < Constants.Drivetrain.kTurnCommandTolerance),
+        drivetrain.new VisionAimAssist(),
+        new RunCommand(
+            () -> hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle),
+            hood
+        ),
+        new RunCommand(
+            () -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm),
+            flywheel
         )
-      )
+    ),
+    new WaitUntilCommand(() -> (flywheel.atTarget() && hood.atTarget())),
+    new SequentialCommandGroup(
+        new InstantCommand(accelerator::start, accelerator),
+        new WaitCommand(1),
+        new InstantCommand(accelerator::stop, accelerator)
+    ).andThen(
+        new ParallelCommandGroup(
+            hood.new Home(),
+            new InstantCommand(() -> flywheel.setRPMTarget(0))
+        )
     ),
          drivetrain.new TrajectoryFollowerCommand(PATH_TO_EXIT, false)
     );
