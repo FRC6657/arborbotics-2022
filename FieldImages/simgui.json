@@ -1,13 +1,4 @@
 {
-  "HALProvider": {
-    "Other Devices": {
-      "Talon FX[2]": {
-        "header": {
-          "open": true
-        }
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -20,12 +11,16 @@
       "/LiveWindow/IntakeSubsystem": "Subsystem",
       "/LiveWindow/LiftSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/Blinkin[0]": "Motor Controller",
+      "/LiveWindow/Ungrouped/PIDController[10]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon 2 [5]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Talon FX [1]": "Motor Controller",
@@ -45,68 +40,11 @@
       "/SmartDashboard/SendableChooser[0]": "String Chooser"
     },
     "windows": {
-      "/FMSInfo": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Field": {
-        "Robot": {
-          "length": 0.9860000014305115,
-          "width": 0.8510000109672546
-        },
-        "bottom": 900,
-        "height": 8.229599952697754,
-        "left": 74,
-        "right": 1774,
-        "robot-path": {
-          "arrows": false,
-          "style": "Line",
-          "weight": 2.0
-        },
-        "top": 50,
-        "trajectory": {
-          "arrows": false,
-          "color": [
-            0.14705884456634521,
-            1.0,
-            0.0,
-            255.0
-          ],
-          "style": "Line"
-        },
-        "width": 16.459199905395508,
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Hood": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/SendableChooser[0]": {
         "window": {
           "visible": true
         }
       }
-    }
-  },
-  "NetworkTables": {
-    "Shuffleboard": {
-      "FlywheelSubsystem": {
-        "open": true
-      },
-      "open": true
-    },
-    "SmartDashboard": {
-      "open": true
-    },
-    "photonvision": {
-      "limelight": {
-        "open": true
-      },
-      "open": true
     }
   }
 }

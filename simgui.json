@@ -1,13 +1,4 @@
 {
-  "HALProvider": {
-    "Other Devices": {
-      "Talon FX[2]": {
-        "header": {
-          "open": true
-        }
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -49,90 +40,33 @@
       "/SmartDashboard/SendableChooser[0]": "String Chooser"
     },
     "windows": {
-      "/FMSInfo": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Field": {
-        "Pose1": {
-          "length": 0.9860000014305115,
-          "width": 0.8510000109672546
-        },
-        "Pose2": {
-          "length": 0.9860000014305115,
-          "width": 0.8510000109672546
-        },
-
         "Robot": {
           "length": 0.9860000014305115,
           "width": 0.8510000109672546
         },
         "bottom": 900,
         "height": 8.229599952697754,
-<<<<<<< HEAD
         "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
         "intake": {
           "arrows": false,
           "color": [
             0.0,
-            255.0,
-            142.4999542236328,
+            1.0,
+            0.9117646217346191,
             255.0
           ],
           "length": 0.22552700340747833,
           "width": 0.8510000109672546
         },
-=======
-        "image": "C:\\Users\\aerea\\Robotics 2022\\arborbotics-2022-main\\arborbotics-2022\\FieldImages\\2022-field.png",
->>>>>>> 24907a51e24487dd72a4ff4c019500ee2e5989ca
         "left": 74,
         "right": 1774,
-        "robot-path": {
-          "arrows": false,
-          "style": "Line",
-          "weight": 2.0
-        },
         "top": 50,
-        "trajectory": {
-          "arrows": false,
-          "color": [
-            0.14705884456634521,
-            1.0,
-            0.0,
-            255.0
-          ],
-          "style": "Line"
-        },
         "width": 16.459199905395508,
         "window": {
           "visible": true
         }
-      },
-      "/SmartDashboard/Hood": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/SendableChooser[0]": {
-        "window": {
-          "visible": true
-        }
       }
-    }
-  },
-  "NetworkTables": {
-    "Shuffleboard": {
-      "AcceleratorSubsystem": {
-        "open": true
-      },
-      "open": true
-    },
-    "photonvision": {
-      "limelight": {
-        "open": true
-      },
-      "open": true
     }
   }
 }
