@@ -44,10 +44,16 @@ public class VisionSubsystem extends SubsystemBase {
     Constants.Vision.kMinTargetArea
   );
 
-  private SimVisionTarget mTarget = new SimVisionTarget(Constants.Vision.kTargetPos, Constants.Vision.kTargetHeightMeters, Units.feetToMeters(4), Units.inchesToMeters(2.5));
+  private SimVisionTarget mTarget1 = new SimVisionTarget(Constants.Vision.kTargetPos1, Constants.Vision.kTargetHeightMeters, Units.feetToMeters(3), Units.inchesToMeters(2.5));
+  private SimVisionTarget mTarget2 = new SimVisionTarget(Constants.Vision.kTargetPos2, Constants.Vision.kTargetHeightMeters, Units.feetToMeters(3), Units.inchesToMeters(2.5));
+  private SimVisionTarget mTarget3 = new SimVisionTarget(Constants.Vision.kTargetPos3, Constants.Vision.kTargetHeightMeters, Units.feetToMeters(3), Units.inchesToMeters(2.5));
+  private SimVisionTarget mTarget4 = new SimVisionTarget(Constants.Vision.kTargetPos4, Constants.Vision.kTargetHeightMeters, Units.feetToMeters(3), Units.inchesToMeters(2.5));
 
   public VisionSubsystem(){
-    mSim.addSimVisionTarget(mTarget);
+    mSim.addSimVisionTarget(mTarget1);
+    mSim.addSimVisionTarget(mTarget2);
+    mSim.addSimVisionTarget(mTarget3);
+    mSim.addSimVisionTarget(mTarget4);
   }
 
 

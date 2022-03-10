@@ -167,7 +167,10 @@ public final class Constants {
         public static final int kCamResolutionHeight = 240; // pixels
         public static final double kTargetWidth = Units.feetToMeters(4);  
         public static final double kMinTargetArea = 10;
-        public static final Pose2d kTargetPos = new Pose2d(8.029, 4.415, Rotation2d.fromDegrees(0));
+        public static final Pose2d kTargetPos1 = new Pose2d(8.259, 4.138, Rotation2d.fromDegrees(0));
+        public static final Pose2d kTargetPos2 = new Pose2d(8.259, 4.138, Rotation2d.fromDegrees(45));
+        public static final Pose2d kTargetPos3 = new Pose2d(8.259, 4.138, Rotation2d.fromDegrees(90));
+        public static final Pose2d kTargetPos4 = new Pose2d(8.259, 4.138, Rotation2d.fromDegrees(135));
         public static final Transform2d kCameraToRobot = new Transform2d(
             new Translation2d(-0.008486, -0.403435),
             new Rotation2d(Units.degreesToRadians(180))

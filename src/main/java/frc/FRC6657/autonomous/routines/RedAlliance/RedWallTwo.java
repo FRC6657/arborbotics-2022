@@ -72,7 +72,8 @@ public class RedWallTwo extends SequentialCommandGroup {
                     hood.new Home(),
                     new InstantCommand(() -> flywheel.setRPMTarget(0))
                 )
-            )
+            ),
+            drivetrain.new TrajectoryFollowerCommand(PATH_TO_TAXI, false)
     );
   }
   private Trajectory PATH_TO_BALL_1 = Trajectories.generateTrajectory(1, 2, List.of(
@@ -80,5 +81,13 @@ public class RedWallTwo extends SequentialCommandGroup {
     new Pose2d(8.93, 7.34, Rotation2d.fromDegrees(90))
   ), false, 
   "Red Wall 2 PATH_TO_BALL"
-);
+  );
+
+  private Trajectory PATH_TO_TAXI = Trajectories.generateTrajectory(1, 2, List.of(
+    new Pose2d(8.93, 7.34, Rotation2d.fromDegrees(180)),
+    new Pose2d(11,7, Rotation2d.fromDegrees(180))
+  ), true, 
+  "Red Wall 2 PATH_TO_TAXI"
+  );
+
 }

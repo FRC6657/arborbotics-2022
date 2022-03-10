@@ -72,7 +72,8 @@ public class BlueWallTwo extends SequentialCommandGroup {
                     hood.new Home(),
                     new InstantCommand(() -> flywheel.setRPMTarget(0))
                 )
-            )
+            ),
+      drivetrain.new TrajectoryFollowerCommand(PATH_TO_TAXI, false)
     );
   }
   private Trajectory PATH_TO_BALL_1 = Trajectories.generateTrajectory(1, 2, List.of(
@@ -80,5 +81,13 @@ public class BlueWallTwo extends SequentialCommandGroup {
     new Pose2d(7.6125, 0.79, Rotation2d.fromDegrees(-90))
   ), false, 
   "Blue Wall 2 PATH_TO_BALL"
-);
+  );
+
+  private Trajectory PATH_TO_TAXI = Trajectories.generateTrajectory(1, 2, List.of(
+    new Pose2d(7.6125, 0.79, Rotation2d.fromDegrees(0)),
+    new Pose2d(5.5, 0.65, Rotation2d.fromDegrees(0))
+  ), true, 
+  "Blue Wall 2 PATH_TO_TAXI"
+  );
+
 }

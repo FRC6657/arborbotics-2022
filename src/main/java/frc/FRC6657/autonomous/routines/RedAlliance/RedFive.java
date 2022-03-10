@@ -12,6 +12,8 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.FRC6657.autonomous.Trajectories;
 import frc.FRC6657.custom.ArborSequentialCommandGroup;
@@ -21,6 +23,7 @@ import frc.FRC6657.subsystems.intake.IntakeSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
+import frc.FRC6657.subsystems.shooter.interpolation.InterpolatingTable;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
 public class RedFive extends ArborSequentialCommandGroup {

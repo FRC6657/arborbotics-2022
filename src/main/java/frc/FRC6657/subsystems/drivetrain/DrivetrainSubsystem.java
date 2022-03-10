@@ -453,7 +453,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     if(res.hasTargets()){
       double imageCaptureTime = Timer.getFPGATimestamp() - res.getLatencyMillis();
       Transform2d camToTargetTrans = res.getBestTarget().getCameraToTarget();
-      Pose2d camPose = Constants.Vision.kTargetPos.transformBy(camToTargetTrans.inverse());
+      Pose2d camPose = Constants.Vision.kTargetPos1.transformBy(camToTargetTrans.inverse());
       mPoseEstimator.addVisionMeasurement(camPose.transformBy(Constants.Vision.kCameraToRobot), imageCaptureTime);
     }
   }
