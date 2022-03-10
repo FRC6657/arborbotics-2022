@@ -1,4 +1,4 @@
-package frc.FRC6657.autonomous.routines.RedAlliance;
+package frc.FRC6657.autonomous.routines.BlueAlliance;
 
 import java.util.List;
 
@@ -7,6 +7,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.FRC6657.autonomous.Trajectories;
 import frc.FRC6657.custom.ArborSequentialCommandGroup;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
@@ -17,8 +21,8 @@ import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
-public class RedHangarTwo extends ArborSequentialCommandGroup{
-    public RedHangarTwo (
+public class BlueMidTwo extends ArborSequentialCommandGroup{
+    public BlueMidTwo(
         DrivetrainSubsystem drivetrain,
         IntakeSubsystem intake,
         ExtensionSubsystem pistons,
@@ -46,12 +50,11 @@ public class RedHangarTwo extends ArborSequentialCommandGroup{
         );
     }
 
-    private Trajectory PATH_TO_BALL_1 = Trajectories.generateTrajectory(1, 2, List.of(
-        new Pose2d(10.5, 3.55, Rotation2d.fromDegrees(-89.15)),
-        new Pose2d(11.58, 2, Rotation2d.fromDegrees(-30))
-
-    ), false, 
-    "Red Hangar 2 PATH_TO_BALL"
+    private Trajectory PATH_TO_BALL_1 = Trajectories.generateTrajectory(1,1,List.of(
+        new Pose2d(6.666, 2.737, Rotation2d.fromDegrees(200)),
+        new Pose2d(5.164,2.044,Rotation2d.fromDegrees(200))
+    ),
+    false,
+    "BlueMidTwo PATH_TO_BALL_2"
     );
-    
 }

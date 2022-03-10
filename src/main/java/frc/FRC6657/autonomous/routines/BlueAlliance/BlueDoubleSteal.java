@@ -1,4 +1,4 @@
-package frc.FRC6657.autonomous.routines.BlueAllience;
+package frc.FRC6657.autonomous.routines.BlueAlliance;
 
 import java.util.List;
 
@@ -12,16 +12,16 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.FRC6657.autonomous.Trajectories;
+import frc.FRC6657.custom.ArborSequentialCommandGroup;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.IntakeSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
-import frc.FRC6657.subsystems.shooter.interpolation.InterpolatingTable;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
-public class BlueDoubleSteal extends SequentialCommandGroup{
+public class BlueDoubleSteal extends ArborSequentialCommandGroup{
     public BlueDoubleSteal(
         DrivetrainSubsystem drivetrain,
         IntakeSubsystem intake,
@@ -31,6 +31,7 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
         HoodSubsystem hood,
         VisionSupplier vision
     ) {
+        addReqs(drivetrain, intake, pistons, flywheel, hood, accelerator, vision);
         addCommands(
             new ParallelRaceGroup(
                 new WaitUntilCommand(intake::ballDetected),
@@ -48,29 +49,7 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
                     new InstantCommand(intake::stop)
                 )
             ),
-            new ParallelRaceGroup(
-                drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOOT, false),
-                new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel),
-                new RunCommand(
-                    () -> {
-                        hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle);
-                        System.out.println(vision.getDistance());
-                    }, 
-                    hood
-                )
-            ) //Drive to Fire
-            .andThen(
-                new SequentialCommandGroup(
-                    new WaitUntilCommand(flywheel::atTarget),
-                    new InstantCommand(accelerator::start)
-                ).andThen(
-                    new ParallelCommandGroup(
-                    new InstantCommand(accelerator::stop),
-                    new InstantCommand(flywheel::stop),
-                    hood.new Home()
-                    )
-                )
-            ),
+            new TurnAndShoot(drivetrain.new TrajectoryFollowerCommand(PATH_TO_SHOOT, false)),
             new ParallelRaceGroup(
                 new WaitUntilCommand(intake::ballDetected),
                 drivetrain.new TrajectoryFollowerCommand(PATH_TO_RED_1, false)
@@ -147,5 +126,5 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
     );
 
 
-    }
+}
 
