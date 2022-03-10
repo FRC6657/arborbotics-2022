@@ -65,6 +65,17 @@
         "bottom": 900,
         "height": 8.229599952697754,
         "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
+        "intake": {
+          "arrows": false,
+          "color": [
+            0.0,
+            255.0,
+            142.4999542236328,
+            255.0
+          ],
+          "length": 0.22552700340747833,
+          "width": 0.8510000109672546
+        },
         "left": 74,
         "right": 1774,
         "robot-path": {
