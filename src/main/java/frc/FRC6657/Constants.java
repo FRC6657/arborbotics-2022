@@ -54,12 +54,10 @@ public final class Constants {
         public static final double linear_kS = 0.53584;
         public static final double linear_kV = 2.2764;
         public static final double linear_kA = 0.73118;
-        //public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(linear_kS, linear_kV, linear_kA);
 
-
-        public static final double angular_kS = 0.1;
-        public static final double angular_kV = 0.1;
-        public static final double angular_kA = 0.1;
+        public static final double angular_kS = 0.53584;
+        public static final double angular_kV = 2.2764;
+        public static final double angular_kA = 0.73118;
 
         // Drivetrain PID
         public static final double drive_linear_kP = 0.64132; //Char P gain 0.64132
@@ -84,16 +82,6 @@ public final class Constants {
         public static final double kMaxAttainableSpeed = ((6380d/60) * (6 * Math.PI))/(39.37*kGearRatio);
         public static final double kMaxAttainableTurnRate = Units.radiansToDegrees(kMaxAttainableSpeed * kTrackWidth/2);
 
-        // Default Sim
-        public static final DifferentialDrivetrainSim kSim = new DifferentialDrivetrainSim( // Simulation
-            DCMotor.getFalcon500(2),
-            kGearRatio,
-            7.5,
-            kRobotWeight,
-            kWheelRadius,
-            kTrackWidth,
-            null
-        );
 
         public static final LinearSystem<N2,N2,N2> kPlant = LinearSystemId.identifyDrivetrainSystem(
             linear_kV,
@@ -101,6 +89,16 @@ public final class Constants {
             angular_kV,
             angular_kA
         );
+        // Default Sim
+        public static final DifferentialDrivetrainSim kSim = new DifferentialDrivetrainSim( // Simulation
+            kPlant,
+            DCMotor.getFalcon500(2),
+            kGearRatio,
+            kTrackWidth,
+            kWheelRadius,
+            null
+        );
+
 
         public static final LinearPlantInversionFeedforward<N2,N2,N2> kFeedForward = new LinearPlantInversionFeedforward<N2,N2,N2>(kPlant,0.02);
 
