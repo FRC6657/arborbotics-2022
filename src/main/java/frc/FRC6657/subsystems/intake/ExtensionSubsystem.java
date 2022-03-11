@@ -12,9 +12,9 @@ import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class ExtensionSubsystem extends SubsystemBase {
-  
-  private DoubleSolenoid mLeftPiston = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
-  private DoubleSolenoid mRightPiston = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
+
+  private DoubleSolenoid mLeftPiston = new DoubleSolenoid(7, PneumaticsModuleType.CTREPCM, 0, 1);
+  private DoubleSolenoid mRightPiston = new DoubleSolenoid(7, PneumaticsModuleType.CTREPCM, 2, 3);
 
   public ExtensionSubsystem() {
     retract();

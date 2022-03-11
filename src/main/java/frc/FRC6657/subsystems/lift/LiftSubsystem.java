@@ -4,7 +4,6 @@
 
 package frc.FRC6657.subsystems.lift;
 
-import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -18,7 +17,7 @@ public class LiftSubsystem extends SubsystemBase {
   private final WPI_TalonSRX mRightMotor;
   
   public LiftSubsystem() {
-    configureMotor();
+    //configureMotor();
     mRightMotor = new WPI_TalonSRX(Constants.kRightLiftID);
     mLeftMotor = new WPI_TalonSRX(Constants.kLeftLiftID);
 

@@ -19,29 +19,30 @@ import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
-public class BlueMidTwo extends SequentialCommandGroup{
-    public BlueMidTwo(
-        DrivetrainSubsystem drivetrain,
-        IntakeSubsystem intake,
-        ExtensionSubsystem pistons,
-        FlywheelSubsystem flywheel,
-        AcceleratorSubsystem accelerator,
-        HoodSubsystem hood,
-        VisionSupplier vision
+public class BlueHangarTwo extends SequentialCommandGroup{
+    public BlueHangarTwo (
+      DrivetrainSubsystem drivetrain,
+      IntakeSubsystem intake,
+      ExtensionSubsystem pistons,
+      FlywheelSubsystem flywheel,
+      AcceleratorSubsystem accelerator,
+      HoodSubsystem hood,
+      VisionSupplier vision
     ) {
         addCommands(
-          new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_BALL_2.getInitialPose()), drivetrain), //Reset Position 
+          new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_BALL_2.getInitialPose()), drivetrain), //Reset Position
           new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons), //Intake Blue 2
           new AimRoutine(drivetrain, hood, flywheel, vision), //Aim
           new FireRoutine(flywheel, hood, accelerator, 0.5) //Fire Blue 1 & 2
         );
     }
 
-    private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(1,1,List.of(
-        new Pose2d(6.666, 2.737, Rotation2d.fromDegrees(200)),
-        new Pose2d(5.164,2.044,Rotation2d.fromDegrees(200))
-    ),
-    false,
-    "Blue Mid Two PATH_TO_BALL_2"
+    private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(1, 2, List.of(
+        new Pose2d(6, 4.68, Rotation2d.fromDegrees(91.87)),
+        new Pose2d(5, 6.25, Rotation2d.fromDegrees(140))
+
+    ), false, 
+    "Blue Hangar 2 PATH_TO_BALL_2"
     );
+    
 }

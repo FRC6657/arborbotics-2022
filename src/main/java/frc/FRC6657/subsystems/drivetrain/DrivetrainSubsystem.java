@@ -16,11 +16,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.BasePigeonSimCollection;
 import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
-
 import org.opencv.core.Mat;
 
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
@@ -48,13 +47,14 @@ import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.custom.controls.DriverProfile;
-import frc.FRC6657.subsystems.vision.VisionSubsystem;
+import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -64,12 +64,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   private final WPI_TalonFX mFrontLeft, mFrontRight, mBackLeft, mBackRight;
   // Simulated Drivetrain Motors
   private TalonFXSimCollection mLeftSim, mRightSim;
-
-  // Gyro
-  @Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro", tabName = "DrivetrainSubsystem")
-  private final WPI_PigeonIMU mPigeonIMU = new WPI_PigeonIMU(Constants.kPigeonID);
-  // Simulated Gyro
-  private BasePigeonSimCollection mPigeonIMUSim;
+  
+  //Gyro
+  @Log.Gyro(rowIndex = 2, columnIndex = 0, width = 2, height = 2, name = "Gyro", tabName = "Drivetrain")
+  private final WPI_Pigeon2 mPigeon = new WPI_Pigeon2(Constants.kPigeonID);
+  //Simulated Gyro
+  private BasePigeonSimCollection mPigeonSim;
 
   //Kinematics and PoseEstimator Classes
   private final DifferentialDriveKinematics mKinematics;
@@ -103,8 +103,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   // Field objects to display trajectory following accuracy
   private FieldObject2d mTrajectoryPlot = mField.getObject("trajectory");
   private FieldObject2d mRobotPath = mField.getObject("robot-path");
-  private FieldObject2d mVisionTargets = mField.getObject("VisionTargets");
   private List<Pose2d> mPathPoints = new ArrayList<Pose2d>();
+
+  private FieldObject2d mIntakeVisualier = mField.getObject("intake");
 
   // Drivetrain Simulation
   DifferentialDrivetrainSim mDrivetrainSim;
@@ -112,7 +113,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   // Driver Profile
   private final DriverProfile mProfile;
 
-  private VisionSubsystem mVision;
+  private VisionSupplier mVision;
 
   /*
    * 
@@ -123,7 +124,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
    /**
     * The subsystem that controls the drivetrain
     */
-  public DrivetrainSubsystem(DriverProfile profile, VisionSubsystem vision) {
+  public DrivetrainSubsystem(DriverProfile profile, VisionSupplier vision) {
 
     // Loads the Driver Profile
     this.mProfile = profile;
@@ -139,8 +140,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     // Configures the motors
     configureMotors();
 
-    // Gyro Stuff
-    mPigeonIMU.reset();
+    //Gyro Stuff
+    mPigeon.reset();
 
     // Fancy Stuff
     mKinematics = new DifferentialDriveKinematics(Constants.Drivetrain.kTrackWidth);
@@ -152,12 +153,12 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     // Simulation Stuff
     if (RobotBase.isSimulation()) {
       mDrivetrainSim = Constants.Drivetrain.kSim;
-      mPigeonIMUSim = mPigeonIMU.getSimCollection();
+      mPigeonSim = mPigeon.getSimCollection();
       mLeftSim = mFrontLeft.getSimCollection();
       mRightSim = mFrontRight.getSimCollection();
+
     }
 
-    mVisionTargets.setPoses(vision.visionSupplier.getVisionTarget());
     // Field Visualization
     SmartDashboard.putData(mField);
   }
@@ -245,8 +246,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     mBackLeft.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 250);
     mBackRight.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 250);
 
-    mPigeonIMU.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 250);
-    mPigeonIMU.setStatusFramePeriod(PigeonIMU_StatusFrame.RawStatus_4_Mag, 250);
+    mPigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 250);
+    mPigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.RawStatus_4_Mag, 250);
 
   }
 
@@ -268,6 +269,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
     resetEncoders();// Reset the encoders
 
+
   }
   /**
    * Resets the encoders
@@ -280,13 +282,13 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   /**
    * Resets the gyro
    */
-  public void resetGyro() {
-    mPigeonIMU.reset();
+  public void resetGyro(){
+    mPigeon.reset();
+    mPoseEstimator.resetPosition(mPoseEstimator.getEstimatedPosition(), mPigeon.getRotation2d());
   }
-
+  
   public void resetPoseEstimator(Pose2d newPose){
-    mPigeonIMU.setFusedHeading(newPose.getRotation().getDegrees());
-    mPoseEstimator.resetPosition(newPose, mPigeonIMU.getRotation2d());
+    mPoseEstimator.resetPosition(newPose, mPigeon.getRotation2d());
   }
 
   /**
@@ -377,8 +379,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
    * Stops the Drivetrain
    */
   public void stop() {
-    mFrontLeft.stopMotor();
-    mFrontRight.stopMotor();
+    mFrontLeft.set(0);
+    mFrontRight.set(0);
   }
   /*
    * Get Methods
@@ -437,39 +439,31 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     return getRightVelocity();
   }
 
-  @Log(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name = "Gyro Velocity", tabName = "DrivetrainSubsystem")
-  public double getHeadingVelocity() {
-    double[] gyroVals = { 0, 0, 0 };
-    mPigeonIMU.getRawGyro(gyroVals);
+  @Log(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name = "Gyro Velocity", tabName = "Drivetrain")
+  public double getHeadingVelocity(){
+    double[] gyroVals = {0,0,0};
+    mPigeon.getRawGyro(gyroVals);
     return gyroVals[2];
   }
-
   /**
    * @return Gyro accumulated angle if it is ready to give accurate data
    */
-  @Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "Gyro Raw", tabName = "Scott Gyro Stuff")
-  public double getGyroAngle() {
-    if (mPigeonIMU.getState() == PigeonState.Ready) {
-      return mPigeonIMU.getFusedHeading();
-    }
-    return 0;
+  public double getGyroAngle(){
+      return mPigeon.getYaw();
   }
 
   @Log(rowIndex = 0, columnIndex = 3, width = 2, height = 1, name = "Gyro Normalized", tabName = "Scott Gyro Stuff")
   public double getGyroCorrected() {
-    if (mPigeonIMU.getState() == PigeonState.Ready) {
-      return ArborMath.normalizeFusedHeading(mPigeonIMU.getFusedHeading());
-    }
-    return 0;
+    return ArborMath.normalizeFusedHeading(mPigeon.getYaw());
   }
 
   public void updatePoseEstimator(DifferentialDriveWheelSpeeds actWheelSpeeds, double leftDist, double rightDist) {
-    mPoseEstimator.update(mPigeonIMU.getRotation2d(), actWheelSpeeds, leftDist, rightDist);
-    var res = mVision.visionSupplier.getResult();
+    mPoseEstimator.update(mPigeon.getRotation2d(), actWheelSpeeds, leftDist, rightDist);
+    var res = mVision.getResult();
     if(res.hasTargets()){
       double imageCaptureTime = Timer.getFPGATimestamp() - res.getLatencyMillis();
       Transform2d camToTargetTrans = res.getBestTarget().getCameraToTarget();
-      Pose2d camPose = Constants.Vision.kTargetPos.transformBy(camToTargetTrans.inverse());
+      Pose2d camPose = Constants.Vision.kTargetPos1.transformBy(camToTargetTrans.inverse());
       mPoseEstimator.addVisionMeasurement(camPose.transformBy(Constants.Vision.kCameraToRobot), imageCaptureTime);
     }
   }
@@ -500,7 +494,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     @Override
     public void execute() {
       double output = mPIDController.calculate(getGyroAngle(), mStartPoint + mSetpoint);
-
       mFrontLeft.set(-output);
       mFrontRight.set(output);
 
@@ -508,7 +501,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
     @Override
     public boolean isFinished() {
-      return (mStartPoint + mSetpoint) - getGyroAngle() <= Constants.Drivetrain.kTurnCommandTolerance;
+      return Math.abs((mStartPoint + mSetpoint) - getGyroAngle()) <= Constants.Drivetrain.kTurnCommandTolerance;
     }
 
   }
@@ -519,20 +512,14 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
     private final Timer timer = new Timer();
     private final Trajectory trajectory;
-    private boolean resetPose;
 
-    public TrajectoryFollowerCommand(Trajectory trajectory, boolean resetPose) {
+    public TrajectoryFollowerCommand(Trajectory trajectory) {
       this.trajectory = trajectory;
-      this.resetPose = resetPose;
       addRequirements(DrivetrainSubsystem.this);
     }
 
     @Override
     public void initialize() {
-      if(resetPose){
-        resetPoseEstimator(trajectory.getInitialPose());
-      }
-    
       mPathPoints.clear();
       mPathPoints.add(mPoseEstimator.getEstimatedPosition());
       mRobotPath.setPoses(mPathPoints);
@@ -566,6 +553,30 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     }
   }
 
+  public class VisionAimAssist extends CommandBase{
+    PIDController mPID = new PIDController(Constants.Drivetrain.vision_kP, 0, Constants.Drivetrain.vision_kD);
+
+    @Override
+    public void initialize() {
+        mVision.enableLEDs();
+    }
+
+    @Override
+    public void execute() {
+      if(mVision.hasTarget()){
+        double effort = mPID.calculate(mVision.getYaw(), 0);
+        mFrontLeft.setVoltage(-effort);
+        mFrontRight.setVoltage(effort);
+      }
+    }
+    @Override
+    public void end(boolean interrupted) {
+        stop();
+        mVision.disableLEDs();
+    }
+  }
+
+
   /*
    *
    * WPILib Methods
@@ -576,6 +587,16 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   public void periodic() {
     updatePoseEstimator(new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity()), getLeftMeters(), getRightMeters());
     mField.setRobotPose(mPoseEstimator.getEstimatedPosition());
+
+    if(RobotBase.isSimulation()){
+      mIntakeVisualier.setPose(
+        new Pose2d(
+          (mPoseEstimator.getEstimatedPosition().getX() + 0.6056505 * Math.cos(Units.degreesToRadians(mPoseEstimator.getEstimatedPosition().getRotation().getDegrees()))),
+          (mPoseEstimator.getEstimatedPosition().getY() + 0.6056505 * Math.sin(Units.degreesToRadians(mPoseEstimator.getEstimatedPosition().getRotation().getDegrees()))),
+          mPoseEstimator.getEstimatedPosition().getRotation()
+        )
+      );
+    }
   }
 
   @Override
@@ -595,6 +616,9 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     mRightSim.setIntegratedSensorVelocity(
         (int) (mDrivetrainSim.getRightVelocityMetersPerSecond() / (10 * Constants.Drivetrain.kDistancePerPulse)));
 
-    mPigeonIMUSim.setRawHeading(mDrivetrainSim.getHeading().getDegrees());
+    mPigeonSim.setRawHeading(mDrivetrainSim.getHeading().getDegrees());
+
+    mVision.processSim(mPoseEstimator.getEstimatedPosition());
+
   }
 }

@@ -134,9 +134,13 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     mRpmTarget = setpoint;
   }
 
+  public void set(double percent){
+    mProtagonist.set(percent);
+  }
+
   @Override
   public void periodic() {
-
+    
     mAtTarget = ArborMath.inTolerance(getRPMDelta(), Constants.Flywheel.kRPMTollerance) && getRPMTarget() !=0;
 
     mFlywheelLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mRpmTarget)));

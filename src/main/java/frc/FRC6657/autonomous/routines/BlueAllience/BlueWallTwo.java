@@ -15,7 +15,6 @@ import frc.FRC6657.autonomous.Trajectories;
 import frc.FRC6657.autonomous.common.AimRoutine;
 import frc.FRC6657.autonomous.common.FireRoutine;
 import frc.FRC6657.autonomous.common.IntakePath;
-import frc.FRC6657.autonomous.common.ShootPath;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.IntakeSubsystem;
@@ -23,10 +22,8 @@ import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
-
-public class BlueFive extends SequentialCommandGroup{
-  /** Creates a new BlueFive. */
-  public BlueFive(
+public class BlueWallTwo extends SequentialCommandGroup {
+  public BlueWallTwo(
     DrivetrainSubsystem drivetrain,
     IntakeSubsystem intake,
     ExtensionSubsystem pistons,
@@ -40,47 +37,21 @@ public class BlueFive extends SequentialCommandGroup{
       new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons), //Intake Blue 2
       new AimRoutine(drivetrain, hood, flywheel, vision), //Aim
       new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Blue 1 & 2
-      new IntakePath(PATH_TO_BALL_3, drivetrain, intake, pistons), // Intake Blue 3
-      drivetrain.new TurnByAngleCommand(15), //Turn to target Visibility //TODO Make this more precise
-      new AimRoutine(drivetrain, hood, flywheel, vision), //Aim 
-      new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Blue 3
-      new IntakePath(PATH_TO_BALL_4_5, drivetrain, intake, pistons), //Intake Blue 4 & 5
-      new ShootPath(PATH_TO_4_5_SHOT, drivetrain, hood, flywheel, vision), //Move to firing position
-      new FireRoutine(flywheel, hood, accelerator, 0.5) //Fire Blue 4 & 5
+      drivetrain.new TrajectoryFollowerCommand(PATH_TO_TAXI) //Ensure Taxi
     );
   }
-
-  private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(3,6,List.of(
-    new Pose2d(7.821, 1.922, Rotation2d.fromDegrees(-89.018)),
-    new Pose2d(7.784, 1, Rotation2d.fromDegrees(-89.018))
-  ),
-  false,
-  "Blue Five TWO PATH_TO_BALL_2"
+  private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(1, 2, List.of(
+    new Pose2d(7.625, 1.95, Rotation2d.fromDegrees(-87.616)),
+    new Pose2d(7.6125, 1, Rotation2d.fromDegrees(-90))
+  ), false, 
+  "Blue Wall 2 PATH_TO_BALL_2"
   );
 
-  private Trajectory PATH_TO_BALL_3 = Trajectories.generateTrajectory(3,4,List.of(
-    new Pose2d(7.885, 2.629, Rotation2d.fromDegrees(-150)),
-    new Pose2d(5.022, 1.75, Rotation2d.fromDegrees(-180))
-  ),
-  false,
-  "Blue Five TWO PATH_TO_BALL_3"
-  );
-
-  private Trajectory PATH_TO_BALL_4_5 = Trajectories.generateTrajectory(3,2,List.of(
-    new Pose2d(4.625, 3.3, Rotation2d.fromDegrees(-136)),
-    new Pose2d(1.625, 1.625, Rotation2d.fromDegrees(-150))
-  ),
-  false,
-  "Blue Five TWO PATH_TO_BALL_4_5"
-  );
-
-  private Trajectory PATH_TO_4_5_SHOT = Trajectories.generateTrajectory(3,2,List.of(
-    new Pose2d(2, 1.5, Rotation2d.fromDegrees(200)),
-    new Pose2d(4.75, 2.5, Rotation2d.fromDegrees(200))
-  ),
-  true,
-  "Blue Five TWO PATH_TO_4_5_SHOT"
+  private Trajectory PATH_TO_TAXI = Trajectories.generateTrajectory(1, 2, List.of(
+    new Pose2d(7.6125, 0.79, Rotation2d.fromDegrees(0)),
+    new Pose2d(5.5, 0.65, Rotation2d.fromDegrees(0))
+  ), true, 
+  "Blue Wall 2 PATH_TO_TAXI"
   );
 
 }
-

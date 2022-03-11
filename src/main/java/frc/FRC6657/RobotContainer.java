@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import javax.management.MBeanServerPermission;
 
+import com.fasterxml.jackson.databind.deser.impl.NullsAsEmptyProvider;
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
@@ -20,32 +21,43 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
-import frc.FRC6657.autonomous.routines.Tests.BallDetectionTest;
-import frc.FRC6657.autonomous.routines.Tests.PoseTest;
-import frc.FRC6657.autonomous.routines.TurningAngleTest;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedSingleSteal;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueCoopFour;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueDoubleSteal;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueFive;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueHangarThree;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueHangarTwo;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
-import frc.FRC6657.autonomous.routines.BlueAllience.BlueThree;
-import frc.FRC6657.autonomous.routines.BlueAllience.BlueTopTwo;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueSingleSteal;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueWallThree;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueWallTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedCoopFour;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedDoubleSteal;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedFive;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
-import frc.FRC6657.autonomous.routines.RedAlliance.RedThree;
-import frc.FRC6657.autonomous.routines.RedAlliance.RedTopTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedWallThree;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedWallTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedHangarTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedHangarThree;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
 import frc.FRC6657.custom.controls.Deadbander;
@@ -60,6 +72,7 @@ import frc.FRC6657.subsystems.lift.LiftSubsystem;
 import frc.FRC6657.subsystems.shooter.AcceleratorSubsystem;
 import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
+import frc.FRC6657.subsystems.shooter.interpolation.InterpolatingTable;
 import frc.FRC6657.subsystems.vision.VisionSubsystem;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
@@ -88,8 +101,9 @@ public class RobotContainer implements Loggable {
   public final FlywheelSubsystem flywheel;
   public final HoodSubsystem hood;
   public final IntakeSubsystem intake;
-  // public final LiftSubsystem lift;
+  public final LiftSubsystem lift;
   public final VisionSubsystem vision;
+
 
   public final Trigger flywheelReady, flywheelActive, ballDetected, intakeActive;
 
@@ -98,15 +112,15 @@ public class RobotContainer implements Loggable {
   public RobotContainer() {
 
     // Subsystem Assignments
+    vision = new VisionSubsystem();
     accelerator = new AcceleratorSubsystem();
     blinkin = new BlinkinSubsystem();
     extension = new ExtensionSubsystem();
     flywheel = new FlywheelSubsystem();
     hood = new HoodSubsystem();
     intake = new IntakeSubsystem();
-    // lift = new LiftSubsystem();
-    vision = new VisionSubsystem();
-    drivetrain = new DrivetrainSubsystem(mProfile, vision);
+    lift = new LiftSubsystem();
+    drivetrain = new DrivetrainSubsystem(mProfile, vision.visionSupplier);
 
     // Triggers
     flywheelReady = new Trigger(flywheel::atTarget);
@@ -134,7 +148,7 @@ public class RobotContainer implements Loggable {
     flywheelReady.or(flywheelActive).or(ballDetected).or(intakeActive).whenInactive(
         () -> blinkin.setIndicator(new BlinkinIndicator[] {
             new BlinkinIndicator("Idle", Constants.BlinkinPriorities.kIdle, Constants.BlinkinColors.kIdle)
-        }));
+    }));
 
     drivetrain.setDefaultCommand(new RunCommand(() -> {
       drivetrain.teleopCurvatureDrive(
@@ -158,38 +172,72 @@ public class RobotContainer implements Loggable {
 
   private void configureAutoChooser() {
     mAutoChooser.setDefaultOption("Nothing", new SequentialCommandGroup[]{null,null});
-    mAutoChooser.addOption("Middle 2",
-      new SequentialCommandGroup[]{
-        new RedMidTwo(drivetrain, intake, extension, flywheel, accelerator),
-        new BlueMidTwo(drivetrain, intake, extension, flywheel, accelerator)
-      }
-    );
 
-    mAutoChooser.addOption("5",
-      new SequentialCommandGroup[]{
-        new RedFive(drivetrain, intake, extension, flywheel, accelerator),
-        new BlueFive(drivetrain, intake, extension, flywheel, accelerator)
-      }
-    );
+    mAutoChooser.addOption("2 Ball Wall", new SequentialCommandGroup[]{
+      new RedWallTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+      new BlueWallTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
+    });
 
-    mAutoChooser.addOption("Top 2", 
+    mAutoChooser.addOption("2 Ball Hangar", 
+    new SequentialCommandGroup[] {
+      new RedHangarTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+      new BlueHangarTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
+    }
+  );  
+
+    mAutoChooser.addOption("2 Ball Single Steal", 
       new SequentialCommandGroup[] {
-        new RedTopTwo(drivetrain, intake, extension, flywheel, accelerator),
-        new BlueTopTwo(drivetrain, intake, extension, flywheel, accelerator)
+        new RedSingleSteal(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+        new BlueSingleSteal(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
-    );  
+    );
+
+    mAutoChooser.addOption("2 Ball Double Steal",
+    new SequentialCommandGroup[] {
+      new RedDoubleSteal(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+      new BlueDoubleSteal(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
+    }
+  );
+
+    mAutoChooser.addOption("2 Ball Mid",
+      new SequentialCommandGroup[]{
+        new RedMidTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+        new BlueMidTwo(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
+      }
+    );
     
-    mAutoChooser.addOption("3",
+    mAutoChooser.addOption("3 Ball Wall",
       new SequentialCommandGroup[] {
-        new RedThree(drivetrain, intake, extension, flywheel, accelerator),
-        new BlueThree(drivetrain, intake, extension, flywheel, accelerator)
+        new RedWallThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+        new BlueWallThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
     );
 
-    mAutoChooser.addOption("2 Ball Steal",
+    mAutoChooser.addOption("3 Ball Hangar",
+      new SequentialCommandGroup[]{
+        new RedHangarThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+        new BlueHangarThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
+      }
+    );
+
+    mAutoChooser.addOption("4 Ball Cooperative",
+      new SequentialCommandGroup[]{
+        new RedCoopFour(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier), 
+        new BlueCoopFour(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
+      }
+    );
+
+    mAutoChooser.addOption("5/4 Ball",
+      new SequentialCommandGroup[]{
+        new RedFive(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+        new BlueFive(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
+      }
+    );
+
+    mAutoChooser.addOption("HomeHood", 
       new SequentialCommandGroup[] {
-        null,
-        new BlueDoubleSteal(drivetrain, intake, extension, flywheel, accelerator)
+        new SequentialCommandGroup(hood.new Home()),
+        new SequentialCommandGroup(hood.new Home())
       }
     );
 
@@ -200,54 +248,31 @@ public class RobotContainer implements Loggable {
     
     switch(Controls){
       case "Testing":
-        //Intake
         mXboxController.a().whenHeld(
+            new ConditionalCommand(
+              new ParallelCommandGroup(
+                drivetrain.new VisionAimAssist(),
+                new RunCommand(
+                  () -> hood.setAngle(InterpolatingTable.get(vision.visionSupplier.getDistance()).hoodAngle),
+                  hood
+                ),
+                new RunCommand(
+                  () -> flywheel.setRPMTarget(InterpolatingTable.get(vision.visionSupplier.getDistance()).rpm),
+                  flywheel
+                )
+              ),
+              new InstantCommand(),
+              vision.visionSupplier::hasTarget
+          )
+        ).whenReleased(
           new ParallelCommandGroup(
-            new StartEndCommand(
-              () -> intake.set(Constants.Intake.kSpeed), 
-              intake::stop,
-              intake
-            ),
-            new StartEndCommand(
-              extension::extend,
-              extension::retract,
-              extension
-            )
+            hood.new Home(),
+            new InstantCommand(() -> flywheel.setRPMTarget(0))
           )
         );
-
-      //Flywheel
-      mXboxController.b().whenHeld(
-          new StartEndCommand(
-            () -> flywheel.setRPMTarget(1000),
-            flywheel::stop,
-            flywheel
-          )
-      );
-
-      //Hood
-      mXboxController.pov.up().whenHeld(
-        new StartEndCommand(
-          () -> hood.set(Constants.Hood.kUpSpeed), 
-          hood::stop,
-          hood
-        )
-      );
-
-      mXboxController.pov.down().whenHeld(
-        new StartEndCommand(
-          () -> hood.set(Constants.Hood.kDownSpeed), 
-          hood::stop,
-          hood
-        )
-      );
-
-      mXboxController.pov.right().whenHeld(
-        drivetrain.new TurnByAngleCommand(360)
-      );
-
     }
   }
+
   public SequentialCommandGroup getAutonomousCommand() {
     int alliance = 0;
     if(DriverStation.getAlliance() == Alliance.Red){

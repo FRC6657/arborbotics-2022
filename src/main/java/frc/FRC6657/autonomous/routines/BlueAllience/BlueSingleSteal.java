@@ -20,8 +20,8 @@ import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
-public class BlueDoubleSteal extends SequentialCommandGroup{
-    public BlueDoubleSteal(
+public class BlueSingleSteal extends SequentialCommandGroup{
+    public BlueSingleSteal(
         DrivetrainSubsystem drivetrain,
         IntakeSubsystem intake,
         ExtensionSubsystem pistons,
@@ -34,22 +34,14 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
             new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_BLUE_2.getInitialPose()), drivetrain), //Reset Position
             new IntakePath(PATH_TO_BLUE_2, drivetrain, intake, pistons), //Intake Blue 2
             new AimRoutine(drivetrain, hood, flywheel, vision), //Aim
-            new FireRoutine(flywheel, hood, accelerator, 0.5), //Shoot Ball 1 & 2
+            new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Blue 1 & 2
             new IntakePath(PATH_TO_RED_1, drivetrain, intake, pistons), //Intake Red 1
-            
-            new ParallelCommandGroup( //Arrange shooter
-                drivetrain.new TrajectoryFollowerCommand(PATH_TO_RED_SHOT_1), //Go to firing position
-                new InstantCommand(() -> hood.setAngle(45), hood),
-                new InstantCommand(() -> flywheel.setRPMTarget(1000), flywheel)
-            ),
-            new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Red 1
-            new IntakePath(PATH_TO_RED_2, drivetrain, intake, pistons), //Intake Red 2
+            drivetrain.new TrajectoryFollowerCommand(PATH_TO_RED_SHOT_1), //Move to firing position
             new ParallelCommandGroup( //Arrange Shooter
-                drivetrain.new TurnByAngleCommand(45), //Aim Towards Hangar
                 new InstantCommand(() -> hood.setAngle(45), hood),
                 new InstantCommand(() -> flywheel.setRPMTarget(1000), flywheel)
             ),
-            new FireRoutine(flywheel, hood, accelerator, 0.5) //Fire Red 2
+            new FireRoutine(flywheel, hood, accelerator, 0.5) //Fire Red 1
         );
     }
 
@@ -58,7 +50,7 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
         new Pose2d(5.014, 6.16, Rotation2d.fromDegrees(-220))
 
     ), false, 
-    "Blue Double Steal 2 PATH_TO_BALL_2"
+    "Blue Single Steal 2 PATH_TO_BLUE_2"
     );
 
     private Trajectory PATH_TO_RED_1 = Trajectories.generateTrajectory(1, 2,List.of(
@@ -67,7 +59,7 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
 
     ), 
     false, 
-    "Blue Double Steal PATH_TO_RED_1"
+    "Blue Single Steal PATH_TO_RED_1"
     );
 
     private Trajectory PATH_TO_RED_SHOT_1 = Trajectories.generateTrajectory(1, 2,List.of(
@@ -76,17 +68,8 @@ public class BlueDoubleSteal extends SequentialCommandGroup{
 
     ), 
     true, 
-    "Blue Double Steal PATH_TO_RED_SHOT_1"
+    "Blue Single Steal PATH_TO_RED_SHOT_1"
     );
-
-    private Trajectory PATH_TO_RED_2 = Trajectories.generateTrajectory(2, 2, List.of(
-        new Pose2d(4.5, 6, Rotation2d.fromDegrees(-90)),
-        new Pose2d(4.5, 3.5, Rotation2d.fromDegrees(-90))
-    ), 
-    false, 
-    "Blue Double Steal Two PATH_TO_RED_2"
-    );
-
 
 }
 

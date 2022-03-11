@@ -1,17 +1,5 @@
 {
   "HALProvider": {
-    "Other Devices": {
-      "Talon FX[2]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon SRX[10]": {
-        "header": {
-          "open": true
-        }
-      }
-    },
     "Solenoids": {
       "window": {
         "visible": true
@@ -28,11 +16,45 @@
       "/LiveWindow/FlywheelSubsystem": "Subsystem",
       "/LiveWindow/HoodSubsystem": "Subsystem",
       "/LiveWindow/IntakeSubsystem": "Subsystem",
+      "/LiveWindow/LiftSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/Blinkin[0]": "Motor Controller",
+      "/LiveWindow/Ungrouped/PIDController[10]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[11]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[12]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[13]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[14]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[15]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[16]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[17]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[18]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[19]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[20]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[21]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[22]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[23]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[24]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[25]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[26]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[27]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[28]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[29]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[30]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[31]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[32]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[33]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[34]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[35]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[36]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
-      "/LiveWindow/Ungrouped/Pigeon IMU [5]": "Gyro",
+      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
+      "/LiveWindow/Ungrouped/Pigeon 2 [5]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Talon FX [1]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [2]": "Motor Controller",
@@ -41,51 +63,66 @@
       "/LiveWindow/Ungrouped/Talon FX [8]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [9]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [10]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon SRX [12]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon SRX [13]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [6]": "Motor Controller",
       "/LiveWindow/VisionSubsystem": "Subsystem",
       "/Shuffleboard/Drivetrain/Gyro": "Gyro",
-      "/Shuffleboard/DrivetrainSubsystem/Gyro": "Gyro",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Hood": "Mechanism2d",
       "/SmartDashboard/SendableChooser[0]": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Field": {
-        "VisionTargets": {
-          "arrows": false,
-          "color": [
-            1.0,
-            0.0,
-            1.0,
-            255.0
-          ],
-          "length": 0.11999999731779099,
-          "selectable": false,
-          "style": "Box/Image",
-          "weight": 5.0,
-          "width": 0.11999999731779099
+        "Pose1": {
+          "length": 0.9860000014305115,
+          "width": 0.8510000109672546
+        },
+        "Pose2": {
+          "length": 0.9860000014305115,
+          "width": 0.8510000109672546
+        },
+        "Robot": {
+          "length": 0.9860000014305115,
+          "width": 0.8510000109672546
         },
         "bottom": 900,
         "height": 8.229599952697754,
-        "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
+        "image": "C:\\Users\\Andrew Card\\Desktop\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
+        "intake": {
+          "arrows": false,
+          "color": [
+            0.0,
+            1.0,
+            0.9117646217346191,
+            255.0
+          ],
+          "length": 0.22552700340747833,
+          "width": 0.8510000109672546
+        },
         "left": 74,
         "right": 1774,
         "robot-path": {
           "arrows": false,
-          "style": "Line",
-          "weight": 2.0
+          "style": "Line"
         },
         "top": 50,
         "trajectory": {
           "arrows": false,
           "color": [
-            0.22520188987255096,
-            0.6960784196853638,
             0.0,
+            1.0,
+            0.11764693260192871,
             255.0
           ],
           "style": "Line"
         },
         "width": 16.459199905395508,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Hood": {
         "window": {
           "visible": true
         }
@@ -99,18 +136,73 @@
   },
   "NetworkTables": {
     "Shuffleboard": {
-      "FlywheelSubsystem": {
-        "open": true
-      },
-      "Intake": {
-        "open": true
-      }
-    },
-    "SmartDashboard": {
-      "Field": {
+      "AcceleratorSubsystem": {
         "open": true
       },
       "open": true
+    },
+    "photonvision": {
+      "limelight": {
+        "open": true
+      },
+      "open": true
+    }
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "max": 6000.0,
+              "min": -6000.0
+            }
+          ],
+          "height": 470,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/FlywheelSubsystem/RPM"
+            }
+          ],
+          "showPause": false
+        }
+      ],
+      "window": {
+        "name": "Flywheel RPM"
+      }
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "max": 1.5,
+              "min": -1.5
+            }
+          ],
+          "height": 370,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/AcceleratorSubsystem/Accelerator Speed"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "name": "Acc"
+      }
     }
   }
 }
