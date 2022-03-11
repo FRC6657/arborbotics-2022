@@ -14,12 +14,12 @@ import frc.FRC6657.subsystems.shooter.FlywheelSubsystem;
 import frc.FRC6657.subsystems.shooter.HoodSubsystem;
 
 public class FireRoutine extends SequentialCommandGroup {
-  public FireRoutine(FlywheelSubsystem flywheel, HoodSubsystem hood, AcceleratorSubsystem accelerator, double shotDurration) {
+  public FireRoutine(FlywheelSubsystem flywheel, HoodSubsystem hood, AcceleratorSubsystem accelerator, double shotDuration) {
     addCommands(
       new ConditionalCommand(
         new SequentialCommandGroup(
           new InstantCommand(accelerator::start),
-          new WaitCommand(shotDurration),
+          new WaitCommand(shotDuration),
           new InstantCommand(accelerator::stop)
         ),
         new InstantCommand(),

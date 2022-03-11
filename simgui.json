@@ -38,7 +38,15 @@
       "/LiveWindow/Ungrouped/PIDController[26]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[27]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[28]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[29]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[30]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[31]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[32]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[33]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[34]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[35]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[36]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
@@ -80,7 +88,7 @@
         },
         "bottom": 900,
         "height": 8.229599952697754,
-        "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
+        "image": "C:\\Users\\Andrew Card\\Desktop\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
         "intake": {
           "arrows": false,
           "color": [
@@ -150,6 +158,7 @@
               "min": -6000.0
             }
           ],
+          "height": 470,
           "series": [
             {
               "color": [
@@ -177,7 +186,7 @@
               "min": -1.5
             }
           ],
-          "height": 278,
+          "height": 370,
           "series": [
             {
               "color": [

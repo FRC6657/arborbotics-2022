@@ -41,19 +41,23 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedSingleSteal;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueCoopFour;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueDoubleSteal;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueFive;
+import frc.FRC6657.autonomous.routines.BlueAllience.BlueHangarThree;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueHangarTwo;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueMidTwo;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueSingleSteal;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueWallThree;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueWallTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedCoopFour;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedDoubleSteal;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedFive;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedWallThree;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedWallTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedHangarTwo;
+import frc.FRC6657.autonomous.routines.RedAlliance.RedHangarThree;
 import frc.FRC6657.custom.ArborMath;
 import frc.FRC6657.custom.controls.CommandXboxController;
 import frc.FRC6657.custom.controls.Deadbander;
@@ -211,15 +215,15 @@ public class RobotContainer implements Loggable {
 
     mAutoChooser.addOption("3 Ball Hangar",
       new SequentialCommandGroup[]{
-        null,
-        null
+        new RedHangarThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier),
+        new BlueHangarThree(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
     );
 
     mAutoChooser.addOption("4 Ball Cooperative",
       new SequentialCommandGroup[]{
-        null, 
-        null
+        new RedCoopFour(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier), 
+        new BlueCoopFour(drivetrain, intake, extension, flywheel, accelerator, hood, vision.visionSupplier)
       }
     );
 
