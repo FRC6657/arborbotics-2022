@@ -202,18 +202,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     mFrontRight.configVelocityMeasurementWindow(1);
 
     // Limits the current to prevent breaker tripping
-    mFrontLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); // | Enabled | 60a
-                                                                                                 // Limit | 65a Thresh |
-                                                                                                 // .5 sec Trigger Time
-    mFrontRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5));// | Enabled | 60a
-                                                                                                 // Limit | 65a Thresh |
-                                                                                                 // .5 sec Trigger Time
-    mBackLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); // | Enabled | 60a Limit
-                                                                                                // | 65a Thresh | .5 sec
-                                                                                                // Trigger Time
-    mBackRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); // | Enabled | 60a
-                                                                                                 // Limit | 65a Thresh |
-                                                                                                 // .5 sec Trigger Time
+    mFrontLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); // | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
+    mFrontRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5));// | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
+    mBackLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); //  | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
+    mBackRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); // | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
 
     // Turn off unused things to reduce CAN Utilization
     mBackLeft.setStatusFramePeriod(StatusFrame.Status_1_General, 250);

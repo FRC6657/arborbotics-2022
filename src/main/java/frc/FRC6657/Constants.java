@@ -57,9 +57,9 @@ public final class Constants {
         //public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(linear_kS, linear_kV, linear_kA);
 
 
-        public static final double angular_kS = 0;
-        public static final double angular_kV = 0;
-        public static final double angular_kA = 0;
+        public static final double angular_kS = 0.1;
+        public static final double angular_kV = 0.1;
+        public static final double angular_kA = 0.1;
 
         // Drivetrain PID
         public static final double drive_linear_kP = 0.64132; //Char P gain 0.64132
@@ -154,11 +154,8 @@ public final class Constants {
     public static class Hood {
         public static final double kUpSpeed = 0.5;
         public static final double kDownSpeed = -0.3;
-
         public static final double kRatio = 1d/(((10*5*3)*(3/2d)*(5/2d)));
-
         public static final double kP = 12/45d;
-
         public static final PIDController kPIDController = new PIDController(kP, 0, 0);
 
     }
@@ -204,13 +201,11 @@ public final class Constants {
     }
 
     public static class BlinkinPriorities{
-
         public static int kFlywheelReady = 5;
         public static int kFlywheelActive = 4;
         public static int kBallDetected = 3;
         public static int kIntakeActive = 2;
         public static int kIdle = 1;
-    
     }
     public static class DriverConfigs{
         public static final double kTurnDeadband = 0.1;
