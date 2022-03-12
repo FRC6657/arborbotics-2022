@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
@@ -86,7 +87,7 @@ public class RobotContainer implements Loggable {
 
   /** Dont trust this it needs overhauled */
   private DriverProfile mProfile = new DriverProfile(
-      5d, // Max Speed m/s
+      2d, // Max Speed m/s
       90d, // Max Turn deg/s
       3d, // Mod Drive Speed m/s
       80d // Mod Turn Speed deg/s
@@ -245,32 +246,38 @@ public class RobotContainer implements Loggable {
     }
 
   private void configureButtonBindings() {
+
+    mXboxController.a().whenHeld(
+      new ParallelCommandGroup(
+        new StartEndCommand(intake::start, intake::stop, intake),
+        new InstantCommand(extension::extend, extension)
+      )
+    ).whenReleased(
+      new InstantCommand(extension::retract).beforeStarting(new WaitCommand(.5))
+    );
+
+    mXboxController.b().whenHeld(
+      new ParallelCommandGroup(
+        new StartEndCommand(accelerator::start, accelerator::stop, accelerator),
+        new StartEndCommand(() -> flywheel.set(0.2), flywheel::stop, flywheel),
+        new StartEndCommand(extension::extend, extension::retract, extension)
+      )
+    );
+
+    mXboxController.x().whenHeld(
+      new ParallelCommandGroup(
+        new StartEndCommand(() -> flywheel.set(-0.5), flywheel::stop, flywheel)
+      )
+    );
     
-    switch(Controls){
-      case "Testing":
-        mXboxController.a().whenHeld(
-            new ConditionalCommand(
-              new ParallelCommandGroup(
-                drivetrain.new VisionAimAssist(),
-                new RunCommand(
-                  () -> hood.setAngle(InterpolatingTable.get(vision.visionSupplier.getDistance()).hoodAngle),
-                  hood
-                ),
-                new RunCommand(
-                  () -> flywheel.setRPMTarget(InterpolatingTable.get(vision.visionSupplier.getDistance()).rpm),
-                  flywheel
-                )
-              ),
-              new InstantCommand(),
-              vision.visionSupplier::hasTarget
-          )
-        ).whenReleased(
-          new ParallelCommandGroup(
-            hood.new Home(),
-            new InstantCommand(() -> flywheel.setRPMTarget(0))
-          )
-        );
-    }
+    mXboxController.y().whenHeld(
+      new ParallelCommandGroup(
+        new StartEndCommand(() -> flywheel.set(-0.5), flywheel::stop, flywheel),
+        new StartEndCommand(accelerator::start, accelerator::stop, accelerator)
+      )
+    );
+    
+
   }
 
   public SequentialCommandGroup getAutonomousCommand() {

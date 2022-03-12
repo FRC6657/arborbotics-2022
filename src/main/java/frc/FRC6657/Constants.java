@@ -51,13 +51,13 @@ public final class Constants {
      */
     public static class Drivetrain {
         // Drivetrain Characterization
-        public static final double linear_kS = 0.53584;
-        public static final double linear_kV = 2.2764;
-        public static final double linear_kA = 0.73118;
+        public static final double linear_kS = 0.69978;
+        public static final double linear_kV = 2.2405;
+        public static final double linear_kA = 0.30862;
 
-        public static final double angular_kS = 0.53584;
-        public static final double angular_kV = 2.2764;
-        public static final double angular_kA = 0.73118;
+        public static final double angular_kS = 0.79043;
+        public static final double angular_kV = 2.53;
+        public static final double angular_kA = 0.081887;
 
         // Drivetrain PID
         public static final double drive_linear_kP = 0.64132; //Char P gain 0.64132
@@ -108,7 +108,7 @@ public final class Constants {
      * Intake Values
      */
     public class Intake {
-        public static final double kSpeed = 1;
+        public static final double kSpeed = .6;
 
         public static final double kStartupTime = 0.1; //Sec
         public static final double kBallCurrent = 20; //Amps

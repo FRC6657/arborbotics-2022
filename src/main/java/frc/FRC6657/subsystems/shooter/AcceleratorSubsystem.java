@@ -25,7 +25,7 @@ public class AcceleratorSubsystem extends SubsystemBase implements Loggable{
   private void configureMotor(){
     mMotor.configFactoryDefault();
     mMotor.setNeutralMode(NeutralMode.Coast);
-    mMotor.setInverted(false);
+    mMotor.setInverted(true);
     mMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 30, 0.5));
   }
 

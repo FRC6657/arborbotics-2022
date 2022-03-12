@@ -29,7 +29,7 @@ public class IntakeSubsystem extends SubsystemBase implements Loggable {
   }
 
   private void configureMotor() {
-    mMotor.setInverted(false);
+    mMotor.setInverted(true);
     mMotor.setNeutralMode(NeutralMode.Coast);
     mMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 35, 0.1));
 
