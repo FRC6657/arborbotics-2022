@@ -274,6 +274,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   }
   
   public void resetPoseEstimator(Pose2d newPose){
+    mPathPoints.clear();
     mPoseEstimator.resetPosition(newPose, mPigeon.getRotation2d());
   }
 
@@ -506,7 +507,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
     @Override
     public void initialize() {
-      mPathPoints.clear();
+
       mPathPoints.add(mPoseEstimator.getEstimatedPosition());
       mRobotPath.setPoses(mPathPoints);
       mTrajectoryPlot.setTrajectory(trajectory);
