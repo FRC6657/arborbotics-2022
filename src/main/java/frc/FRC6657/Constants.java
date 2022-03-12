@@ -51,27 +51,27 @@ public final class Constants {
      */
     public static class Drivetrain {
         // Drivetrain Characterization
-        public static final double linear_kS = 0.69978;
-        public static final double linear_kV = 2.2405;
-        public static final double linear_kA = 0.30862;
+        public static final double linear_kS = 0.70049;
+        public static final double linear_kV = 2.2195;
+        public static final double linear_kA = 0.32787;
 
         public static final double angular_kS = 0.79043;
         public static final double angular_kV = 2.53;
         public static final double angular_kA = 0.081887;
 
         // Drivetrain PID
-        public static final double drive_linear_kP = 0.64132; //Char P gain 0.64132
+        public static final double drive_linear_kP = 0.94402; //Char P gain 0.64132
+
         public static final double Turn_Command_kP = 1d/90;
-        public static final double Turn_Command_kD = 1d/500;
+        public static final double Turn_Command_kD = 1d/1200;
 
         public static final PIDController kLinearPIDController = new PIDController(drive_linear_kP, 0, 0);
 
-        public static final double vision_kP = 6d/27;
-        public static final double vision_kD = 1d/30;
+        public static final double vision_kP = 1/13.98; //Char value
+        public static final double vision_kD = 1/661.54;
 
         // Drivetrain Values
-        public static final double kRobotWeight = Units.lbsToKilograms(40);
-        public static final double kTrackWidth = Units.inchesToMeters(21.819200); // Distance Between Sides
+        public static final double kTrackWidth = 0.61568; // Distance Between Sides
         public static final double kGearRatio = 75d / 7; // Drive Gearbox Ratio
         public static final double kWheelRadius = Units.inchesToMeters(3); // Drive wheel Radius
         public static final double kDistancePerPulse = (2 * Math.PI * kWheelRadius) / (kFalconEncoderCPR * kGearRatio); // Conversion between Counts and Meters

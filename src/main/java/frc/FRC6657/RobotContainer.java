@@ -247,6 +247,11 @@ public class RobotContainer implements Loggable {
 
   private void configureButtonBindings() {
 
+
+    mXboxController.rightBumper().whenHeld(
+      drivetrain.new TurnByAngleCommand(360)
+    );
+
     mXboxController.a().whenHeld(
       new ParallelCommandGroup(
         new StartEndCommand(intake::start, intake::stop, intake),
