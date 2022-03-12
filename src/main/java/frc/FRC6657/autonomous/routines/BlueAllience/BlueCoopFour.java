@@ -41,7 +41,7 @@ public class BlueCoopFour extends SequentialCommandGroup{
         );
     }
 
-    private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(1,1,List.of(
+    private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(4,1,List.of(
         new Pose2d(6.666, 2.737, Rotation2d.fromDegrees(200)),
         new Pose2d(5.164,2.044,Rotation2d.fromDegrees(200))
     ),
@@ -49,7 +49,7 @@ public class BlueCoopFour extends SequentialCommandGroup{
     "Blue Mid Two PATH_TO_BALL_2"
     );
 
-    private Trajectory PATH_TO_BALL_3_4 = Trajectories.generateTrajectory(1,1,List.of(
+    private Trajectory PATH_TO_BALL_3_4 = Trajectories.generateTrajectory(4,2,List.of(
         new Pose2d(3.863, 3.5, Rotation2d.fromDegrees(-138)),
         new Pose2d(1.65, 1.7,Rotation2d.fromDegrees(-135))
     ),
@@ -57,7 +57,7 @@ public class BlueCoopFour extends SequentialCommandGroup{
     "Blue Mid Two PATH_TO_BALL_2"
     );
 
-    private Trajectory PATH_TO_3_4_SHOT = Trajectories.generateTrajectory(1,1,List.of(
+    private Trajectory PATH_TO_3_4_SHOT = Trajectories.generateTrajectory(4,2,List.of(
         new Pose2d(1.65, 1.7,Rotation2d.fromDegrees(-135)),
         new Pose2d(4.75, 2.5,Rotation2d.fromDegrees(-153))
     ),

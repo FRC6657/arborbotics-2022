@@ -39,7 +39,7 @@ public class RedWallThree extends SequentialCommandGroup {
       new AimRoutine(drivetrain, hood, flywheel, vision), //Aim
       new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Red 1 & 2
       new IntakePath(PATH_TO_BALL_3, drivetrain, intake, pistons), //intake Red 3
-      drivetrain.new TurnByAngleCommand(30), //Turn to target Visibility //TODO Make this more precise
+      drivetrain.new TurnByAngleCommand(35), //Turn to target Visibility //TODO Make this more precise
       new AimRoutine(drivetrain, hood, flywheel, vision), //Aim 
       new FireRoutine(flywheel, hood, accelerator, 0.5) //Fire Red 3
     );

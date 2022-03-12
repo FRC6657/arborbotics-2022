@@ -41,7 +41,7 @@ public class BlueFive extends SequentialCommandGroup{
       new AimRoutine(drivetrain, hood, flywheel, vision), //Aim
       new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Blue 1 & 2
       new IntakePath(PATH_TO_BALL_3, drivetrain, intake, pistons), // Intake Blue 3
-      drivetrain.new TurnByAngleCommand(15), //Turn to target Visibility //TODO Make this more precise
+      //drivetrain.new TurnByAngleCommand(15), //Turn to target Visibility //TODO Make this more precise
       new AimRoutine(drivetrain, hood, flywheel, vision), //Aim 
       new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Blue 3
       new IntakePath(PATH_TO_BALL_4_5, drivetrain, intake, pistons), //Intake Blue 4 & 5
@@ -60,7 +60,7 @@ public class BlueFive extends SequentialCommandGroup{
 
   private Trajectory PATH_TO_BALL_3 = Trajectories.generateTrajectory(3,4,List.of(
     new Pose2d(7.885, 2.629, Rotation2d.fromDegrees(-150)),
-    new Pose2d(5.022, 1.75, Rotation2d.fromDegrees(-180))
+    new Pose2d(5.022, 1.75, Rotation2d.fromDegrees(-140))
   ),
   false,
   "Blue Five TWO PATH_TO_BALL_3"
