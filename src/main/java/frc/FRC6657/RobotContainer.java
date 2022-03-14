@@ -118,10 +118,10 @@ public class RobotContainer implements Loggable {
     blinkin = new BlinkinSubsystem();
     extension = new ExtensionSubsystem();
     flywheel = new FlywheelSubsystem();
-    hood = new HoodSubsystem();
     intake = new IntakeSubsystem();
     lift = new LiftSubsystem();
     drivetrain = new DrivetrainSubsystem(mProfile, vision.visionSupplier);
+    hood = new HoodSubsystem(vision.visionSupplier, drivetrain::getEstDistanceToTarget);
 
     // Triggers
     flywheelReady = new Trigger(flywheel::atTarget);

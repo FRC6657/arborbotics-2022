@@ -462,6 +462,10 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     return (mPoseEstimator.getEstimatedPosition().getX() < Constants.Vision.kTargetPos1.getTranslation().getX()) ? Rotation2d.fromDegrees(Units.radiansToDegrees(Math.asin(Constants.Vision.kTargetPos1.getTranslation().minus(mPoseEstimator.getEstimatedPosition().getTranslation()).getY()/mPoseEstimator.getEstimatedPosition().getTranslation().getDistance(Constants.Vision.kTargetPos1.getTranslation())))).minus(mPoseEstimator.getEstimatedPosition().getRotation().plus(Rotation2d.fromDegrees(180))) : Rotation2d.fromDegrees(180 + Units.radiansToDegrees(Math.asin(-Constants.Vision.kTargetPos1.getTranslation().minus(mPoseEstimator.getEstimatedPosition().getTranslation()).getY()/mPoseEstimator.getEstimatedPosition().getTranslation().getDistance(Constants.Vision.kTargetPos1.getTranslation())))).minus(mPoseEstimator.getEstimatedPosition().getRotation().plus(Rotation2d.fromDegrees(180)));
   }
 
+  public double getEstDistanceToTarget(){
+    return mPoseEstimator.getEstimatedPosition().getTranslation().getDistance(Constants.Vision.kTargetPos1.getTranslation());
+  }
+
   /*
    * Commands
    */

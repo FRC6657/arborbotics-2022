@@ -4,6 +4,8 @@
 
 package frc.FRC6657.subsystems.shooter;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -22,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC6657.Constants;
 import frc.FRC6657.custom.ArborMath;
+import frc.FRC6657.subsystems.shooter.interpolation.InterpolatingTable;
 import frc.FRC6657.subsystems.vision.VisionSubsystem.VisionSupplier;
 
 @SuppressWarnings("unused")
@@ -40,9 +43,17 @@ public class HoodSubsystem extends SubsystemBase {
     double angleSetpoint = 0;
     boolean homing = false;
 
-    public HoodSubsystem() {
+    private Boolean visionEnabled = true;
+
+    private DoubleSupplier estDistance;
+    private VisionSupplier mVision;
+
+    public HoodSubsystem(VisionSupplier vision, DoubleSupplier estDistance) {
         mMotor = new CANSparkMax(Constants.kHoodID, MotorType.kBrushless);
         configureMotor();
+
+        this.mVision = vision;
+        this.estDistance = estDistance;
 
         SmartDashboard.putData("Hood", hoodMech);
 
@@ -81,8 +92,18 @@ public class HoodSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (homing == false){
-            hoodAngle.setAngle(-180-angleSetpoint); //Visualizer
-            mMotor.setVoltage(mPidController.calculate(getAngle(), angleSetpoint));
+            if(visionEnabled){
+                if(mVision.hasTarget()){
+                    double target = InterpolatingTable.get(mVision.getDistance()).hoodAngle;
+                    hoodAngle.setAngle(-180-target);
+                }else{
+                    double target = InterpolatingTable.get(estDistance.getAsDouble()).hoodAngle;
+                    hoodAngle.setAngle(-180-target);
+                }
+            }else{
+                hoodAngle.setAngle(-180-angleSetpoint); //Visualizer
+                mMotor.setVoltage(mPidController.calculate(getAngle(), angleSetpoint));
+            }
         }
     }
 
