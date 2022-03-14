@@ -76,6 +76,10 @@ public class HoodSubsystem extends SubsystemBase {
     public void setAngle(double angle){
         angleSetpoint = MathUtil.clamp(angle, 0, 45);
     }
+
+    public void enableVision(boolean enabled){
+        visionEnabled = enabled;
+    }
     
     public double getAngle(){
         if(RobotBase.isReal()){

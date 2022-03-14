@@ -28,7 +28,7 @@ public class AimRoutine extends ParallelRaceGroup {
     addCommands(
       new WaitUntilCommand(() -> Math.abs(vision.getYaw()) < Constants.Drivetrain.kTurnCommandTolerance),
       new RunCommand(() -> flywheel.setRPMTarget(InterpolatingTable.get(vision.getDistance()).rpm), flywheel),
-      new RunCommand(() -> hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle), hood),
+      //new RunCommand(() -> hood.setAngle(InterpolatingTable.get(vision.getDistance()).hoodAngle), hood),
       drivetrain.new VisionAimAssist()
     );
   }
