@@ -47,9 +47,36 @@
       "/LiveWindow/Ungrouped/PIDController[34]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[35]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[36]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[37]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[38]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[39]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[40]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[41]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[42]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[43]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[44]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[45]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[46]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[47]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[48]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[49]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[50]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[51]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[52]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[53]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[54]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[55]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[56]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[57]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[58]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[59]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[60]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[61]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[62]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[63]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
@@ -85,6 +112,26 @@
         "Robot": {
           "length": 0.9860000014305115,
           "width": 0.8510000109672546
+        },
+        "angle": {
+          "arrows": false,
+          "color": [
+            0.0,
+            255.0,
+            89.99996185302734,
+            255.0
+          ],
+          "style": "Line"
+        },
+        "angle-target": {
+          "arrows": false,
+          "color": [
+            0.0,
+            255.0,
+            89.99996185302734,
+            255.0
+          ],
+          "style": "Line"
         },
         "bottom": 900,
         "height": 8.229599952697754,
@@ -135,16 +182,20 @@
     }
   },
   "NetworkTables": {
+    "LiveWindow": {
+      "Ungrouped": {
+        "Pigeon 2 [5]": {
+          "open": true
+        }
+      }
+    },
     "Shuffleboard": {
-      "AcceleratorSubsystem": {
+      "Scott Gyro Stuff": {
         "open": true
       },
       "open": true
     },
     "photonvision": {
-      "limelight": {
-        "open": true
-      },
       "open": true
     }
   },

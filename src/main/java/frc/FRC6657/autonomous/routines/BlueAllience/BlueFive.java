@@ -41,7 +41,6 @@ public class BlueFive extends SequentialCommandGroup{
       new AimRoutine(drivetrain, hood, flywheel, vision), //Aim
       new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Blue 1 & 2
       new IntakePath(PATH_TO_BALL_3, drivetrain, intake, pistons), // Intake Blue 3
-      //drivetrain.new TurnByAngleCommand(15), //Turn to target Visibility //TODO Make this more precise
       new AimRoutine(drivetrain, hood, flywheel, vision), //Aim 
       new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Blue 3
       new IntakePath(PATH_TO_BALL_4_5, drivetrain, intake, pistons), //Intake Blue 4 & 5

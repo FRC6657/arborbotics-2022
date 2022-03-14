@@ -39,7 +39,6 @@ public class RedWallThree extends SequentialCommandGroup {
       new AimRoutine(drivetrain, hood, flywheel, vision), //Aim
       new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Red 1 & 2
       new IntakePath(PATH_TO_BALL_3, drivetrain, intake, pistons), //intake Red 3
-      drivetrain.new TurnByAngleCommand(35), //Turn to target Visibility //TODO Make this more precise
       new AimRoutine(drivetrain, hood, flywheel, vision), //Aim 
       new FireRoutine(flywheel, hood, accelerator, 0.5) //Fire Red 3
     );
@@ -54,8 +53,8 @@ public class RedWallThree extends SequentialCommandGroup {
   );
 
   private Trajectory PATH_TO_BALL_3 = Trajectories.generateTrajectory(3,4,List.of(
-    new Pose2d(10, 6.4, Rotation2d.fromDegrees(0)),
-    new Pose2d(11.5, 6.4, Rotation2d.fromDegrees(0))
+    new Pose2d(9, 7.3, Rotation2d.fromDegrees(-90)),
+    new Pose2d(11.5, 6.4, Rotation2d.fromDegrees(35))
   ),
   false,
   "Red Wall Three TWO PATH_TO_BALL_3"

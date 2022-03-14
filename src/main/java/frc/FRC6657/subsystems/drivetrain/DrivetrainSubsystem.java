@@ -274,6 +274,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   }
   
   public void resetPoseEstimator(Pose2d newPose){
+    resetEncoders();
     mPoseEstimator.resetPosition(newPose, mPigeon.getRotation2d());
   }
 
@@ -339,7 +340,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
    * @param quickturn Allow Quickturn?
    * @param modSpeed  Modify Speed?
    * 
-   *                  Sets drivetrain speeds in m/s from inputed controls that
+   *                  <p>Sets drivetrain speeds in m/s from inputed controls that
    *                  follow the curvature drive structure
    * 
    */
@@ -368,6 +369,18 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     mFrontLeft.set(0);
     mFrontRight.set(0);
   }
+
+  public void updatePoseEstimator(DifferentialDriveWheelSpeeds actWheelSpeeds, double leftDist, double rightDist) {
+    mPoseEstimator.update(mPigeon.getRotation2d(), actWheelSpeeds, leftDist, rightDist);
+    var res = mVision.getResult();
+    if(res.hasTargets()){
+      double imageCaptureTime = Timer.getFPGATimestamp() - res.getLatencyMillis();
+      Transform2d camToTargetTrans = res.getBestTarget().getCameraToTarget();
+      Pose2d camPose = Constants.Vision.kTargetPos1.transformBy(camToTargetTrans.inverse());
+      mPoseEstimator.addVisionMeasurement(camPose.transformBy(Constants.Vision.kCameraToRobot), imageCaptureTime);
+    }
+  }
+  
   /*
    * Get Methods
    *
@@ -443,15 +456,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     return ArborMath.normalizeFusedHeading(mPigeon.getYaw());
   }
 
-  public void updatePoseEstimator(DifferentialDriveWheelSpeeds actWheelSpeeds, double leftDist, double rightDist) {
-    mPoseEstimator.update(mPigeon.getRotation2d(), actWheelSpeeds, leftDist, rightDist);
-    var res = mVision.getResult();
-    if(res.hasTargets()){
-      double imageCaptureTime = Timer.getFPGATimestamp() - res.getLatencyMillis();
-      Transform2d camToTargetTrans = res.getBestTarget().getCameraToTarget();
-      Pose2d camPose = Constants.Vision.kTargetPos1.transformBy(camToTargetTrans.inverse());
-      mPoseEstimator.addVisionMeasurement(camPose.transformBy(Constants.Vision.kCameraToRobot), imageCaptureTime);
-    }
+  public Rotation2d getEstRotationToTarget(){
+    return (mPoseEstimator.getEstimatedPosition().getX() < Constants.Vision.kTargetPos1.getTranslation().getX()) ? Rotation2d.fromDegrees(Units.radiansToDegrees(Math.asin(Constants.Vision.kTargetPos1.getTranslation().minus(mPoseEstimator.getEstimatedPosition().getTranslation()).getY()/mPoseEstimator.getEstimatedPosition().getTranslation().getDistance(Constants.Vision.kTargetPos1.getTranslation())))).minus(mPoseEstimator.getEstimatedPosition().getRotation().plus(Rotation2d.fromDegrees(180))) : Rotation2d.fromDegrees(180 + Units.radiansToDegrees(Math.asin(-Constants.Vision.kTargetPos1.getTranslation().minus(mPoseEstimator.getEstimatedPosition().getTranslation()).getY()/mPoseEstimator.getEstimatedPosition().getTranslation().getDistance(Constants.Vision.kTargetPos1.getTranslation())))).minus(mPoseEstimator.getEstimatedPosition().getRotation().plus(Rotation2d.fromDegrees(180)));
   }
 
   /*
@@ -540,19 +546,30 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   }
 
   public class VisionAimAssist extends CommandBase{
-    PIDController mPID = new PIDController(Constants.Drivetrain.vision_kP, 0, Constants.Drivetrain.vision_kD);
+    
+    PIDController mVisionPID = new PIDController(Constants.Drivetrain.vision_kP, 0, Constants.Drivetrain.vision_kD);
+    PIDController mAproxPID = new PIDController(Constants.Drivetrain.Turn_Command_kP, 0, Constants.Drivetrain.Turn_Command_kD);
+
+    double estimatedError;
+    double startPoint;
 
     @Override
     public void initialize() {
         mVision.enableLEDs();
+        estimatedError = getEstRotationToTarget().getDegrees();
+        startPoint = getGyroAngle();
     }
 
     @Override
     public void execute() {
       if(mVision.hasTarget()){
-        double effort = mPID.calculate(mVision.getYaw(), 0);
+        double effort = mVisionPID.calculate(mVision.getYaw(), 0);
         mFrontLeft.setVoltage(-effort);
         mFrontRight.setVoltage(effort);
+      }else{
+        double output = mAproxPID.calculate(getGyroAngle(), startPoint + estimatedError);
+        mFrontLeft.set(-output);
+        mFrontRight.set(output);
       }
     }
     @Override

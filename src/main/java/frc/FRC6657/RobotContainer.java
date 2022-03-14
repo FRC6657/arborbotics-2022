@@ -87,7 +87,7 @@ public class RobotContainer implements Loggable {
 
   /** Dont trust this it needs overhauled */
   private DriverProfile mProfile = new DriverProfile(
-      2d, // Max Speed m/s
+      Constants.Drivetrain.kMaxAttainableSpeed, // Max Speed m/s
       90d, // Max Turn deg/s
       3d, // Mod Drive Speed m/s
       80d // Mod Turn Speed deg/s
@@ -249,7 +249,7 @@ public class RobotContainer implements Loggable {
 
 
     mXboxController.rightBumper().whenHeld(
-      drivetrain.new TurnByAngleCommand(360)
+      drivetrain.new VisionAimAssist()
     );
 
     mXboxController.a().whenHeld(
