@@ -190,7 +190,7 @@
       }
     },
     "Shuffleboard": {
-      "Scott Gyro Stuff": {
+      "FlywheelSubsystem": {
         "open": true
       },
       "open": true
@@ -209,7 +209,7 @@
               "min": -6000.0
             }
           ],
-          "height": 470,
+          "height": 950,
           "series": [
             {
               "color": [
@@ -219,6 +219,15 @@
                 1.0
               ],
               "id": "NT:/Shuffleboard/FlywheelSubsystem/RPM"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/FlywheelSubsystem/RPM Target"
             }
           ],
           "showPause": false

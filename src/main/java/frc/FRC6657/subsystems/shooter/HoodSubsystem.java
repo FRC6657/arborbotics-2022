@@ -43,7 +43,7 @@ public class HoodSubsystem extends SubsystemBase {
     double angleSetpoint = 0;
     boolean homing = false;
 
-    private Boolean visionEnabled = true;
+    private Boolean visionEnabled = false;
 
     private DoubleSupplier estDistance;
     private VisionSupplier mVision;
@@ -74,7 +74,7 @@ public class HoodSubsystem extends SubsystemBase {
     }
 
     public void setAngle(double angle){
-        angleSetpoint = MathUtil.clamp(angle, 0, 45);
+        angleSetpoint = MathUtil.clamp(angle, 0, 35);
     }
 
     public void enableVision(boolean enabled){
@@ -130,6 +130,12 @@ public class HoodSubsystem extends SubsystemBase {
         }
 
         @Override
+        public void execute() {
+            mMotor.set(-0.25);
+        }
+        
+
+        @Override
         public void end(boolean interrupted) {
             timer.stop();
             stop();
@@ -142,7 +148,7 @@ public class HoodSubsystem extends SubsystemBase {
             if(RobotBase.isSimulation()){
                 return true;
             }else{
-                return (timer.get() > 0.5) && mMotor.getOutputCurrent() > 10; //TODO TUNE
+                return (timer.get() > 0.125) && mMotor.getOutputCurrent() > 2;
             }
         }
 

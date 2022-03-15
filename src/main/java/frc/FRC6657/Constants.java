@@ -131,19 +131,17 @@ public final class Constants {
         // General
         public static final double kSpinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500);
         public static final double kRPMTollerance = 50;
-        public static final double kRatio = 1.5/1.0;
-
-        public static final double kSpeed = 0.5;
+        public static final double kRatio = 1/1.5;
 
         // Characterization
-        public static final double kV = 0.0549/4.5; // 0.051151
-        public static final double kA= 0.0024487/4.5; //0.0024487 
+        public static final double kV = 0.082813;
+        public static final double kA= 0.018318;
 
         public static final LinearSystem<N1, N1, N1> kPlant = LinearSystemId.identifyVelocitySystem(kV, kA);
 
         public static final FlywheelSim kSim = new FlywheelSim(
             kPlant,
-            DCMotor.getFalcon500(2),
+            DCMotor.getFalcon500(1),
             kRatio
         );
 
@@ -169,7 +167,8 @@ public final class Constants {
     public static class Vision{
         public static final String kCameraName = "limelight";
         public static final double kCameraHeightMeters = 0.638374;// CAD Estimate
-        public static final double kTargetHeightMeters = Units.feetToMeters(8 + 8 / 12); // 8` 8" from manual
+        //public static final double kTargetHeightMeters = Units.feetToMeters(8 + 8 / 12); // Field Vision Target 
+        public static final double kTargetHeightMeters = Units.inchesToMeters(81.75); // Y4 Vision Target
         public static final double kCameraPitchRadians = Units.degreesToRadians(42);
         public static final double kMaxLEDRange = 20;
         public static final double kCamDiagFOV = 67.8; // degrees

@@ -40,14 +40,14 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   private final LinearQuadraticRegulator<N1, N1, N1> mFlywheelController = new LinearQuadraticRegulator<>(
       Constants.Flywheel.kPlant,
-      VecBuilder.fill(500.0), // Velocity error tolerance
-      VecBuilder.fill(12.0), // Control effort (voltage) tolerance
+      VecBuilder.fill(50), // Velocity error tolerance
+      VecBuilder.fill(12), // Control effort (voltage) tolerance
       0.020);
 
   private final LinearSystemLoop<N1, N1, N1> mFlywheelLoop = new LinearSystemLoop<>(Constants.Flywheel.kPlant,
       mFlywheelController, mFlywheelObserver, 12.0, 0.020);
 
-  private final WPI_TalonFX mProtagonist, mAntagonist;
+  private final WPI_TalonFX mProtagonist;
 
   private TalonFXSimCollection mMotorSim;
   private FlywheelSim mFlywheelSim;
@@ -56,8 +56,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   private double mRpmTarget = 0;
 
   public FlywheelSubsystem() {
-    mProtagonist = new WPI_TalonFX(Constants.kLeftFlywheelID);
-    mAntagonist = new WPI_TalonFX(Constants.kRightFlywheelID);
+    mProtagonist = new WPI_TalonFX(Constants.kRightFlywheelID);
 
     configureMotors();
 
@@ -81,30 +80,21 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   public void configureMotors() {
 
     mProtagonist.configFactoryDefault();
-    mAntagonist.configFactoryDefault();
-
-    mAntagonist.follow(mProtagonist);
 
     mProtagonist.setNeutralMode(NeutralMode.Coast);
-    mAntagonist.setNeutralMode(NeutralMode.Coast);
 
     mProtagonist.setInverted(InvertType.None);
-    mAntagonist.setInverted(InvertType.OpposeMaster);
 
     mProtagonist.setSelectedSensorPosition(0);
-    mAntagonist.setSelectedSensorPosition(0);
 
     mProtagonist.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
     mProtagonist.configVelocityMeasurementWindow(1);
 
-    mAntagonist.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
-    mAntagonist.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
-
   }
 
-  public double getRadiansPerSecond() {
-    return (mProtagonist.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kFalconEncoderCPR / Constants.Flywheel.kRatio);
-  }
+    public double getRadiansPerSecond() {
+      return (mProtagonist.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kFalconEncoderCPR / Constants.Flywheel.kRatio);
+    }
 
   @Log(rowIndex = 1, columnIndex = 0, width = 2, height = 1, name = "RPM")
   public double getRPM() {

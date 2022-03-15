@@ -223,37 +223,10 @@ public class RobotContainer implements Loggable {
   private void configureButtonBindings() {
 
 
-    mXboxController.rightBumper().whenHeld(
-      drivetrain.new VisionAimAssist()
-    );
-
     mXboxController.a().whenHeld(
-      new ParallelCommandGroup(
-        new StartEndCommand(intake::start, intake::stop, intake),
-        new InstantCommand(extension::extend, extension)
-      )
-    ).whenReleased(
-      new InstantCommand(extension::retract).beforeStarting(new WaitCommand(.5))
-    );
-
-    mXboxController.b().whenHeld(
-      new ParallelCommandGroup(
-        new StartEndCommand(accelerator::start, accelerator::stop, accelerator),
-        new StartEndCommand(() -> flywheel.set(0.2), flywheel::stop, flywheel),
-        new StartEndCommand(extension::extend, extension::retract, extension)
-      )
-    );
-
-    mXboxController.x().whenHeld(
-      new ParallelCommandGroup(
-        new StartEndCommand(() -> flywheel.set(-0.5), flywheel::stop, flywheel)
-      )
-    );
-    
-    mXboxController.y().whenHeld(
-      new ParallelCommandGroup(
-        new StartEndCommand(() -> flywheel.set(-0.5), flywheel::stop, flywheel),
-        new StartEndCommand(accelerator::start, accelerator::stop, accelerator)
+      new StartEndCommand(
+        () -> flywheel.setRPMTarget(1000), 
+        flywheel::stop, flywheel
       )
     );
     
