@@ -65,7 +65,6 @@ import frc.FRC6657.custom.controls.Deadbander;
 import frc.FRC6657.custom.controls.DriverProfile;
 import frc.FRC6657.custom.rev.Blinkin;
 import frc.FRC6657.custom.rev.BlinkinIndicator;
-import frc.FRC6657.subsystems.blinkin.BlinkinSubsystem;
 import frc.FRC6657.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.FRC6657.subsystems.intake.ExtensionSubsystem;
 import frc.FRC6657.subsystems.intake.IntakeSubsystem;
@@ -96,7 +95,6 @@ public class RobotContainer implements Loggable {
   private String Controls = "Testing";
 
   public final AcceleratorSubsystem accelerator;
-  public final BlinkinSubsystem blinkin;
   public final DrivetrainSubsystem drivetrain;
   public final ExtensionSubsystem extension;
   public final FlywheelSubsystem flywheel;
@@ -115,7 +113,6 @@ public class RobotContainer implements Loggable {
     // Subsystem Assignments
     vision = new VisionSubsystem();
     accelerator = new AcceleratorSubsystem();
-    blinkin = new BlinkinSubsystem();
     extension = new ExtensionSubsystem();
     flywheel = new FlywheelSubsystem();
     intake = new IntakeSubsystem();
@@ -128,28 +125,6 @@ public class RobotContainer implements Loggable {
     flywheelActive = new Trigger(flywheel::active);
     ballDetected = new Trigger(intake::ballDetected);
     intakeActive = new Trigger(intake::active);
-
-    flywheelReady.or(flywheelActive).or(ballDetected).or(intakeActive).whileActiveContinuous(
-        () -> blinkin.setIndicator(new BlinkinIndicator[] {
-            new BlinkinIndicator("Idle", Constants.BlinkinPriorities.kIdle, Constants.BlinkinColors.kIdle),
-            new BlinkinIndicator("FlywheelReady",
-                (flywheelReady.get() ? 1 : 0) * Constants.BlinkinPriorities.kFlywheelReady,
-                Constants.BlinkinColors.kReadyFlywheel),
-            new BlinkinIndicator("FlywheelActive",
-                (flywheelActive.get() ? 1 : 0) * Constants.BlinkinPriorities.kFlywheelActive,
-                Constants.BlinkinColors.kNotReadyFlywheel),
-            new BlinkinIndicator("BallDetected",
-                (ballDetected.get() ? 1 : 0) * Constants.BlinkinPriorities.kBallDetected,
-                Constants.BlinkinColors.kBallDetected),
-            new BlinkinIndicator("IntakeActive",
-                (intakeActive.get() ? 1 : 0) * Constants.BlinkinPriorities.kIntakeActive,
-                Constants.BlinkinColors.kIntake)
-        }));
-
-    flywheelReady.or(flywheelActive).or(ballDetected).or(intakeActive).whenInactive(
-        () -> blinkin.setIndicator(new BlinkinIndicator[] {
-            new BlinkinIndicator("Idle", Constants.BlinkinPriorities.kIdle, Constants.BlinkinColors.kIdle)
-    }));
 
     drivetrain.setDefaultCommand(new RunCommand(() -> {
       drivetrain.teleopCurvatureDrive(
