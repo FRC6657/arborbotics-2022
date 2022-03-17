@@ -7,6 +7,7 @@ package frc.FRC6657;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import io.github.oblarg.oblog.Logger;
@@ -20,12 +21,16 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_robotContainer = new RobotContainer(); //Creates Robot Container
     Logger.configureLoggingAndConfig(m_robotContainer, false); //Enables Logging
+    
   }
 
   @Override
   public void robotPeriodic() {
 
-    NetworkTableInstance.getDefault().flush();
+    LiveWindow.disableAllTelemetry();
+
+
+    //NetworkTableInstance.getDefault().flush();
 
     Logger.updateEntries();
     CommandScheduler.getInstance().run();

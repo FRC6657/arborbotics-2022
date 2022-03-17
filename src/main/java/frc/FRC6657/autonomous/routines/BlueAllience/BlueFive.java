@@ -38,14 +38,14 @@ public class BlueFive extends SequentialCommandGroup{
     addCommands(
       new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_BALL_2.getInitialPose()), drivetrain), //Reset Position
       new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons), //Intake Blue 2
-      new AimRoutine(drivetrain, hood, flywheel, vision), //Aim
-      new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Blue 1 & 2
+      new AimRoutine(drivetrain, hood, flywheel, vision).withTimeout(1.5), //Aim
+      new FireRoutine(flywheel, hood, accelerator, 0.5).withTimeout(1.5), //Fire Blue 1 & 2
       new IntakePath(PATH_TO_BALL_3, drivetrain, intake, pistons), // Intake Blue 3
-      new AimRoutine(drivetrain, hood, flywheel, vision), //Aim 
-      new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Blue 3
+      new AimRoutine(drivetrain, hood, flywheel, vision).withTimeout(1.5), //Aim 
+      new FireRoutine(flywheel, hood, accelerator, 0.5).withTimeout(1.5), //Fire Blue 3
       new IntakePath(PATH_TO_BALL_4_5, drivetrain, intake, pistons), //Intake Blue 4 & 5
       new ShootPath(PATH_TO_4_5_SHOT, drivetrain, hood, flywheel, vision), //Move to firing position
-      new FireRoutine(flywheel, hood, accelerator, 0.5) //Fire Blue 4 & 5
+      new FireRoutine(flywheel, hood, accelerator, 0.5).withTimeout(1.5) //Fire Blue 4 & 5
     );
   }
 

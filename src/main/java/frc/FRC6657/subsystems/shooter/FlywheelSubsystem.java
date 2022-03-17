@@ -40,7 +40,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   private final LinearQuadraticRegulator<N1, N1, N1> mFlywheelController = new LinearQuadraticRegulator<>(
       Constants.Flywheel.kPlant,
-      VecBuilder.fill(50), // Velocity error tolerance
+      VecBuilder.fill(400), // Velocity error tolerance
       VecBuilder.fill(12), // Control effort (voltage) tolerance
       0.020);
 
@@ -56,7 +56,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   private double mRpmTarget = 0;
 
   public FlywheelSubsystem() {
-    mProtagonist = new WPI_TalonFX(Constants.kRightFlywheelID);
+    mProtagonist = new WPI_TalonFX(Constants.kLeftFlywheelID);
 
     configureMotors();
 
@@ -83,7 +83,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
     mProtagonist.setNeutralMode(NeutralMode.Coast);
 
-    mProtagonist.setInverted(InvertType.None);
+    mProtagonist.setInverted(InvertType.InvertMotorOutput);
 
     mProtagonist.setSelectedSensorPosition(0);
 

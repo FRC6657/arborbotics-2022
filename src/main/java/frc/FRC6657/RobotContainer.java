@@ -42,6 +42,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedMidTwo;
 import frc.FRC6657.autonomous.routines.RedAlliance.RedSingleSteal;
+import frc.FRC6657.autonomous.common.AimRoutine;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueCoopFour;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueDoubleSteal;
 import frc.FRC6657.autonomous.routines.BlueAllience.BlueFive;
@@ -82,11 +83,11 @@ import io.github.oblarg.oblog.annotations.Log;
 public class RobotContainer implements Loggable {
 
   private CommandXboxController mXboxController = new CommandXboxController(0);
-  private Joystick mJoystick = new Joystick(1);
+  private CommandXboxController mJoystick = new CommandXboxController(1);
 
   /** Dont trust this it needs overhauled */
   private DriverProfile mProfile = new DriverProfile(
-      Constants.Drivetrain.kMaxAttainableSpeed, // Max Speed m/s
+      5, // Max Speed m/s
       90d, // Max Turn deg/s
       3d, // Mod Drive Speed m/s
       80d // Mod Turn Speed deg/s
@@ -137,14 +138,14 @@ public class RobotContainer implements Loggable {
     configureButtonBindings();
     configureAutoChooser();
 
-    if (RobotBase.isSimulation()) {
-      spoofVision();
-    }
+    // if (RobotBase.isSimulation()) {
+    //   spoofVision();
+    // }
   }
 
-  private void spoofVision() {
-    NetworkTableInstance.getDefault().getTable("photonvision").getEntry("version").setValue("v2022.1.4");
-  }
+  // private void spoofVision() {
+  //   NetworkTableInstance.getDefault().getTable("photonvision").getEntry("version").setValue("v2022.1.4");
+  // }
 
   private void configureAutoChooser() {
     mAutoChooser.setDefaultOption("Nothing", new SequentialCommandGroup[]{null,null});
@@ -222,14 +223,55 @@ public class RobotContainer implements Loggable {
 
   private void configureButtonBindings() {
 
-
-    mXboxController.a().whenHeld(
+    mJoystick.rightBumper().whenHeld(
       new StartEndCommand(
-        () -> flywheel.setRPMTarget(1000), 
-        flywheel::stop, flywheel
+        () ->flywheel.setRPMTarget(InterpolatingTable.get(vision.visionSupplier.getDistance()).rpm), 
+        flywheel::stop,
+        flywheel
       )
     );
+
+    mXboxController.a().whenHeld(
+      drivetrain.new VisionAimAssist()
+    );
+
+    mXboxController.leftBumper().whenPressed(
+      new InstantCommand(
+        () -> hood.setAngle(InterpolatingTable.get(vision.visionSupplier.getDistance()).hoodAngle),
+        hood
+      )
+    );
+    mXboxController.y().whenPressed(
+      hood.new Home()
+    );
     
+    mXboxController.b().whenHeld(
+      new ParallelCommandGroup(
+        new InstantCommand(extension::extend),
+        new InstantCommand(intake::start)
+      )
+    ).whenReleased(
+      new ParallelCommandGroup(
+        new InstantCommand(extension::retract),
+        new InstantCommand(intake::stop)
+      )
+    );
+
+    mXboxController.x().whenHeld(
+      new StartEndCommand(
+        accelerator::start, accelerator::stop, accelerator)
+    );
+
+
+    mXboxController.pov.up().whenHeld(
+      new StartEndCommand(
+        () -> lift.set(1), () -> lift.set(0), lift)
+    );
+
+    mXboxController.pov.down().whenHeld(
+      new StartEndCommand(
+        () -> lift.set(-1), () -> lift.set(0), lift)
+    );
 
   }
 
@@ -240,6 +282,6 @@ public class RobotContainer implements Loggable {
     }else{
       alliance = 1;
     }
-    return mAutoChooser.getSelected()[alliance];
+    return mAutoChooser.getSelected()[1];
   }
 }

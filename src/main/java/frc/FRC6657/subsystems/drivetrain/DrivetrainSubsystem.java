@@ -27,6 +27,7 @@ import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.LinearPlantInversionFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -85,7 +86,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
   );
 
   //Feed forward and PID controller for advanced movement
-  private final LinearPlantInversionFeedforward<N2,N2,N2> mFeedForward;
+  //private final LinearPlantInversionFeedforward<N2,N2,N2> mFeedForward;
+  public final SimpleMotorFeedforward mFeedForward;
   private final PIDController mLinearPIDController;
 
   // Ramsete Controller for Path Following
@@ -202,8 +204,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     mFrontRight.configVelocityMeasurementWindow(1);
 
     // Limits the current to prevent breaker tripping
-    mFrontLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); // | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
-    mFrontRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5));// | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
+    mFrontLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 65, 0.5)); // | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
+    mFrontRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 65, 0.5));// | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
     mBackLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); //  | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
     mBackRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.5)); // | Enabled | 60a Limit | 65a Thresh | .5 sec Trigger Time
 
@@ -303,22 +305,24 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
    */
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
 
-    var feedForward = mFeedForward.calculate(
-      new MatBuilder<>(
-        Nat.N2(), 
-        Nat.N1()
-      )
-      .fill(
-        speeds.leftMetersPerSecond, 
-        speeds.rightMetersPerSecond
-      )
-    );
+    // var feedForward = mFeedForward.calculate(
+    //   new MatBuilder<>(
+    //     Nat.N2(), 
+    //     Nat.N1()
+    //   )
+    //   .fill(
+    //     speeds.leftMetersPerSecond, 
+    //     speeds.rightMetersPerSecond
+    //   )
+    // );
+
+    
 
     final double leftOutput = mLinearPIDController.calculate(getLeftVelocity(), speeds.leftMetersPerSecond);
     final double rightOutput = mLinearPIDController.calculate(getRightVelocity(), speeds.rightMetersPerSecond);
 
-    mFrontLeft.setVoltage(leftOutput + feedForward.get(0, 0));
-    mFrontRight.setVoltage(rightOutput + feedForward.get(1, 0));
+    mFrontLeft.setVoltage(leftOutput + mFeedForward.calculate(getLeftVelocity()) * 0.7);
+    mFrontRight.setVoltage(rightOutput + mFeedForward.calculate(getRightVelocity()) * 0.7);
   }
 
   /**
@@ -570,18 +574,18 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
     public void execute() {
       if(mVision.hasTarget()){
         double effort = mVisionPID.calculate(mVision.getYaw(), 0);
-        mFrontLeft.setVoltage(-effort);
-        mFrontRight.setVoltage(effort);
+        mFrontLeft.setVoltage(-effort +  mFeedForward.calculate(getLeftVelocity()) * 0.5);
+        mFrontRight.setVoltage(effort + mFeedForward.calculate(getRightVelocity()) * 0.5);
       }else{
-        double output = mAproxPID.calculate(getGyroAngle(), startPoint + estimatedError);
-        mFrontLeft.set(-output);
-        mFrontRight.set(output);
+        // double output = mAproxPID.calculate(getGyroAngle(), startPoint + estimatedError);
+        // mFrontLeft.set(-output);
+        // mFrontRight.set(output);
       }
     }
     @Override
     public void end(boolean interrupted) {
         stop();
-        mVision.disableLEDs();
+        mVision.enableLEDs();
     }
   }
 
@@ -594,8 +598,8 @@ public class DrivetrainSubsystem extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    updatePoseEstimator(new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity()), getLeftMeters(), getRightMeters());
-    mField.setRobotPose(mPoseEstimator.getEstimatedPosition());
+    //updatePoseEstimator(new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity()), getLeftMeters(), getRightMeters());
+    //mField.setRobotPose(mPoseEstimator.getEstimatedPosition());
 
     if(RobotBase.isSimulation()){
       mIntakeVisualier.setPose(

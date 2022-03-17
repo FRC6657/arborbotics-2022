@@ -35,8 +35,8 @@ public class RedWallTwo extends SequentialCommandGroup {
     addCommands(
       new InstantCommand(() -> drivetrain.resetPoseEstimator(PATH_TO_BALL_2.getInitialPose()), drivetrain), //Reset Position
       new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons), //Intake Red 2
-      new AimRoutine(drivetrain, hood, flywheel, vision), //Aim
-      new FireRoutine(flywheel, hood, accelerator, 0.5), //Fire Red 2
+      new AimRoutine(drivetrain, hood, flywheel, vision).withTimeout(1.5), //Aim
+      new FireRoutine(flywheel, hood, accelerator, 1.5).withTimeout(1.5), //Fire Red 2
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_TAXI) //Ensure Taxi
     );
   }

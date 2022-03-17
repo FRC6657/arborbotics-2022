@@ -62,6 +62,7 @@ public class HoodSubsystem extends SubsystemBase {
     private void configureMotor() {
         mMotor.setSmartCurrentLimit(30);
         mMotor.setIdleMode(IdleMode.kBrake);
+        mMotor.setInverted(false);
         mMotor.getEncoder().setPositionConversionFactor(Constants.Hood.kRatio/360); //Converts Encoder Reading to Degrees
     }
 
@@ -74,7 +75,7 @@ public class HoodSubsystem extends SubsystemBase {
     }
 
     public void setAngle(double angle){
-        angleSetpoint = MathUtil.clamp(angle, 0, 35);
+        angleSetpoint = MathUtil.clamp(angle, 0, 28);
     }
 
     public void enableVision(boolean enabled){
@@ -109,6 +110,8 @@ public class HoodSubsystem extends SubsystemBase {
                 mMotor.setVoltage(mPidController.calculate(getAngle(), angleSetpoint));
             }
         }
+        
+        SmartDashboard.putNumber("hood-angle", getAngle());
     }
 
     public class Home extends CommandBase{
@@ -119,6 +122,8 @@ public class HoodSubsystem extends SubsystemBase {
         public void initialize() {
 
             homing = true;
+
+            angleSetpoint = 0;
 
             if(RobotBase.isSimulation()){
                 setAngle(0);

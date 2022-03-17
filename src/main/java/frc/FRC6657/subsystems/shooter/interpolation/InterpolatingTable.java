@@ -14,8 +14,9 @@ public class InterpolatingTable {
     // Interpolating tree map Example values for now
     private static final TreeMap<Double, ShotParameter> map = new TreeMap<>(
         Map.ofEntries(
-            entry(1.45, new ShotParameter(0,1000)),
-            entry(6d, new ShotParameter(45,4000))
+            entry(1d, new ShotParameter(8, 2750)),
+            entry(1.5d, new ShotParameter(17, 2850)),
+            entry(3.5d, new ShotParameter(20, 4000))
         )
     );
 

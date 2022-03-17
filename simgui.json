@@ -14,6 +14,7 @@
       "/LiveWindow/DrivetrainSubsystem": "Subsystem",
       "/LiveWindow/ExtensionSubsystem": "Subsystem",
       "/LiveWindow/FlywheelSubsystem": "Subsystem",
+      "/LiveWindow/FlywheelSubsystemBackup": "Subsystem",
       "/LiveWindow/HoodSubsystem": "Subsystem",
       "/LiveWindow/IntakeSubsystem": "Subsystem",
       "/LiveWindow/LiftSubsystem": "Subsystem",
@@ -193,6 +194,9 @@
       "FlywheelSubsystem": {
         "open": true
       },
+      "FlywheelSubsystemBackup": {
+        "open": true
+      },
       "open": true
     },
     "photonvision": {
@@ -234,7 +238,8 @@
         }
       ],
       "window": {
-        "name": "Flywheel RPM"
+        "name": "Flywheel RPM",
+        "visible": false
       }
     },
     "Plot <1>": {
@@ -263,6 +268,33 @@
       "window": {
         "name": "Acc"
       }
+    },
+    "Plot <2>": {
+      "plots": [
+        {
+          "height": 988,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/FlywheelSubsystemBackup/RPM"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/FlywheelSubsystemBackup/RPM Target"
+            }
+          ]
+        }
+      ]
     }
   }
 }

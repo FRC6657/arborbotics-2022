@@ -6,6 +6,7 @@ package frc.FRC6657;
 
 import edu.wpi.first.math.controller.LinearPlantInversionFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -22,11 +23,6 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.FRC6657.custom.rev.Blinkin.BlinkinLEDPattern;
 
 public final class Constants {
-
-    // Drivetrain //
-
-    //PWM IDs
-    public static final int kBlinkinID = 0;
 
     // CAN IDs
     public static final int kFrontLeftID = 1;
@@ -60,7 +56,7 @@ public final class Constants {
         public static final double angular_kA = 0.081887;
 
         // Drivetrain PID
-        public static final double drive_linear_kP = 0.94402; //Char P gain 0.64132
+        public static final double drive_linear_kP = 0.5; //Char P gain 0.64132
 
         public static final double Turn_Command_kP = 1d/90;
         public static final double Turn_Command_kD = 1d/1200;
@@ -100,7 +96,9 @@ public final class Constants {
         );
 
 
-        public static final LinearPlantInversionFeedforward<N2,N2,N2> kFeedForward = new LinearPlantInversionFeedforward<N2,N2,N2>(kPlant,0.02);
+        //public static final LinearPlantInversionFeedforward<N2,N2,N2> kFeedForward = new LinearPlantInversionFeedforward<N2,N2,N2>(kPlant,0.02);
+
+        public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(linear_kS, linear_kV, linear_kA);
 
     }
 
@@ -130,13 +128,13 @@ public final class Constants {
     public static class Flywheel {
         // General
         public static final double kSpinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500);
-        public static final double kRPMTollerance = 50;
+        public static final double kRPMTollerance = 150;
         public static final double kRatio = 1/1.5;
 
         // Characterization
-        public static final double kV = 0.082813;
-        public static final double kA= 0.018318;
-
+        public static final double kV = 0.016;
+        public static final double kA = 0.009318;
+        
         public static final LinearSystem<N1, N1, N1> kPlant = LinearSystemId.identifyVelocitySystem(kV, kA);
 
         public static final FlywheelSim kSim = new FlywheelSim(
@@ -150,7 +148,7 @@ public final class Constants {
     public static class Hood {
         public static final double kUpSpeed = 0.5;
         public static final double kDownSpeed = -0.3;
-        public static final double kRatio = 1d/(((10*5*3)*(3/2d)*(5/2d)));
+        public static final double kRatio = (((10*5*3)*(2/3d)*(5/2d)));
         public static final double kP = 12/45d;
         public static final PIDController kPIDController = new PIDController(kP, 0, 0);
 
@@ -205,8 +203,8 @@ public final class Constants {
         public static int kIdle = 1;
     }
     public static class DriverConfigs{
-        public static final double kTurnDeadband = 0.1;
-        public static final double kDriveDeadband = 0.1;
+        public static final double kTurnDeadband = 0.2;
+        public static final double kDriveDeadband = 0.2;
     }
     
 }

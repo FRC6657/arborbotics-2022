@@ -17,9 +17,12 @@ public class LiftSubsystem extends SubsystemBase {
   private final WPI_TalonSRX mRightMotor;
   
   public LiftSubsystem() {
-    //configureMotor();
+    //><configureMotor();
     mRightMotor = new WPI_TalonSRX(Constants.kRightLiftID);
     mLeftMotor = new WPI_TalonSRX(Constants.kLeftLiftID);
+
+    mLeftMotor.setNeutralMode(NeutralMode.Brake);
+    mRightMotor.setNeutralMode(NeutralMode.Brake);
 
   }
 

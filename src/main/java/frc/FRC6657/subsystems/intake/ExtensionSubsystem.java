@@ -4,6 +4,7 @@
 
 package frc.FRC6657.subsystems.intake;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -15,8 +16,11 @@ public class ExtensionSubsystem extends SubsystemBase {
 
   private DoubleSolenoid mLeftPiston = new DoubleSolenoid(7, PneumaticsModuleType.CTREPCM, 0, 1);
   private DoubleSolenoid mRightPiston = new DoubleSolenoid(7, PneumaticsModuleType.CTREPCM, 6, 7);
+  private Compressor mCompressor = new Compressor(PneumaticsModuleType.CTREPCM);
+
 
   public ExtensionSubsystem() {
+    mCompressor.disable();
     retract();
   }
 
