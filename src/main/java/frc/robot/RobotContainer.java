@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.autonomous.routines.BlueAllience.RedFenderThree;
 import frc.robot.autonomous.routines.test.Fender;
 import frc.robot.custom.ArborMath;
 import frc.robot.custom.controls.CommandXboxController;
@@ -170,7 +171,7 @@ public class RobotContainer {
 
 
   public Command getAutonomousCommand() {
-    return new Fender(drivetrain, intake, pistons);
+    return new RedFenderThree(drivetrain, intake, pistons);
   }
 
   public static Field2d getField(){
