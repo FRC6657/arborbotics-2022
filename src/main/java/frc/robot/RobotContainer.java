@@ -108,26 +108,30 @@ public class RobotContainer {
     mDriverController.y().whenHeld(
       new StartEndCommand(accelerator::start, accelerator::stop, accelerator)
     );
-
-
-    mDriverController.x().whenHeld(
-      new ParallelCommandGroup(
-        new RunEndCommand(() -> flywheel.setTargetRPM(2500), flywheel::stop, flywheel),
-        new RunEndCommand(() -> hood.setTargetAngle(1), hood::stop, hood)
-      ).beforeStarting(
-        new SequentialCommandGroup(
-          new InstantCommand(() -> vision.visionSupplier.enableLEDs()),
-          new WaitCommand(0.25)
-        )
-        ).andThen(new InstantCommand(() -> vision.visionSupplier.disableLEDs()))
-    );
     
     mDriverController.x().whenHeld(
-      new SequentialCommandGroup(
-        new WaitUntilCommand(() -> (hood.ready() && flywheel.ready())),
+      new ParallelCommandGroup(
+        new SequentialCommandGroup(
+          new WaitUntilCommand(() -> (hood.ready() && flywheel.ready())),
+          new ParallelCommandGroup(
+            new StartEndCommand(accelerator::start, accelerator::stop, accelerator),
+            new StartEndCommand(pistons::extend, pistons::retract, pistons)
+          )
+        ),
         new ParallelCommandGroup(
-          new StartEndCommand(accelerator::start, accelerator::stop, accelerator),
-          new StartEndCommand(pistons::extend, pistons::retract, pistons)
+          new RunEndCommand(() -> flywheel.setTargetRPM(2500), flywheel::stop, flywheel),
+          new RunEndCommand(() -> hood.setTargetAngle(1), hood::stop, hood)
+        )
+        .beforeStarting(
+          new SequentialCommandGroup(
+            new InstantCommand(() -> vision.visionSupplier.enableLEDs()),
+            new WaitCommand(0.25)
+          )
+        )
+        .andThen(
+          new InstantCommand(
+            () -> vision.visionSupplier.disableLEDs()
+          )
         )
       )
     );

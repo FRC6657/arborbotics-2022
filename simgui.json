@@ -47,12 +47,50 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "Intake": {
+          "arrows": false,
+          "color": [
+            1.0,
+            0.0,
+            0.0,
+            255.0
+          ],
+          "length": 0.22599999606609344,
+          "width": 0.8510000109672546
+        },
+        "Marker": {
+          "arrows": false,
+          "length": 0.5,
+          "width": 0.5
+        },
+        "Pose1": {
+          "length": 0.9860000014305115,
+          "width": 0.8510000109672546
+        },
+        "Robot": {
+          "length": 0.9860000014305115,
+          "width": 0.8510000109672546
+        },
         "bottom": 900,
         "height": 8.229599952697754,
-        "image": "C:\\Users\\Andrew Card\\Desktop\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
+        "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
         "left": 74,
         "right": 1774,
+        "robot-path": {
+          "arrows": false,
+          "style": "Line"
+        },
         "top": 50,
+        "trajectory": {
+          "arrows": false,
+          "color": [
+            0.029411792755126953,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "style": "Line"
+        },
         "width": 16.459199905395508,
         "window": {
           "visible": true
@@ -84,7 +122,7 @@
     "Plot <0>": {
       "plots": [
         {
-          "height": -6,
+          "height": 357,
           "series": [
             {
               "color": [
