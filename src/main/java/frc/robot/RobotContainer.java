@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autonomous.routines.BlueAllience.RedFenderFive;
 import frc.robot.autonomous.routines.BlueAllience.RedFenderThree;
-import frc.robot.autonomous.routines.test.Fender;
+import frc.robot.autonomous.routines.test.BlueFenderThree;
 import frc.robot.custom.ArborMath;
 import frc.robot.custom.controls.CommandXboxController;
 import frc.robot.custom.controls.Deadbander;
@@ -47,7 +47,7 @@ public class RobotContainer {
 
   private Trigger intakeExtended = new Trigger(pistons::extended);
 
-  private SendableChooser<SequentialCommandGroup> mAutoChooser = new SendableChooser<>();
+  private SendableChooser<SequentialCommandGroup[]> mAutoChooser = new SendableChooser<>();
 
   private static Field2d mField = new Field2d();
   private FieldObject2d mIntakeVisualizer = mField.getObject("Intake");
@@ -143,6 +143,20 @@ public class RobotContainer {
   public void configureAutoChooser(){
     mAutoChooser.setDefaultOption("Nothing", null);
     SmartDashboard.putData("Auto Chooser", mAutoChooser);
+
+    mAutoChooser.addOption("Fender Five", 
+    new SequentialCommandGroup[] {
+      new RedFenderFive(drivetrain, intake, pistons, accelerator),
+      null
+    }
+    );
+
+    mAutoChooser.addOption("Fender Three",
+    new SequentialCommandGroup[]{
+      new RedFenderThree(drivetrain, intake, pistons),
+      new BlueFenderThree(drivetrain, intake, pistons)
+    }
+    );
   }
 
   public void updateField(){

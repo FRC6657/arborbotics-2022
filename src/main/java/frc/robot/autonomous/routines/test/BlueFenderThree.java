@@ -17,9 +17,9 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.intake.IntakePistonsSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-public class Fender extends SequentialCommandGroup{
+public class BlueFenderThree extends SequentialCommandGroup{
   /** Creates a new BlueFive. */
-  public Fender(
+  public BlueFenderThree(
     DrivetrainSubsystem drivetrain,
     IntakeSubsystem intake,
     IntakePistonsSubsystem pistons
