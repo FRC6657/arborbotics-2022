@@ -43,6 +43,10 @@ public class AcceleratorSubsystem extends SubsystemBase {
     set(Constants.Accelerator.kSpeed);
   }
 
+  public void reverse(){
+    set(-Constants.Accelerator.kSpeed);
+  }
+
   public void stop(){
     mMotor.stopMotor();
   }

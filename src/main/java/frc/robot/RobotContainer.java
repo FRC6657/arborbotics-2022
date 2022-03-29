@@ -161,7 +161,7 @@ public class RobotContainer {
           new InstantCommand(pistons::extend, pistons),
           new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()),
           new InstantCommand(pistons::retract, pistons),
-          new InstantCommand(() -> accelerator.set(-1)),
+          new InstantCommand(accelerator::reverse, accelerator),
           new WaitCommand(0.25),
           new InstantCommand(accelerator::stop),
           new WaitUntilCommand(() -> flywheel.ready()),
@@ -175,51 +175,28 @@ public class RobotContainer {
         new InstantCommand(pistons::retract, pistons)
       )
     );
-
-    mDriverController.a().whenHeld(
-      new SequentialCommandGroup(
-          new ParallelCommandGroup(//2500
-            new InstantCommand(() -> flywheel.setTargetRPM(2500), flywheel),
-            new InstantCommand(() -> hood.setTargetAngle(50), hood)
-          ),
-          new WaitUntilCommand(() -> flywheel.ready()),
-          new InstantCommand(pistons::extend, pistons),
-          new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()),
-          new InstantCommand(() -> accelerator.set(-1)),
-          new WaitCommand(0.25),
-          new InstantCommand(accelerator::stop),
-          new WaitUntilCommand(() -> flywheel.ready()),
-          new RunCommand(accelerator::start)
-      )
-    ).whenReleased(
-      new ParallelCommandGroup(
-        new InstantCommand(flywheel::stop, flywheel),
-        new InstantCommand(hood::stop, hood),
-        new InstantCommand(accelerator::stop, accelerator),
-        new InstantCommand(pistons::retract, pistons)
-      )
-    );
-
   }
   
   public void configureAutoChooser(){
     mAutoChooser.setDefaultOption("Nothing", null);
-    SmartDashboard.putData("Auto Chooser", mAutoChooser);
 
     //Addie Main Test
     mAutoChooser.addOption("Fender Five", 
-    new SequentialCommandGroup[] {
-      new RedFenderFive(drivetrain, intake, pistons, accelerator),
-      null
-    }
+      new SequentialCommandGroup[] {
+        new RedFenderFive(drivetrain, intake, pistons, accelerator),
+        null
+      }
     );
 
     mAutoChooser.addOption("Fender Three",
-    new SequentialCommandGroup[]{
-      new RedFenderThree(drivetrain, intake, pistons),
-      new BlueFenderThree(drivetrain, intake, pistons)
-    }
+      new SequentialCommandGroup[]{
+        new RedFenderThree(drivetrain, intake, pistons, accelerator, flywheel, hood),
+        new BlueFenderThree(drivetrain, intake, pistons)
+      }
     );
+
+    SmartDashboard.putData("Auto Chooser", mAutoChooser);
+
   }
 
   public void updateField(){
