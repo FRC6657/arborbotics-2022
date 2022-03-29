@@ -144,6 +144,7 @@ public class RobotContainer {
     mAutoChooser.setDefaultOption("Nothing", null);
     SmartDashboard.putData("Auto Chooser", mAutoChooser);
 
+    //Addie Main Test
     mAutoChooser.addOption("Fender Five", 
     new SequentialCommandGroup[] {
       new RedFenderFive(drivetrain, intake, pistons, accelerator),
