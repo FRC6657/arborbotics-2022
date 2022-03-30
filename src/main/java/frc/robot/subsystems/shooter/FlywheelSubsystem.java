@@ -13,7 +13,9 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -42,6 +44,12 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
   VisionSupplier vision;
 
   public boolean useVision = false;
+
+  public double spikeEst = 0;
+
+  private Timer ampTimer = new Timer();
+
+  public boolean readyState = false;
 
   private FlywheelSim mSim = new FlywheelSim(
     kPlant,
@@ -95,10 +103,6 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
     mCurrentRPM = getRPM();
 
-    // if(vision.hasTarget() && useVision){
-    //   setTargetRPM(InterpolatingTable.get(vision.getDistance()).rpm);
-    // }
-
     if(mTargetRPM != 0){
       mFFEffort = mFeedForward.calculate(mTargetRPM+200);
       mPIDEffort = mPID.calculate(mCurrentRPM, mTargetRPM+200);
@@ -107,12 +111,21 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
       mPIDEffort = 0;
     }
 
+    if(ready()){
+      readyState = true;
+    }
+
     mMaster.setVoltage(mPIDEffort + mFFEffort);
 
   }
 
   @Config(tabName = "Shooter", name = "Set RPM")  
   public void setTargetRPM(double newTarget){
+    
+    if(newTarget != mTargetRPM){
+      ampTimer.reset();
+    }
+
     mTargetRPM = newTarget;
   }
 
@@ -128,6 +141,11 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   @Log(tabName = "Shooter", name = "Flywheel Ready")
   public boolean ready(){
+
+    if(RobotBase.isSimulation()){
+      return true;
+    }
+
     return ArborMath.inTolerance(Math.abs(mTargetRPM+200-mCurrentRPM), 100) && mTargetRPM != 0;
   }
 
@@ -171,4 +189,18 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     useVision = false;
   }
 
+  @Log(tabName = "Shooter")
+  public double getAmps(){
+    return mMaster.getSupplyCurrent();
+  }
+
+  @Log(tabName = "Shooter")
+  public boolean shotDetector(){
+    if(readyState && !ready()){
+      readyState = false;
+      return true;
+    }else{
+      return false;
+    }
+  }
 }

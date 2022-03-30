@@ -46,6 +46,11 @@
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field": {
         "Intake": {
           "arrows": false,
@@ -56,6 +61,7 @@
             255.0
           ],
           "length": 0.22599999606609344,
+          "style": "Line",
           "width": 0.8510000109672546
         },
         "Marker": {
@@ -68,17 +74,26 @@
           "width": 0.8510000109672546
         },
         "Robot": {
+          "arrows": false,
           "length": 0.9860000014305115,
+          "style": "Box/Image",
           "width": 0.8510000109672546
         },
         "bottom": 900,
         "height": 8.229599952697754,
-        "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field.png",
+        "image": "D:\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field-dark.png",
         "left": 74,
         "right": 1774,
         "robot-path": {
           "arrows": false,
-          "style": "Line"
+          "color": [
+            0.0,
+            255.0,
+            239.99998474121094,
+            255.0
+          ],
+          "style": "Line",
+          "weight": 2.0
         },
         "top": 50,
         "trajectory": {
