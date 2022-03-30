@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -112,10 +113,44 @@ public class RobotContainer {
           )
           ).andThen(new InstantCommand(() -> vision.visionSupplier.disableLEDs()))
     );
-
     
-    mDriverController.y().whenHeld(
-      new StartEndCommand(accelerator::start, accelerator::stop, accelerator)
+    // mDriverController.x().whenHeld(
+    //   new ParallelCommandGroup(
+    //     new SequentialCommandGroup(
+    //       new WaitUntilCommand(() -> (hood.ready() && flywheel.ready())),
+    //       new ParallelCommandGroup(
+    //         new StartEndCommand(accelerator::start, accelerator::stop, accelerator),
+    //         new StartEndCommand(pistons::extend, pistons::retract, pistons)
+    //       )
+    //     ),
+    //     new ParallelCommandGroup(
+    //       new RunEndCommand(() -> flywheel.setTargetRPM(2500), flywheel::stop, flywheel),
+    //       new RunEndCommand(() -> hood.setTargetAngle(1), hood::stop, hood)
+    //     )
+    //     .beforeStarting(
+    //       new SequentialCommandGroup(
+    //         new InstantCommand(() -> vision.visionSupplier.enableLEDs()),
+    //         new WaitCommand(0.25)
+    //       )
+    //     )
+    //     .andThen(
+    //       new InstantCommand(
+    //         () -> vision.visionSupplier.disableLEDs()
+    //       )
+    //     )
+    //   )
+    // );
+
+    // mDriverController.x().whenHeld(
+    //     new ParallelCommandGroup(//2500
+    //       new RunEndCommand(() -> flywheel.setTargetRPM(1000), flywheel::stop, flywheel),
+    //       new RunEndCommand(() -> hood.setTargetAngle(1), hood::stop, hood)
+    //     )
+    // );
+
+
+    mDriverController.pov.up().whenHeld(
+      new StartEndCommand(() -> lift.set(1), lift::stop, lift)
     );
     
     mDriverController.a().whenHeld(
@@ -141,7 +176,6 @@ public class RobotContainer {
         new InstantCommand(pistons::retract, pistons)
       )
     );
-
   }
   
   public void configureAutoChooser(){
@@ -175,6 +209,7 @@ public class RobotContainer {
     });
 
     SmartDashboard.putData("Auto Chooser", mAutoChooser);
+
   }
 
   public void updateField(){

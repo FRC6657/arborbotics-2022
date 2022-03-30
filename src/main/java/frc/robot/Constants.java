@@ -35,7 +35,6 @@ public final class Constants {
     }
 
 
-
     public static class DriveProfile{
         public static final double kMaxDriveSpeed = 10; //Meters/s
         public static final double kMaxTurnSpeed = Units.degreesToRadians(360*3); //Rad/s
