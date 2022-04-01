@@ -65,7 +65,7 @@ public final class Constants {
     }
 
     public static class Accelerator {
-        public static final double kSpeed = 1.0;
+        public static final double kSpeed = 0.75;
     }
 
     public static class Intake {

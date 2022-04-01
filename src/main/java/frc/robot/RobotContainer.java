@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.autonomous.common.FireOne;
 import frc.robot.autonomous.routines.BlueAllience.BlueFenderFive;
 import frc.robot.autonomous.routines.BlueAllience.BlueFenderThree;
 import frc.robot.autonomous.routines.BlueAllience.BlueFenderTwoHanger;
@@ -32,6 +33,7 @@ import frc.robot.autonomous.routines.RedAlliance.RedFenderThree;
 import frc.robot.autonomous.routines.RedAlliance.RedFenderTwoHanger;
 import frc.robot.autonomous.routines.RedAlliance.RedFenderTwoMid;
 import frc.robot.autonomous.routines.RedAlliance.RedFenderTwoWall;
+import frc.robot.autonomous.routines.test.RoutineTesting;
 import frc.robot.custom.ArborMath;
 import frc.robot.custom.controls.CommandXboxController;
 import frc.robot.custom.controls.Deadbander;
@@ -64,6 +66,7 @@ public class RobotContainer {
   private SlewRateLimiter mIntakeAnimator = new SlewRateLimiter(1);
 
   private CommandXboxController mDriverController = new CommandXboxController(0);
+  private CommandXboxController mOperatorController = new CommandXboxController(1);
   
   public RobotContainer() {
 
@@ -88,7 +91,7 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
 
-    mDriverController.rightBumper().whenHeld(
+    mOperatorController.a().whenHeld(
       new ParallelCommandGroup(
         new StartEndCommand(
           pistons::extend, 
@@ -103,7 +106,29 @@ public class RobotContainer {
       )
     );
 
+    mOperatorController.pov.up().whenHeld(
+      new ParallelCommandGroup(
+        new InstantCommand(hood::stop, hood),
+        new StartEndCommand(
+          () -> lift.set(1), 
+          lift::stop, lift
+        )
+      )
+    );
 
+    mOperatorController.pov.down().whenHeld(
+      new ParallelCommandGroup(
+        new InstantCommand(hood::stop, hood),
+        new StartEndCommand(
+          () -> lift.set(-1), 
+          lift::stop, 
+          lift
+        )
+      )
+    );
+
+
+    //TODO Test
     mDriverController.leftBumper().whenHeld(
       drivetrain.new VisionAimAssist()
         .beforeStarting(
@@ -114,55 +139,21 @@ public class RobotContainer {
           ).andThen(new InstantCommand(() -> vision.visionSupplier.disableLEDs()))
     );
     
-    // mDriverController.x().whenHeld(
-    //   new ParallelCommandGroup(
-    //     new SequentialCommandGroup(
-    //       new WaitUntilCommand(() -> (hood.ready() && flywheel.ready())),
-    //       new ParallelCommandGroup(
-    //         new StartEndCommand(accelerator::start, accelerator::stop, accelerator),
-    //         new StartEndCommand(pistons::extend, pistons::retract, pistons)
-    //       )
-    //     ),
-    //     new ParallelCommandGroup(
-    //       new RunEndCommand(() -> flywheel.setTargetRPM(2500), flywheel::stop, flywheel),
-    //       new RunEndCommand(() -> hood.setTargetAngle(1), hood::stop, hood)
-    //     )
-    //     .beforeStarting(
-    //       new SequentialCommandGroup(
-    //         new InstantCommand(() -> vision.visionSupplier.enableLEDs()),
-    //         new WaitCommand(0.25)
-    //       )
-    //     )
-    //     .andThen(
-    //       new InstantCommand(
-    //         () -> vision.visionSupplier.disableLEDs()
-    //       )
-    //     )
-    //   )
-    // );
 
-    // mDriverController.x().whenHeld(
-    //     new ParallelCommandGroup(//2500
-    //       new RunEndCommand(() -> flywheel.setTargetRPM(1000), flywheel::stop, flywheel),
-    //       new RunEndCommand(() -> hood.setTargetAngle(1), hood::stop, hood)
-    //     )
-    // );
-
-
-    mDriverController.pov.up().whenHeld(
-      new StartEndCommand(() -> lift.set(1), lift::stop, lift)
-    );
-    
-    mDriverController.a().whenHeld(
+    //Fender Shot
+    mDriverController.x().whenHeld(
       new SequentialCommandGroup(
-          new ParallelCommandGroup(//2500
-            new InstantCommand(() -> flywheel.setTargetRPM(2500), flywheel),
-            new InstantCommand(() -> hood.setTargetAngle(50), hood)
+          new ParallelCommandGroup(
+            new InstantCommand(() -> flywheel.setTargetRPM(3150), flywheel),
+            new InstantCommand(() -> hood.setTargetAngle(3), hood)
           ),
           new WaitUntilCommand(() -> flywheel.ready()),
           new InstantCommand(pistons::extend, pistons),
           new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()),
-          new InstantCommand(() -> accelerator.set(-1)),
+          new ParallelCommandGroup(
+            new InstantCommand(accelerator::reverse),
+            new InstantCommand(pistons::retract)
+          ),
           new WaitCommand(0.25),
           new InstantCommand(accelerator::stop),
           new WaitUntilCommand(() -> flywheel.ready()),
@@ -176,6 +167,35 @@ public class RobotContainer {
         new InstantCommand(pistons::retract, pistons)
       )
     );
+
+
+    mOperatorController.y().whenPressed(
+      new FireOne(flywheel, hood, accelerator, pistons, 1000, 1)
+    );
+
+    // Tarmac Shot
+    mDriverController.b().whenHeld(
+        new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                new InstantCommand(() -> flywheel.setTargetRPM(3000), flywheel),
+                new InstantCommand(() -> hood.setTargetAngle(20), hood)),
+            new WaitUntilCommand(() -> flywheel.ready()),
+            new InstantCommand(pistons::extend, pistons),
+            new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()),
+            new InstantCommand(() -> accelerator.set(-1)),
+            new WaitCommand(0.25),
+            new InstantCommand(accelerator::stop),
+            new WaitUntilCommand(() -> flywheel.ready()),
+            new RunCommand(accelerator::start)))
+        .whenReleased(
+            new ParallelCommandGroup(
+                new InstantCommand(flywheel::stop, flywheel),
+                new InstantCommand(hood::stop, hood),
+                new InstantCommand(accelerator::stop, accelerator),
+                new InstantCommand(pistons::retract, pistons)
+            )
+        );
+
   }
   
   public void configureAutoChooser(){
@@ -191,7 +211,6 @@ public class RobotContainer {
       new RedFenderThree(drivetrain, intake, pistons, flywheel, hood, accelerator),
       new BlueFenderThree(drivetrain, intake, pistons, accelerator, flywheel, hood)
     });
-
 
     mAutoChooser.addOption("FenderTwoHanger", new SequentialCommandGroup[]{
       new RedFenderTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator),
@@ -239,13 +258,15 @@ public class RobotContainer {
 
 
   public SequentialCommandGroup getAutonomousCommand() {
+
     int alliance = 0;
     if(DriverStation.getAlliance() == Alliance.Red){
       alliance = 0;
     }else{
       alliance = 1;
     }
-    return mAutoChooser.getSelected()[alliance];
+    return new RoutineTesting(drivetrain, intake, pistons, flywheel, hood, accelerator, vision.visionSupplier);
+    //return mAutoChooser.getSelected()[alliance];
   }
 
   public static Field2d getField(){

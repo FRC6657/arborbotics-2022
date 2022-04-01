@@ -22,7 +22,7 @@ import frc.robot.subsystems.shooter.HoodSubsystem;
 public class BlueFenderTwoMid extends SequentialCommandGroup {
   public BlueFenderTwoMid(DrivetrainSubsystem drivetrain, IntakeSubsystem intake, IntakePistonsSubsystem pistons, FlywheelSubsystem flywheel, HoodSubsystem hood, AcceleratorSubsystem accelerator) {
     addCommands(
-      new InstantCommand(() -> drivetrain.resetOdometry(Constants.Field.BLUE_FENDER_1)),
+      new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(6.756,2.702, Rotation2d.fromDegrees(-156.175)))),
       new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_FENDER),
       new FireTwo(flywheel, hood, accelerator, pistons, 2500, 1)
@@ -30,8 +30,8 @@ public class BlueFenderTwoMid extends SequentialCommandGroup {
   }
 
   private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(3, 2, List.of(
-    Constants.Field.BLUE_FENDER_1,
-    new Pose2d(Constants.Field.BLUE_2.minus(new Translation2d(0, 0)), Rotation2d.fromDegrees(0))
+    new Pose2d(6.756,2.702, Rotation2d.fromDegrees(-156.175)),
+    new Pose2d(Constants.Field.BLUE_2.minus(new Translation2d(0, 0)), Rotation2d.fromDegrees(180))
   ), 
   false, 
   "BLUE FIVE PATH_TO_BALL_2"
@@ -39,8 +39,8 @@ public class BlueFenderTwoMid extends SequentialCommandGroup {
 
 
   private Trajectory PATH_TO_FENDER = Trajectories.generateTrajectory(3, 2, List.of(
-    new Pose2d(Constants.Field.BLUE_2, Rotation2d.fromDegrees(90)),
-    Constants.Field.BLUE_FENDER_1
+    new Pose2d(Constants.Field.BLUE_2, Rotation2d.fromDegrees(180)),
+    new Pose2d(Constants.Field.BLUE_FENDER_1.getTranslation().minus(new Translation2d(0, 0.25)), Constants.Field.BLUE_FENDER_1.getRotation())
   ), 
   true, 
   "BLUE FIVE PATH_TO_FENDER"

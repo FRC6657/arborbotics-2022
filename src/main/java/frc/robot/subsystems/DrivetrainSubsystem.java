@@ -310,11 +310,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final DoubleSupplier zInput;
     private final BooleanSupplier modSpeed;
 
-    private SlewRateLimiter mForwardAccelLimit = new SlewRateLimiter(Constants.DriveProfile.kDriveForwardAccel);
-    private SlewRateLimiter mForwardDecelLimit = new SlewRateLimiter(Constants.DriveProfile.kDriveForwardDecel);
-    private SlewRateLimiter mBackwardAccelLimit = new SlewRateLimiter(Constants.DriveProfile.kDriveBackwardAccel);
-    private SlewRateLimiter mBackwardDecelLimit = new SlewRateLimiter(Constants.DriveProfile.kDriveBackwardDecel);
-    private SlewRateLimiter mTurnAccelLimit = new SlewRateLimiter(Constants.DriveProfile.kTurnAccel);
+    // private SlewRateLimiter mForwardAccelLimit = new SlewRateLimiter(Constants.DriveProfile.kDriveForwardAccel);
+    // private SlewRateLimiter mForwardDecelLimit = new SlewRateLimiter(Constants.DriveProfile.kDriveForwardDecel);
+    // private SlewRateLimiter mBackwardAccelLimit = new SlewRateLimiter(Constants.DriveProfile.kDriveBackwardAccel);
+    // private SlewRateLimiter mBackwardDecelLimit = new SlewRateLimiter(Constants.DriveProfile.kDriveBackwardDecel);
+    // private SlewRateLimiter mTurnAccelLimit = new SlewRateLimiter(Constants.DriveProfile.kTurnAccel);
 
     private double lastDriveRef = 0;
     private double lastTurnRef = 0;
@@ -338,39 +338,33 @@ public class DrivetrainSubsystem extends SubsystemBase {
           zInput.getAsDouble() * Constants.DriveProfile.kMaxTurnSpeed
       );
 
-      mTurnAccelLimit.calculate(speeds.omegaRadiansPerSecond);
+      //mTurnAccelLimit.calculate(speeds.omegaRadiansPerSecond);
 
       final double limitedDriveSpeed;
       final double limitedTurnSpeed;
 
-      if(Math.abs(speeds.vxMetersPerSecond) > Math.abs(lastDriveRef)){ //Accelerating
-        if(speeds.vxMetersPerSecond > 0){//Accelerating Forward
-          limitedDriveSpeed = mForwardAccelLimit.calculate(speeds.vxMetersPerSecond);
-        }else{ //Accelerating Backward
-          limitedDriveSpeed = mBackwardAccelLimit.calculate(speeds.vxMetersPerSecond);
-        }
-      }else if(speeds.vxMetersPerSecond == lastDriveRef){ //Not changing speed
-        limitedDriveSpeed = speeds.vxMetersPerSecond;
-      }else{ //Decelerating
-        if(speeds.vxMetersPerSecond > 0){ //Decelerating from Forward
-          limitedDriveSpeed = mForwardDecelLimit.calculate(speeds.vxMetersPerSecond);
-        }else{ //Decelerating from Backward
-          limitedDriveSpeed = mBackwardDecelLimit.calculate(speeds.vxMetersPerSecond);
-        }
-      }
+      // if(Math.abs(speeds.vxMetersPerSecond) > Math.abs(lastDriveRef)){ //Accelerating
+      //   if(speeds.vxMetersPerSecond > 0){//Accelerating Forward
+      //     limitedDriveSpeed = mForwardAccelLimit.calculate(speeds.vxMetersPerSecond);
+      //   }else{ //Accelerating Backward
+      //     limitedDriveSpeed = mBackwardAccelLimit.calculate(speeds.vxMetersPerSecond);
+      //   }
+      // }else if(speeds.vxMetersPerSecond == lastDriveRef){ //Not changing speed
+      //   limitedDriveSpeed = speeds.vxMetersPerSecond;
+      // }else{ //Decelerating
+      //   if(speeds.vxMetersPerSecond > 0){ //Decelerating from Forward
+      //     limitedDriveSpeed = mForwardDecelLimit.calculate(speeds.vxMetersPerSecond);
+      //   }else{ //Decelerating from Backward
+      //     limitedDriveSpeed = mBackwardDecelLimit.calculate(speeds.vxMetersPerSecond);
+      //   }
+      // }
 
-      if(speeds.omegaRadiansPerSecond != 0 & Math.abs(speeds.omegaRadiansPerSecond) > lastTurnRef){
-        limitedTurnSpeed = mTurnAccelLimit.calculate(speeds.omegaRadiansPerSecond);
-      }else{
-        limitedTurnSpeed = speeds.omegaRadiansPerSecond;
-        mTurnAccelLimit.reset(0);
-      }
-
-      speeds = new ChassisSpeeds(
-        limitedDriveSpeed,
-        0,
-        limitedTurnSpeed
-      );
+      // if(speeds.omegaRadiansPerSecond != 0 & Math.abs(speeds.omegaRadiansPerSecond) > lastTurnRef){
+      //   limitedTurnSpeed = mTurnAccelLimit.calculate(speeds.omegaRadiansPerSecond);
+      // }else{
+      //   limitedTurnSpeed = speeds.omegaRadiansPerSecond;
+      //   mTurnAccelLimit.reset(0);
+      // }
 
       setSpeeds(mKinematics.toWheelSpeeds(speeds));
 
@@ -462,7 +456,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public class VisionAimAssist extends CommandBase{
     
-    PIDController mVisionPID = new PIDController(0.015, 0, 0);
+    PIDController mVisionPID = new PIDController(0.015    , 0, 0);
 
     double startPoint;
     MedianFilter filter = new MedianFilter(2);
@@ -478,19 +472,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     @Override
     public void execute() {
-      if(vision.hasTarget()){
 
         double effort = mVisionPID.calculate(vision.getYaw(), 0);
 
-        mFrontLeft.setVoltage(-effort * 12);
-        mFrontRight.setVoltage(effort * 12);
+        mFrontLeft.setVoltage(effort * 12);
+        mFrontRight.setVoltage(-effort * 12);
 
-      }else{
-
-        mFrontLeft.setVoltage(0);
-        mFrontRight.setVoltage(0);
-
-      }
     }
     @Override
     public void end(boolean interrupted) {
@@ -499,8 +486,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     @Override
     public boolean isFinished() {
-      return Math.abs(vision.getYaw()) < 1;
-      //return false;
+      //return Math.abs(vision.getYaw()) < 1;
+      return false;
     }
 
   }

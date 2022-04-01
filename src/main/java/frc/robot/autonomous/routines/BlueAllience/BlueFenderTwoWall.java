@@ -26,13 +26,13 @@ public class BlueFenderTwoWall extends SequentialCommandGroup {
       new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_FENDER),
       new FireTwo(flywheel, hood, accelerator, pistons, 2500, 1),
-      new IntakePath(TAXI_PATH, drivetrain, intake, pistons)
+      drivetrain.new TrajectoryFollowerCommand(TAXI_PATH)
     );
   }
 
   private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(3, 2, List.of(
     Constants.Field.BLUE_FENDER_1,
-    new Pose2d(Constants.Field.BLUE_1.minus(new Translation2d(0, 0.5)), Rotation2d.fromDegrees(90))
+    new Pose2d(Constants.Field.BLUE_1.plus(new Translation2d(0, 0.5)), Rotation2d.fromDegrees(-90))
   ), 
   false, 
   "BLUE FIVE PATH_TO_BALL_2"
@@ -40,7 +40,7 @@ public class BlueFenderTwoWall extends SequentialCommandGroup {
 
 
   private Trajectory PATH_TO_FENDER = Trajectories.generateTrajectory(3, 2, List.of(
-    new Pose2d(Constants.Field.BLUE_1, Rotation2d.fromDegrees(90)),
+    new Pose2d(Constants.Field.BLUE_1, Rotation2d.fromDegrees(-90)),
     Constants.Field.BLUE_FENDER_1
   ), 
   true, 
@@ -49,7 +49,7 @@ public class BlueFenderTwoWall extends SequentialCommandGroup {
 
   private Trajectory TAXI_PATH = Trajectories.generateTrajectory(3, 2, List.of(
     Constants.Field.BLUE_FENDER_1,
-    new Pose2d(Constants.Field.BLUE_2.plus(new Translation2d(0,1.25)), Rotation2d.fromDegrees(0))
+    new Pose2d(Constants.Field.BLUE_2.minus(new Translation2d(0,1.25)), Rotation2d.fromDegrees(180))
   ), 
   false, 
   "BLUE FIVE PATH_TO_FENDER"

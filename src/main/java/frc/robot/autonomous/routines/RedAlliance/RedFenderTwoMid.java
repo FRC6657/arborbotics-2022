@@ -22,16 +22,16 @@ import frc.robot.subsystems.shooter.HoodSubsystem;
 public class RedFenderTwoMid extends SequentialCommandGroup {
   public RedFenderTwoMid(DrivetrainSubsystem drivetrain, IntakeSubsystem intake, IntakePistonsSubsystem pistons, FlywheelSubsystem flywheel, HoodSubsystem hood, AcceleratorSubsystem accelerator) {
     addCommands(
-      new InstantCommand(() -> drivetrain.resetOdometry(Constants.Field.RED_FENDER_1)),
+      new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(9.777, 5.608, Rotation2d.fromDegrees(25.3)))),
       new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_FENDER),
-      new FireTwo(flywheel, hood, accelerator, pistons, 2500, 1)
+      new FireTwo(flywheel, hood, accelerator, pistons, 3200, 1)
     );
   }
 
   private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(3, 2, List.of(
-    Constants.Field.RED_FENDER_1,
-    new Pose2d(Constants.Field.RED_2.minus(new Translation2d(0, 0)), Rotation2d.fromDegrees(0))
+    new Pose2d(9.777, 5.608, Rotation2d.fromDegrees(25.3)),
+    new Pose2d(Constants.Field.RED_2.plus(new Translation2d(0, 0)), Rotation2d.fromDegrees(0))
   ), 
   false, 
   "RED FIVE PATH_TO_BALL_2"
@@ -39,8 +39,8 @@ public class RedFenderTwoMid extends SequentialCommandGroup {
 
 
   private Trajectory PATH_TO_FENDER = Trajectories.generateTrajectory(3, 2, List.of(
-    new Pose2d(Constants.Field.RED_2, Rotation2d.fromDegrees(90)),
-    Constants.Field.RED_FENDER_1
+    new Pose2d(Constants.Field.RED_2, Rotation2d.fromDegrees(0)),
+    new Pose2d(Constants.Field.RED_FENDER_1.getTranslation().plus(new Translation2d(0,0.25)), Rotation2d.fromDegrees(Constants.Field.RED_FENDER_1.getRotation().getDegrees()))
   ), 
   true, 
   "RED FIVE PATH_TO_FENDER"

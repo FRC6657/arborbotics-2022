@@ -25,13 +25,13 @@ public class BlueFenderTwoHanger extends SequentialCommandGroup {
       new InstantCommand(() -> drivetrain.resetOdometry(Constants.Field.BLUE_FENDER_2)),
       new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_FENDER),
-      new FireOne(flywheel, hood, accelerator, pistons, 2500, 1)
+      new FireOne(flywheel, hood, accelerator, pistons,3200, 5)
     );
   }
 
   private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(3, 2, List.of(
     Constants.Field.BLUE_FENDER_2,
-    new Pose2d(Constants.Field.BLUE_3.minus(new Translation2d(0, 0)), Rotation2d.fromDegrees(-30))
+    new Pose2d(Constants.Field.BLUE_3.minus(new Translation2d(0, 0)), Rotation2d.fromDegrees(120))
   ), 
   false, 
   "BLUE FIVE PATH_TO_BALL_2"
@@ -39,7 +39,7 @@ public class BlueFenderTwoHanger extends SequentialCommandGroup {
 
 
   private Trajectory PATH_TO_FENDER = Trajectories.generateTrajectory(3, 2, List.of(
-    new Pose2d(Constants.Field.BLUE_3, Rotation2d.fromDegrees(-30)),
+    new Pose2d(Constants.Field.BLUE_3, Rotation2d.fromDegrees(120)),
     Constants.Field.BLUE_FENDER_2
   ), 
   true, 

@@ -72,12 +72,21 @@ public class BlueFenderFive extends SequentialCommandGroup {
   );
 
   private Trajectory PATH_TO_FENDER = Trajectories.generateTrajectory(4, 2, List.of(
-    new Pose2d(Constants.Field.BLUE_2, Rotation2d.fromDegrees(180)),
-    Constants.Field.BLUE_FENDER_1
+    new Pose2d(Constants.Field.BLUE_2, Rotation2d.fromDegrees(0)),
+    new Pose2d(
+      Constants.Field.BLUE_FENDER_1.getTranslation().minus(
+        new Translation2d(
+          0.125,
+          0.5
+        )
+      ),
+      Constants.Field.BLUE_FENDER_1.getRotation()
+    )
   ), 
   true, 
   "BLUE FIVE PATH_TO_FENDER"
   );
+
 
   private Trajectory PATH_TO_BALL_4_5 = Trajectories.generateTrajectory(4, 4, List.of(
     Constants.Field.BLUE_FENDER_1,

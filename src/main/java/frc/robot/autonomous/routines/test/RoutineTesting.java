@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.autonomous.Trajectories;
+import frc.robot.autonomous.common.FireOne;
+import frc.robot.autonomous.common.FireTwo;
 import frc.robot.autonomous.common.IntakePath;
 import frc.robot.subsystems.AcceleratorSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -19,24 +21,7 @@ import frc.robot.subsystems.shooter.HoodSubsystem;
 public class RoutineTesting extends SequentialCommandGroup {
   public RoutineTesting(DrivetrainSubsystem drivetrain, IntakeSubsystem intake, IntakePistonsSubsystem pistons, FlywheelSubsystem flywheel, HoodSubsystem hood,AcceleratorSubsystem accelerator ,VisionSupplier vision) {
     addCommands(
-      new InstantCommand(() -> drivetrain.resetOdometry(Trajectories.Test.getInitialPose()), drivetrain),
-      new IntakePath(Trajectories.Test, drivetrain, intake, pistons),
-      new ParallelCommandGroup(
-        drivetrain.new VisionAimAssist()
-        .beforeStarting(
-          new SequentialCommandGroup(
-            new InstantCommand(() -> vision.enableLEDs()),
-            new WaitCommand(0.25)
-          )
-          ).andThen(new InstantCommand(() -> vision.disableLEDs())),
-          new SequentialCommandGroup(
-        new WaitUntilCommand(() -> (hood.ready() && flywheel.ready())),
-        new ParallelCommandGroup(
-          new StartEndCommand(accelerator::start, accelerator::stop, accelerator),
-          new StartEndCommand(pistons::extend, pistons::retract, pistons)
-        )
-      )
-      )
+      new FireTwo(flywheel, hood, accelerator, pistons, 2500, 1)
     );
   }
 }

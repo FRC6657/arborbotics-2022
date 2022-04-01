@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.AcceleratorSubsystem;
-import frc.robot.subsystems.VisionSubsystem.VisionSupplier;
 import frc.robot.subsystems.intake.IntakePistonsSubsystem;
 import frc.robot.subsystems.shooter.FlywheelSubsystem;
 import frc.robot.subsystems.shooter.HoodSubsystem;
@@ -20,7 +19,7 @@ public class FireOne extends SequentialCommandGroup {
     addCommands(
       new SequentialCommandGroup(
         new ParallelCommandGroup(
-          new InstantCommand(() -> flywheel.setTargetRPM(angle), flywheel),
+          new InstantCommand(() -> flywheel.setTargetRPM(rpm), flywheel),
           new InstantCommand(() -> hood.setTargetAngle(angle), hood)
         ),
         new WaitUntilCommand(() -> flywheel.ready()),

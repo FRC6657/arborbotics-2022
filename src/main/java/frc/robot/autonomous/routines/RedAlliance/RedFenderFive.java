@@ -73,7 +73,15 @@ public class RedFenderFive extends SequentialCommandGroup {
 
   private Trajectory PATH_TO_FENDER = Trajectories.generateTrajectory(4, 2, List.of(
     new Pose2d(Constants.Field.RED_2, Rotation2d.fromDegrees(0)),
-    Constants.Field.RED_FENDER_1
+    new Pose2d(
+      Constants.Field.RED_FENDER_1.getTranslation().plus(
+        new Translation2d(
+          0.125,
+          0.5
+        )
+      ),
+      Constants.Field.RED_FENDER_1.getRotation()
+    )
   ), 
   true, 
   "RED FIVE PATH_TO_FENDER"

@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.AcceleratorSubsystem;
-import frc.robot.subsystems.VisionSubsystem.VisionSupplier;
 import frc.robot.subsystems.intake.IntakePistonsSubsystem;
 import frc.robot.subsystems.shooter.FlywheelSubsystem;
 import frc.robot.subsystems.shooter.HoodSubsystem;
@@ -20,18 +19,20 @@ public class FireTwo extends SequentialCommandGroup {
   public FireTwo(FlywheelSubsystem flywheel, HoodSubsystem hood, AcceleratorSubsystem accelerator, IntakePistonsSubsystem pistons, double rpm, double angle) {
     addCommands(
       new SequentialCommandGroup(
-          new ParallelCommandGroup(//2500
+          new ParallelCommandGroup(
             new InstantCommand(() -> flywheel.setTargetRPM(rpm), flywheel),
             new InstantCommand(() -> hood.setTargetAngle(angle), hood)
           ),
           new WaitUntilCommand(() -> flywheel.ready()),
           new InstantCommand(pistons::extend, pistons),
-          new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()).withTimeout(1.5),
+          new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()).withTimeout(2),
+          new InstantCommand(pistons::retract),
           new InstantCommand(() -> accelerator.set(-1)),
           new WaitCommand(0.25),
+
           new InstantCommand(accelerator::stop),
           new WaitUntilCommand(() -> flywheel.ready()),
-          new RunCommand(accelerator::start).withInterrupt(() -> flywheel.shotDetector()).withTimeout(1.5),
+          new RunCommand(accelerator::start).withInterrupt(() -> flywheel.shotDetector()).withTimeout(2),
           new ParallelCommandGroup(
             new InstantCommand(flywheel::stop, flywheel),
             new InstantCommand(hood::stop, hood),

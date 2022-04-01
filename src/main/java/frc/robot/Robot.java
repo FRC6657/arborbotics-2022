@@ -15,14 +15,14 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     mRobotContainer = new RobotContainer();
-    Logger.configureLoggingAndConfig(mRobotContainer, false);
+    //Logger.configureLoggingAndConfig(mRobotContainer, false);
   }
 
   @Override
   public void robotPeriodic() {
-    NetworkTableInstance.getDefault().flush();
+    //networkTableInstance.getDefault().flush();
     CommandScheduler.getInstance().run();
-    Logger.updateEntries();
+    //Logger.updateEntries();
     mRobotContainer.updateField();
   }
 
