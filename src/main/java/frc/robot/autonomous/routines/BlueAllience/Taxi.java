@@ -1,4 +1,4 @@
-package frc.robot.autonomous.routines.test;
+package frc.robot.autonomous.routines.BlueAllience;
 
 import java.util.List;
 
@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.autonomous.Trajectories;
 import frc.robot.autonomous.common.FireOne;
@@ -24,22 +23,15 @@ import frc.robot.subsystems.intake.IntakePistonsSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.FlywheelSubsystem;
 import frc.robot.subsystems.shooter.HoodSubsystem;
+import frc.robot.subsystems.shooter.Interpolation.InterpolatingTable;
 
-public class RoutineTesting extends SequentialCommandGroup {
-  public RoutineTesting(DrivetrainSubsystem drivetrain, IntakeSubsystem intake, IntakePistonsSubsystem pistons, FlywheelSubsystem flywheel, HoodSubsystem hood,AcceleratorSubsystem accelerator ,VisionSupplier vision) {
+public class Taxi extends SequentialCommandGroup {
+  public Taxi(DrivetrainSubsystem drivetrain, IntakeSubsystem intake, IntakePistonsSubsystem pistons, AcceleratorSubsystem accelerator, FlywheelSubsystem flywheel, HoodSubsystem hood, VisionSupplier vision) {
     addCommands(
-      new InstantCommand(() -> drivetrain.resetOdometry(PATH_TO_BALL_2.getInitialPose())),
-      new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons),
-      new FireTwo(flywheel, hood, accelerator, pistons, 3500, 30)
+      drivetrain.new TeleOpCommand(() -> 0.5,() -> 0,() -> false).withTimeout(1),
+      new InstantCommand(drivetrain::stop),
+      new FireTwo(flywheel, hood, accelerator, pistons, InterpolatingTable.get(vision.getYaw()).rpm, InterpolatingTable.get(vision.getYaw()).rpm)
     );
   }
 
-  private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(3, 2, List.of(
-    new Pose2d(6.71,2.69, Rotation2d.fromDegrees(-153)),
-    new Pose2d(Constants.Field.BLUE_2.plus(new Translation2d(0, 0)), Rotation2d.fromDegrees(-180+40))
-  ), 
-  false, 
-  "BLUE FIVE PATH_TO_BALL_2"
-  );
-  
 }

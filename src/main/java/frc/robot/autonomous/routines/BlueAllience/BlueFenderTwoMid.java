@@ -25,7 +25,7 @@ public class BlueFenderTwoMid extends SequentialCommandGroup {
       new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(6.756,2.702, Rotation2d.fromDegrees(-156.175)))),
       new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_FENDER),
-      new FireTwo(flywheel, hood, accelerator, pistons, 2500, 1)
+      new FireTwo(flywheel, hood, accelerator, pistons, 1500, 10)
     );
   }
 

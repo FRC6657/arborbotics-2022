@@ -27,11 +27,11 @@ public class RedFenderFive extends SequentialCommandGroup {
   public RedFenderFive(DrivetrainSubsystem drivetrain, IntakeSubsystem intake, IntakePistonsSubsystem pistons, AcceleratorSubsystem accelerator, FlywheelSubsystem flywheel, HoodSubsystem hood) {
     addCommands(
       new InstantCommand(() -> drivetrain.resetOdometry(Constants.Field.RED_FENDER_1)),
-      new FireOne(flywheel, hood, accelerator, pistons, 2500, 1),
+      new FireOne(flywheel, hood, accelerator, pistons, 1500, 10),
       new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons),
       new IntakePath(PATH_TO_BALL_3, drivetrain, intake, pistons),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_FENDER),
-      new FireTwo(flywheel, hood, accelerator, pistons, 2500, 1),
+      new FireTwo(flywheel, hood, accelerator, pistons, 1500, 10),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_4_5)
         .beforeStarting(
           new ParallelCommandGroup(
@@ -51,13 +51,13 @@ public class RedFenderFive extends SequentialCommandGroup {
         ),
       new WaitCommand(0.5),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_FENDER_2),
-      new FireTwo(flywheel, hood, accelerator, pistons, 2500, 1)
+      new FireTwo(flywheel, hood, accelerator, pistons, 1500, 10)
     );
   }
 
   private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(3, 2, List.of(
     Constants.Field.RED_FENDER_1,
-    new Pose2d(Constants.Field.RED_1.minus(new Translation2d(0, 0.5)), Rotation2d.fromDegrees(90))
+    new Pose2d(Constants.Field.RED_1.minus(new Translation2d(0, 0.3)), Rotation2d.fromDegrees(90))
   ), 
   false, 
   "RED FIVE PATH_TO_BALL_2"
@@ -77,7 +77,7 @@ public class RedFenderFive extends SequentialCommandGroup {
       Constants.Field.RED_FENDER_1.getTranslation().plus(
         new Translation2d(
           0.125,
-          0.5
+          0.2
         )
       ),
       Constants.Field.RED_FENDER_1.getRotation()

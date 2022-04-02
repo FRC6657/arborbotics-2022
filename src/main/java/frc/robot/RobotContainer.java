@@ -23,16 +23,19 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autonomous.common.FireOne;
+import frc.robot.autonomous.common.FireTwo;
 import frc.robot.autonomous.routines.BlueAllience.BlueFenderFive;
 import frc.robot.autonomous.routines.BlueAllience.BlueFenderThree;
 import frc.robot.autonomous.routines.BlueAllience.BlueFenderTwoHanger;
 import frc.robot.autonomous.routines.BlueAllience.BlueFenderTwoMid;
 import frc.robot.autonomous.routines.BlueAllience.BlueFenderTwoWall;
+import frc.robot.autonomous.routines.BlueAllience.Taxi;
 import frc.robot.autonomous.routines.RedAlliance.RedFenderFive;
 import frc.robot.autonomous.routines.RedAlliance.RedFenderThree;
 import frc.robot.autonomous.routines.RedAlliance.RedFenderTwoHanger;
 import frc.robot.autonomous.routines.RedAlliance.RedFenderTwoMid;
 import frc.robot.autonomous.routines.RedAlliance.RedFenderTwoWall;
+import frc.robot.autonomous.routines.RedAlliance.RedTwoHanger;
 import frc.robot.autonomous.routines.test.RoutineTesting;
 import frc.robot.custom.ArborMath;
 import frc.robot.custom.controls.CommandXboxController;
@@ -45,6 +48,7 @@ import frc.robot.subsystems.intake.IntakePistonsSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.FlywheelSubsystem;
 import frc.robot.subsystems.shooter.HoodSubsystem;
+import frc.robot.subsystems.shooter.Interpolation.InterpolatingTable;
 
 public class RobotContainer {
 
@@ -104,6 +108,10 @@ public class RobotContainer {
           intake
         )
       )
+    );
+
+    mOperatorController.x().whenHeld(
+      new StartEndCommand(accelerator::start, accelerator::stop, accelerator)
     );
 
     mOperatorController.pov.up().whenHeld(
@@ -169,16 +177,46 @@ public class RobotContainer {
     );
 
 
-    mOperatorController.y().whenPressed(
+    mOperatorController.y().whenHeld(
       new FireOne(flywheel, hood, accelerator, pistons, 1000, 1)
-    );
+    ).whenReleased(
+      new ParallelCommandGroup(
+          new InstantCommand(flywheel::stop, flywheel),
+          new InstantCommand(hood::stop, hood),
+          new InstantCommand(accelerator::stop, accelerator),
+          new InstantCommand(pistons::retract, pistons)
+      )
+  );
+
+
+    mOperatorController.b().whenHeld(
+        new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                new InstantCommand(() -> flywheel.setTargetRPM(1250), flywheel),
+                new InstantCommand(() -> hood.setTargetAngle(15), hood)),
+            new WaitUntilCommand(() -> flywheel.ready()),
+            new InstantCommand(pistons::extend, pistons),
+            new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()),
+            new InstantCommand(() -> accelerator.set(-1)),
+            new WaitCommand(0.25),
+            new InstantCommand(accelerator::stop),
+            new WaitUntilCommand(() -> flywheel.ready()),
+            new RunCommand(accelerator::start)))
+        .whenReleased(
+            new ParallelCommandGroup(
+                new InstantCommand(flywheel::stop, flywheel),
+                new InstantCommand(hood::stop, hood),
+                new InstantCommand(accelerator::stop, accelerator),
+                new InstantCommand(pistons::retract, pistons)
+            )
+        );
 
     // Tarmac Shot
     mDriverController.b().whenHeld(
         new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new InstantCommand(() -> flywheel.setTargetRPM(3000), flywheel),
-                new InstantCommand(() -> hood.setTargetAngle(20), hood)),
+                new InstantCommand(() -> flywheel.setTargetRPM(InterpolatingTable.get(vision.visionSupplier.getPitch()).rpm), flywheel),
+                new InstantCommand(() -> hood.setTargetAngle(InterpolatingTable.get(vision.visionSupplier.getPitch()).hoodAngle), hood)),
             new WaitUntilCommand(() -> flywheel.ready()),
             new InstantCommand(pistons::extend, pistons),
             new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()),
@@ -227,6 +265,16 @@ public class RobotContainer {
       new BlueFenderTwoWall(drivetrain, intake, pistons, flywheel, hood, accelerator)
     });
 
+    mAutoChooser.addOption("Taxi", new SequentialCommandGroup[]{
+      new Taxi(drivetrain, intake, pistons, accelerator, flywheel, hood, vision.visionSupplier),
+      new Taxi(drivetrain, intake, pistons, accelerator, flywheel, hood, vision.visionSupplier)
+    });
+
+    mAutoChooser.addOption("2 Ball Hangar", new SequentialCommandGroup[]{
+      new RedTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator, vision.visionSupplier),
+      new RedTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator, vision.visionSupplier)
+    });
+
     SmartDashboard.putData("Auto Chooser", mAutoChooser);
 
   }
@@ -265,11 +313,12 @@ public class RobotContainer {
     }else{
       alliance = 1;
     }
-    return new RoutineTesting(drivetrain, intake, pistons, flywheel, hood, accelerator, vision.visionSupplier);
+    //return new RoutineTesting(drivetrain, intake, pistons, flywheel, hood, accelerator, vision.visionSupplier);
     //return mAutoChooser.getSelected()[alliance];
+    return new BlueFenderTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator);
   }
 
-  public static Field2d getField(){
+  public static Field2d getField(){ 
     return mField;
   }
 

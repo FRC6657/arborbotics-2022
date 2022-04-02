@@ -24,11 +24,11 @@ public class BlueFenderThree extends SequentialCommandGroup {
   public BlueFenderThree(DrivetrainSubsystem drivetrain, IntakeSubsystem intake, IntakePistonsSubsystem pistons, AcceleratorSubsystem accelerator, FlywheelSubsystem flywheel, HoodSubsystem hood) {
     addCommands(
       new InstantCommand(() -> drivetrain.resetOdometry(Constants.Field.BLUE_FENDER_1)),
-      new FireOne(flywheel, hood, accelerator, pistons, 2500, 1),
+      new FireOne(flywheel, hood, accelerator, pistons, 1500, 10),
       new IntakePath(PATH_TO_BALL_2, drivetrain, intake, pistons),
       new IntakePath(PATH_TO_BALL_3, drivetrain, intake, pistons),
       drivetrain.new TrajectoryFollowerCommand(PATH_TO_FENDER),
-      new FireTwo(flywheel, hood, accelerator, pistons, 2500, 1)
+      new FireTwo(flywheel, hood, accelerator, pistons, 1500, 10)
     );
   }
 

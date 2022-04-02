@@ -22,7 +22,7 @@ public class FireOne extends SequentialCommandGroup {
           new InstantCommand(() -> flywheel.setTargetRPM(rpm), flywheel),
           new InstantCommand(() -> hood.setTargetAngle(angle), hood)
         ),
-        new WaitUntilCommand(() -> flywheel.ready()),
+        new WaitUntilCommand(() -> flywheel.ready()).withTimeout(2),
         new InstantCommand(pistons::extend, pistons),
         new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()).withTimeout(2),
         new ParallelCommandGroup(
