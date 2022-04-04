@@ -54,7 +54,7 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber("Distance", distance);
+    SmartDashboard.putNumber("Yaw", yaw);
 
     result = mLimelight.getLatestResult();
     if (result.hasTargets()) {

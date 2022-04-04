@@ -28,10 +28,18 @@ import frc.robot.subsystems.shooter.Interpolation.InterpolatingTable;
 public class Taxi extends SequentialCommandGroup {
   public Taxi(DrivetrainSubsystem drivetrain, IntakeSubsystem intake, IntakePistonsSubsystem pistons, AcceleratorSubsystem accelerator, FlywheelSubsystem flywheel, HoodSubsystem hood, VisionSupplier vision) {
     addCommands(
-      drivetrain.new TeleOpCommand(() -> 0.5,() -> 0,() -> false).withTimeout(1),
-      new InstantCommand(drivetrain::stop),
-      new FireTwo(flywheel, hood, accelerator, pistons, InterpolatingTable.get(vision.getYaw()).rpm, InterpolatingTable.get(vision.getYaw()).rpm)
+      new InstantCommand(() -> drivetrain.resetOdometry(PATH_TO_BALL_2.getInitialPose())),
+      drivetrain.new TrajectoryFollowerCommand(PATH_TO_BALL_2)
     );
   }
+
+  private Trajectory PATH_TO_BALL_2 = Trajectories.generateTrajectory(3, 2, List.of(
+        new Pose2d(9.689,2.482, Rotation2d.fromDegrees(-64.5)),
+        new Pose2d(11.647, 0.774, Rotation2d.fromDegrees(0))
+      ), 
+      false, 
+      "BLUE FIVE PATH_TO_BALL_2"
+  );
+
 
 }

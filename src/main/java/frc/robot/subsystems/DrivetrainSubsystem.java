@@ -456,7 +456,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public class VisionAimAssist extends CommandBase{
     
-    PIDController mVisionPID = new PIDController(0.015    , 0, 0);
+    PIDController mVisionPID = new PIDController(0.015, 0, 0.001);
 
     double startPoint;
     MedianFilter filter = new MedianFilter(2);

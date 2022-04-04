@@ -70,7 +70,7 @@ public class BlueFenderFive extends SequentialCommandGroup {
   false, 
   "BLUE FIVE PATH_TO_BALL_2"
   );
- 
+
   private Trajectory PATH_TO_FENDER = Trajectories.generateTrajectory(4, 2, List.of(
     new Pose2d(Constants.Field.BLUE_2, Rotation2d.fromDegrees(0)),
     new Pose2d(

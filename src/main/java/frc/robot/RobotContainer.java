@@ -136,6 +136,14 @@ public class RobotContainer {
     );
 
 
+    mDriverController.rightBumper().whenHeld(
+      new StartEndCommand(
+        () -> hood.setTargetAngle(InterpolatingTable.get(vision.visionSupplier.getPitch()).hoodAngle), hood::stop, hood
+      ).beforeStarting(
+        new PrintCommand(Double.toString(vision.visionSupplier.getPitch()))
+      )
+    );
+
     //TODO Test
     mDriverController.leftBumper().whenHeld(
       drivetrain.new VisionAimAssist()
@@ -147,6 +155,7 @@ public class RobotContainer {
           ).andThen(new InstantCommand(() -> vision.visionSupplier.disableLEDs()))
     );
     
+
 
     //Fender Shot
     mDriverController.x().whenHeld(
@@ -219,6 +228,7 @@ public class RobotContainer {
                 new InstantCommand(() -> hood.setTargetAngle(InterpolatingTable.get(vision.visionSupplier.getPitch()).hoodAngle), hood)),
             new WaitUntilCommand(() -> flywheel.ready()),
             new InstantCommand(pistons::extend, pistons),
+            new InstantCommand(intake::start),
             new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()),
             new InstantCommand(() -> accelerator.set(-1)),
             new WaitCommand(0.25),
@@ -230,7 +240,8 @@ public class RobotContainer {
                 new InstantCommand(flywheel::stop, flywheel),
                 new InstantCommand(hood::stop, hood),
                 new InstantCommand(accelerator::stop, accelerator),
-                new InstantCommand(pistons::retract, pistons)
+                new InstantCommand(pistons::retract, pistons),
+                new InstantCommand(intake::stop, intake)
             )
         );
 
@@ -314,8 +325,8 @@ public class RobotContainer {
       alliance = 1;
     }
     //return new RoutineTesting(drivetrain, intake, pistons, flywheel, hood, accelerator, vision.visionSupplier);
-    //return mAutoChooser.getSelected()[alliance];
-    return new BlueFenderTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator);
+    return mAutoChooser.getSelected()[alliance];
+    //return new BlueFenderTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator);
   }
 
   public static Field2d getField(){ 

@@ -25,6 +25,7 @@ public class FireTwo extends SequentialCommandGroup {
           ),
           new WaitUntilCommand(() -> flywheel.ready()),
           new InstantCommand(pistons::extend, pistons),
+          new WaitCommand(0.25),
           new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()).withTimeout(2),
           new InstantCommand(pistons::retract),
           new InstantCommand(() -> accelerator.set(-1)),
