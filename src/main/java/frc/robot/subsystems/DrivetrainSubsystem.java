@@ -21,7 +21,6 @@ import edu.wpi.first.math.controller.LinearPlantInversionFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.filter.MedianFilter;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -316,9 +315,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // private SlewRateLimiter mBackwardDecelLimit = new SlewRateLimiter(Constants.DriveProfile.kDriveBackwardDecel);
     // private SlewRateLimiter mTurnAccelLimit = new SlewRateLimiter(Constants.DriveProfile.kTurnAccel);
 
-    private double lastDriveRef = 0;
-    private double lastTurnRef = 0;
-
     public TeleOpCommand(DoubleSupplier xInput, DoubleSupplier zInput, BooleanSupplier modSpeed){
       this.xInput = xInput;
       this.zInput = zInput;
@@ -338,38 +334,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
           zInput.getAsDouble() * Constants.DriveProfile.kMaxTurnSpeed
       );
 
-      //mTurnAccelLimit.calculate(speeds.omegaRadiansPerSecond);
-
-      final double limitedDriveSpeed;
-      final double limitedTurnSpeed;
-
-      // if(Math.abs(speeds.vxMetersPerSecond) > Math.abs(lastDriveRef)){ //Accelerating
-      //   if(speeds.vxMetersPerSecond > 0){//Accelerating Forward
-      //     limitedDriveSpeed = mForwardAccelLimit.calculate(speeds.vxMetersPerSecond);
-      //   }else{ //Accelerating Backward
-      //     limitedDriveSpeed = mBackwardAccelLimit.calculate(speeds.vxMetersPerSecond);
-      //   }
-      // }else if(speeds.vxMetersPerSecond == lastDriveRef){ //Not changing speed
-      //   limitedDriveSpeed = speeds.vxMetersPerSecond;
-      // }else{ //Decelerating
-      //   if(speeds.vxMetersPerSecond > 0){ //Decelerating from Forward
-      //     limitedDriveSpeed = mForwardDecelLimit.calculate(speeds.vxMetersPerSecond);
-      //   }else{ //Decelerating from Backward
-      //     limitedDriveSpeed = mBackwardDecelLimit.calculate(speeds.vxMetersPerSecond);
-      //   }
-      // }
-
-      // if(speeds.omegaRadiansPerSecond != 0 & Math.abs(speeds.omegaRadiansPerSecond) > lastTurnRef){
-      //   limitedTurnSpeed = mTurnAccelLimit.calculate(speeds.omegaRadiansPerSecond);
-      // }else{
-      //   limitedTurnSpeed = speeds.omegaRadiansPerSecond;
-      //   mTurnAccelLimit.reset(0);
-      // }
-
       setSpeeds(mKinematics.toWheelSpeeds(speeds));
-
-      lastDriveRef = speeds.vxMetersPerSecond;
-      lastTurnRef = speeds.omegaRadiansPerSecond;
 
     }
 

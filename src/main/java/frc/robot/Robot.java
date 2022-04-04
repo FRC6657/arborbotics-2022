@@ -1,6 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,14 +14,14 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     mRobotContainer = new RobotContainer();
-    //Logger.configureLoggingAndConfig(mRobotContainer, false);
+    Logger.configureLoggingAndConfig(mRobotContainer, false);
   }
 
   @Override
   public void robotPeriodic() {
     //NetworkTableInstance.getDefault().flush();
     CommandScheduler.getInstance().run();
-    //Logger.updateEntries();
+    Logger.updateEntries();
     mRobotContainer.updateField();
   }
 
